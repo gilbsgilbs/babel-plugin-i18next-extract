@@ -1,0 +1,42 @@
+trigger:
+  - master
+
+pool:
+  vmImage: ubuntu-latest
+
+container: 'node:12'
+
+stages:
+  - stage: checks
+    displayName: Static checks
+    jobs:
+      - job: lint
+        displayName: Run ESLint
+        steps:
+          - script: yarn run lint
+      - job: types
+        displayName: Run Typing Checks
+        steps:
+          - script: yarn run types
+      - job: audit
+        displayName: Run Yarn Audit
+        continueOnError: true
+        steps:
+          - script: yarn audit --groups dependencies
+  - stage: tests
+    displayName: Run tests
+    jobs:
+      - job: test
+        displayName: Run test
+        steps:
+          - script: yarn run test
+  - stage: build
+    displayName: Build Project
+    jobs:
+      - job: build
+        displayName: Build
+        steps:
+          - script: yarn run build --coverage
+          - publish: 'lib/'
+            artifact: build
+  

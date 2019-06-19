@@ -1,0 +1,11 @@
+{
+  "description": "test JSX nodes conversion to string",
+  "pluginOptions": {
+    "keySeparator": null,
+    "nsSeparator": null
+  },
+  "expectValues": [
+    [["Some <1><0>Deep reference</0></1>"], ""],
+    [["Some simple ref"], ""]
+  ]
+}

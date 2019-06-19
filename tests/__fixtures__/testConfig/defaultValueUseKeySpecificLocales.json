@@ -1,0 +1,17 @@
+{
+  "description": "test key as default value for specific locales",
+  "inputFiles": ["defaultValue.js"],
+  "pluginOptions": {
+    "locales": ["fr", "en", "es"],
+    "defaultValue": null,
+    "useKeyAsDefaultValue": ["fr", "en"]
+  },
+  "expectValues": [
+    [["key0"], "key0", {"locale": "fr"}],
+    [["key1"], "key1", {"locale": "fr"}],
+    [["key0"], "key0", {"locale": "en"}],
+    [["key1"], "key1", {"locale": "en"}],
+    [["key0"], null, {"locale": "es"}],
+    [["key1"], null, {"locale": "es"}]
+  ]
+}

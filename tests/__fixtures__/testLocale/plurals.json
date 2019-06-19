@@ -1,0 +1,18 @@
+{
+  "description": "plural tests in different languages",
+  "comment": "ms has 1 plural, fr has 2 plurals, ar has 6 plurals",
+  "pluginOptions": {
+    "locales": ["fr", "ar", "ms"]
+  },
+  "expectValues": [
+    [["myKey"], "", {"locale": "fr"}],
+    [["myKey_plural"], "", {"locale": "fr"}],
+    [["myKey_0"], "", {"locale": "ar"}],
+    [["myKey_1"], "", {"locale": "ar"}],
+    [["myKey_2"], "", {"locale": "ar"}],
+    [["myKey_3"], "", {"locale": "ar"}],
+    [["myKey_4"], "", {"locale": "ar"}],
+    [["myKey_5"], "", {"locale": "ar"}],
+    [["myKey_0"], "", {"locale": "ms"}]
+  ]
+}

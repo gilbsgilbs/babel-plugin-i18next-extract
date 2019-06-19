@@ -1,0 +1,9 @@
+{
+  "description": "test missing key separator",
+  "pluginOptions": {
+    "keySeparator": null
+  },
+  "expectValues": [
+    [["not.a.deep.key"], ""]
+  ]
+}

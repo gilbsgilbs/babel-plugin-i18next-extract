@@ -1,0 +1,59 @@
+{
+  "name": "babel-plugin-i18next-extract",
+  "version": "0.1.0",
+  "description": "Extract translation keys from i18next application.",
+  "repository": "gilbsgilbs/babel-plugin-i18next-extract",
+  "author": "Gilbert Gilb's <gilbsgilbert@gmail.com>",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
+  "types": "lib/src/index.d.ts",
+  "dependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/types": "^7.4.4",
+    "@types/babel__core": "^7.1.2",
+    "@types/i18next": "^12.1.0",
+    "@types/node": "^12.0.8",
+    "i18next": "^17.0.4",
+    "node": "^12.4.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/fs-extra": "^7.0.0",
+    "@types/jest": "^24.0.15",
+    "@types/jest-expect-message": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.2",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^5.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "fs-extra": "^8.0.1",
+    "jest": "^24.8.0",
+    "jest-expect-message": "^1.0.2",
+    "prettier": "^1.18.2",
+    "rollup": "^1.16.2",
+    "rollup-plugin-typescript": "^1.0.1",
+    "tslib": "^1.10.0",
+    "typescript": "^3.5.2"
+  },
+  "scripts": {
+    "lint": "eslint --ext=.ts,.js,.tsx,.jsx src tests rollup.config.js",
+    "types": "tsc --noEmit",
+    "types:watch": "${npm_execpath} run type-check -- --watch",
+    "build": "${npm_execpath} run build:types && ${npm_execpath} run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "rollup -c",
+    "test": "jest"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "jest-expect-message"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}"
+    ]
+  }
+}

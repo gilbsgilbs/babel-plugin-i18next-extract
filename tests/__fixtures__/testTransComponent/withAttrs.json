@@ -1,0 +1,20 @@
+{
+  "description": "test JSX attributes for Trans component",
+  "pluginOptions": {
+    "keySeparator": null,
+    "nsSeparator": null
+  },
+  "expectValues": [
+    [["withCount"], ""],
+    [["withCount_plural"], ""],
+    [["withContext"], ""],
+    [["withContext_male"], ""],
+    [["withContext_female"], ""],
+    [["withContextOnlyIdentifier"], ""],
+    [["withContextOnlyIdentifier_male"], ""],
+    [["withContextOnlyIdentifier_female"], ""],
+    [["withJSXNS"], "", {"ns": "jsxns"}],
+    [["withJSXArrayNS"], "", {"ns": "jsxns"}],
+    [["withLiteralNS"], "", {"ns": "literalns"}]
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "description": "test a simple default value",
+  "inputFiles": ["defaultValue.js"],
+  "pluginOptions": {
+    "defaultValue": "~~~DEFAULT~~~"
+  },
+  "expectValues": [
+    [["key0"], "~~~DEFAULT~~~"],
+    [["key1"], "~~~DEFAULT~~~"]
+  ]
+}

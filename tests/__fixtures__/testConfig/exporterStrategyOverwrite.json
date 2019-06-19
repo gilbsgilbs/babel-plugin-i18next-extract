@@ -1,0 +1,11 @@
+{
+  "description": "test we can overwrite existing files",
+  "inputFiles": ["exporterStrategy.0.js", "exporterStrategy.1.js"],
+  "pluginOptions": {
+    "exporterStrategy": "OVERWRITE"
+  },
+  "expectValues": [
+    [["key1"], ""],
+    [["deep", "key", "key1"], ""]
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "description": "test simple extractions of a trans component",
+  "pluginOptions": {},
+  "expectValues": [
+    [["hello"], ""],
+    [["hello world"], ""],
+    [["very simple key"], ""],
+    [["explicitKeyLiteral"], ""],
+    [["explicitKeyJSXExpression"], ""]
+  ]
+}

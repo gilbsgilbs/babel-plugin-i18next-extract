@@ -1,0 +1,10 @@
+{
+  "description": "test giving custom instance name to i18next",
+  "pluginOptions": {
+    "i18nextInstanceNames": ["pgm", "_"]
+  },
+  "expectValues": [
+    [["pgm"], ""],
+    [["_"], ""]
+  ]
+}

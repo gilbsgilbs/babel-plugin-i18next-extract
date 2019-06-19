@@ -1,0 +1,10 @@
+{
+  "description": "test missing namespace separator",
+  "pluginOptions": {
+    "nsSeparator": null
+  },
+  "expectValues": [
+    [["not-a-namespace:key0"], ""],
+    [["key1"], ""]
+  ]
+}
