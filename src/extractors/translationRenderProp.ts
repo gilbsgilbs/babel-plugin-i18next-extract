@@ -3,8 +3,11 @@ import * as BabelCore from '@babel/core';
 import extractTFunction from './tFunction';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
-import { findJSXAttributeByName, evaluateIfConfident } from '../utils';
-import { getFirstOrNull } from './commons';
+import {
+  getFirstOrNull,
+  findJSXAttributeByName,
+  evaluateIfConfident,
+} from './commons';
 
 /**
  * Check whether a given JSXElement is a Translation render prop.

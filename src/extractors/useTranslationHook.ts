@@ -3,8 +3,7 @@ import * as BabelCore from '@babel/core';
 import extractTFunction from './tFunction';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
-import { getFirstOrNull } from './commons';
-import { evaluateIfConfident } from '../utils';
+import { getFirstOrNull, evaluateIfConfident } from './commons';
 
 /**
  * Check whether a given CallExpression path is a call to `useTranslation` hook.
