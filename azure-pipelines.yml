@@ -1,5 +1,13 @@
 trigger:
-  - master
+  branches:
+    include:
+      - master
+      - features/*
+      - releases/*
+      - greenkeeper/*
+  tags:
+    include:
+      - '*'
 
 stages:
   - stage: checks
