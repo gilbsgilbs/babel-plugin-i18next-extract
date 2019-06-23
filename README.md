@@ -84,11 +84,6 @@ directory. Magic huh? Next step is to check out all the available [configuration
 - [x] Explicitely disable extraction on a specific file sections or lines using comment hints.
 - [x] … and more?
 
-## Usage with create-react-app
-
-TODO: It should be enough to use babel-preset-react-app and declare the plugin in babelrc,
-but I have to check this out.
-
 ## Configuration
 
 | Option | Type | Description | Default |
@@ -131,6 +126,11 @@ disable extraction on the entire file.
 
 Comment hints may also be used in the future to explicitly mark keys as having plural forms or
 contexts (and specify which ones), or to specify a namespace. Stay tuned.
+
+## Usage with create-react-app
+
+TODO: It should be enough to use babel-preset-react-app and declare the plugin in babelrc,
+but I have to check this out.
 
 ## Gotchas
 
