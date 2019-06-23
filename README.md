@@ -1,6 +1,6 @@
 # babel-plugin-i18next-extract
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://dev.azure.com/gilbsgilbert/babel-plugin-i18next-extract/_apis/build/status/gilbsgilbs.babel-plugin-i18next-extract?branchName=master)](https://dev.azure.com/gilbsgilbert/babel-plugin-i18next-extract/_build/latest?definitionId=1&branchName=master) [![codecov](https://codecov.io/gh/gilbsgilbs/babel-plugin-i18next-extract/branch/master/graph/badge.svg?token=qPbMt14hUY)](https://codecov.io/gh/gilbsgilbs/babel-plugin-i18next-extract) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://dev.azure.com/gilbsgilbert/babel-plugin-i18next-extract/_apis/build/status/gilbsgilbs.babel-plugin-i18next-extract?branchName=master)](https://dev.azure.com/gilbsgilbert/babel-plugin-i18next-extract/_build/latest?definitionId=1&branchName=master) [![codecov](https://codecov.io/gh/gilbsgilbs/babel-plugin-i18next-extract/branch/master/graph/badge.svg?token=qPbMt14hUY)](https://codecov.io/gh/gilbsgilbs/babel-plugin-i18next-extract) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Greenkeeper badge](https://badges.greenkeeper.io/gilbsgilbs/babel-plugin-i18next-extract.svg)](https://greenkeeper.io/)
 
 ---
 
