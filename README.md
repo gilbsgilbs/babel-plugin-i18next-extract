@@ -68,14 +68,23 @@ directory. Magic huh? Next step is to check out all the available [configuration
 
 ## Features
 
-- [x] Translation extraction in [JSON v3 format](https://www.i18next.com/misc/json-format)
+- [x] Translation extraction in [JSON v3 format](https://www.i18next.com/misc/json-format).
 - [x] Detection of `i18next.t()` function calls.
-- [x] Detection of plural forms and plural keys derivation depending on the locale.
+- [x] Plural forms support:
+  - [x] Keys derivation depending on the locale.
+  - [x] Automatic detection from `i18next.t` function calls.
+  - [x] Automatic detection from `react-i18next` properties.
+  - [ ] (todo) Manual detection from comment hints.
+- [x] Contexts support:
+  - [x] Naïve implementation with default contexts.
+  - [x] Automatic detection from `i18next.t` function calls.
+  - [x] Automatic detection from `react-i18next` properties.
+  - [ ] (todo) Manual detection from comment hints.
 - [x] [react-i18next](https://react.i18next.com/) support:
   - [x] `Trans` component support (with plural forms, contexts and namespaces).
   - [x] `useTranslation` hook support (with plural forms, contexts and namespaces).
   - [x] `Translation` render prop support (with plural forms, contexts and namespaces).
-  - [ ] (todo) fuzzy namespace inference from `withTranslation` HoC.
+  - [ ] (todo) Fuzzy namespace inference from `withTranslation` HoC.
 - [x] Namespace inference:
   - [x] Depending on the key value.
   - [x] Depending on the `t()` function options.
