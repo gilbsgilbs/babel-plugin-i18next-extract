@@ -72,16 +72,21 @@ directory. Magic huh? Next step is to check out all the available [configuration
 - [x] Detection of `i18next.t()` function calls.
 - [x] Detection of plural forms and plural keys derivation depending on the locale.
 - [x] [react-i18next](https://react.i18next.com/) support:
-  - [x] `Trans` component support.
-  - [x] `useTranslation` hook support.
-  - [x] `Translation` render prop support.
-- [x] Namespace inference depending on the key or the surrounding component options.
+  - [x] `Trans` component support (with plural forms, contexts and namespaces).
+  - [x] `useTranslation` hook support (with plural forms, contexts and namespaces).
+  - [x] `Translation` render prop support (with plural forms, contexts and namespaces).
+  - [ ] (todo) fuzzy namespace inference from `withTranslation` HoC.
+- [x] Namespace inference:
+  - [x] Depending on the key value.
+  - [x] Depending on the `t()` function options.
+  - [x] Depending on the `ns` property in `Translation` render prop.
+  - [x] Depending on the `ns` attribute in the `Trans` component.
 - [x] Explicitely disable extraction on a specific file sections or lines using comment hints.
 - [x] … and more?
 
 ## Usage with create-react-app
 
-TODO : It should be enough to use babel-preset-react-app and declare the plugin in babelrc,
+TODO: It should be enough to use babel-preset-react-app and declare the plugin in babelrc,
 but I have to check this out.
 
 ## Configuration
@@ -140,11 +145,16 @@ i18next.t(`error.${code}`);
 
 If you try to extract keys from this code, the plugin will issue a warning because it won't be
 able to infer the translations statically. If you really want to specify variable keys, you should
-skip them with a [comment hint](#comment-hints).
+skip them with a [comment hint](#comment-hints). The same goes for plural forms, context and
+namespace detection:
+
+```javascript
+i18next.t("myKey", myOpts); // This won't work.
+```
 
 However, in React components, it might come handy to be a little smarter than that. That's why
-when using a `<Trans>` component, the plugin will try to find inner expressions references. For
-instance, this code should be extracted properly:
+when using a `<Trans>` component, the plugin will try to resolve references before resigning. For
+instance, this code should extract properly:
 
 ```javascript
 const foo = <p>Hello</p>
