@@ -80,5 +80,10 @@
     "setupFilesAfterEnv": [
       "jest-expect-message"
     ]
+  },
+  "greenkeeper": {
+    "ignore": [
+      "eslint"
+    ]
   }
 }
