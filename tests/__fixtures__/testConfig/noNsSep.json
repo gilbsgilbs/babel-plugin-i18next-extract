@@ -3,8 +3,8 @@
   "pluginOptions": {
     "nsSeparator": null
   },
-  "expectValues": [
-    [["not-a-namespace:key0"], ""],
-    [["key1"], ""]
-  ]
+  "expectValues": {
+    "not-a-namespace:key0": "",
+    "key1": ""
+  }
 }

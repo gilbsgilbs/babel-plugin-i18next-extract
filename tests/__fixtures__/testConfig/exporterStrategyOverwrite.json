@@ -4,8 +4,12 @@
   "pluginOptions": {
     "exporterStrategy": "OVERWRITE"
   },
-  "expectValues": [
-    [["key1"], ""],
-    [["deep", "key", "key1"], ""]
-  ]
+  "expectValues": {
+    "key1": "",
+    "deep": {
+      "key": {
+        "key1": ""
+      }
+    }
+  }
 }

@@ -1,7 +1,7 @@
 {
   "description": "test disable comment is greedy",
   "pluginOptions": {},
-  "expectValues": [
-    [["ok"], ""]
-  ]
+  "expectValues": {
+    "ok": ""
+  }
 }

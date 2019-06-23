@@ -5,14 +5,17 @@
     "locales": ["fr", "ar", "ms"]
   },
   "expectValues": [
-    [["myKey"], "", {"locale": "fr"}],
-    [["myKey_plural"], "", {"locale": "fr"}],
-    [["myKey_0"], "", {"locale": "ar"}],
-    [["myKey_1"], "", {"locale": "ar"}],
-    [["myKey_2"], "", {"locale": "ar"}],
-    [["myKey_3"], "", {"locale": "ar"}],
-    [["myKey_4"], "", {"locale": "ar"}],
-    [["myKey_5"], "", {"locale": "ar"}],
-    [["myKey_0"], "", {"locale": "ms"}]
+    [
+      {"myKey": "", "myKey_plural": ""},
+      {"locale": "fr"}
+    ],
+    [
+      {"myKey_0": "", "myKey_1": "", "myKey_2": "", "myKey_3": "", "myKey_4": "", "myKey_5": ""},
+      {"locale": "ar"}
+    ],
+    [
+      {"myKey_0": ""},
+      {"locale": "ms"}
+    ]
   ]
 }

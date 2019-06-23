@@ -2,10 +2,14 @@
   "description": "test merge works by default on deep keys",
   "inputFiles": ["exporterStrategy.0.js", "exporterStrategy.1.js"],
   "pluginOptions": {},
-  "expectValues": [
-    [["key0"], ""],
-    [["key1"], ""],
-    [["deep", "key", "key0"], ""],
-    [["deep", "key", "key1"], ""]
-  ]
+  "expectValues": {
+    "key0": "",
+    "key1": "",
+    "deep": {
+      "key": {
+        "key0": "",
+        "key1": ""
+      }
+    }
+  }
 }

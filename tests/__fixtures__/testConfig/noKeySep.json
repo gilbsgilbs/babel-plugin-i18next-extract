@@ -3,7 +3,7 @@
   "pluginOptions": {
     "keySeparator": null
   },
-  "expectValues": [
-    [["not.a.deep.key"], ""]
-  ]
+  "expectValues": {
+    "not.a.deep.key": ""
+  }
 }

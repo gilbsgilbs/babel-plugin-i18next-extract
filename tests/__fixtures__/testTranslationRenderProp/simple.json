@@ -1,10 +1,10 @@
 {
   "description": "test simple extractions of the translation render prop",
   "pluginOptions": {},
-  "expectValues": [
-    [["hello"], ""],
-    [["hello world"], ""],
-    [["withPlural"], ""],
-    [["withPlural_plural"], ""]
-  ]
+  "expectValues": {
+    "hello": "",
+    "hello world": "",
+    "withPlural": "",
+    "withPlural_plural": ""
+  }
 }

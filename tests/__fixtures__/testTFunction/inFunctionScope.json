@@ -1,9 +1,9 @@
 {
   "description": "test i18next.t extraction within functions",
   "pluginOptions": {},
-  "expectValues": [
-    [["hello"], ""],
-    [["hello world"], ""],
-    [["very simple key"], ""]
-  ]
+  "expectValues": {
+    "hello": "",
+    "hello world": "",
+    "very simple key": ""
+  }
 }

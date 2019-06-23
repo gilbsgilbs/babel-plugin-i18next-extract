@@ -2,9 +2,9 @@
   "description": "Test that namespace attribute is correctly parsed with Translation render prop",
   "pluginOptions": {},
   "expectValues": [
-    [["hello world"], ""],
-    [["hello world"], "", {"ns": "nsLiteral"}],
-    [["hello world"], "", {"ns": "nsJSXLiteral"}],
-    [["hello world"], "", {"ns": "nsJSXArray"}]
+    [{"hello world": ""}],
+    [{"hello world": ""}, {"ns": "nsLiteral"}],
+    [{"hello world": ""}, {"ns": "nsJSXLiteral"}],
+    [{"hello world": ""}, {"ns": "nsJSXArray"}]
   ]
 }

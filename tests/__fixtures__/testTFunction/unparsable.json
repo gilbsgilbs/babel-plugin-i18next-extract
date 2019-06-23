@@ -1,7 +1,7 @@
 {
   "description": "test that extraction keeps going after a soft failure",
   "pluginOptions": {},
-  "expectValues": [
-    [["ok"], ""]
-  ]
+  "expectValues": {
+    "ok": ""
+  }
 }

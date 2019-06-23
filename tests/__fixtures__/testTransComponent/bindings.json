@@ -4,8 +4,8 @@
     "keySeparator": null,
     "nsSeparator": null
   },
-  "expectValues": [
-    [["Some <1><0>Deep reference</0></1>"], ""],
-    [["Some simple ref"], ""]
-  ]
+  "expectValues": {
+    "Some <1><0>Deep reference</0></1>": "",
+    "Some simple ref": ""
+  }
 }

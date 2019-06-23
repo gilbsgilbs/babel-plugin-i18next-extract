@@ -3,8 +3,8 @@
   "pluginOptions": {
     "i18nextInstanceNames": ["pgm", "_"]
   },
-  "expectValues": [
-    [["pgm"], ""],
-    [["_"], ""]
-  ]
+  "expectValues": {
+    "pgm": "",
+    "_": ""
+  }
 }

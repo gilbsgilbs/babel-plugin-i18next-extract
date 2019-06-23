@@ -5,16 +5,17 @@
     "nsSeparator": null
   },
   "expectValues": [
-    [["withCount"], ""],
-    [["withCount_plural"], ""],
-    [["withContext"], ""],
-    [["withContext_male"], ""],
-    [["withContext_female"], ""],
-    [["withContextOnlyIdentifier"], ""],
-    [["withContextOnlyIdentifier_male"], ""],
-    [["withContextOnlyIdentifier_female"], ""],
-    [["withJSXNS"], "", {"ns": "jsxns"}],
-    [["withJSXArrayNS"], "", {"ns": "jsxns"}],
-    [["withLiteralNS"], "", {"ns": "literalns"}]
+    [{
+      "withCount": "",
+      "withCount_plural": "",
+      "withContext": "",
+      "withContext_male": "",
+      "withContext_female": "",
+      "withContextOnlyIdentifier": "",
+      "withContextOnlyIdentifier_male": "",
+      "withContextOnlyIdentifier_female": ""
+    }],
+    [{"withJSXNS": "", "withJSXArrayNS": ""}, {"ns": "jsxns"}],
+    [{"withLiteralNS": ""}, {"ns": "literalns"}]
   ]
 }

@@ -1,7 +1,7 @@
 {
   "description": "test soft errors don't mess up translations",
   "pluginOptions": {},
-  "expectValues": [
-    [["good"], ""]
-  ]
+  "expectValues": {
+    "good": ""
+  }
 }

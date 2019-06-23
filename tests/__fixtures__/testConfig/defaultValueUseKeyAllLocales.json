@@ -7,9 +7,7 @@
     "useKeyAsDefaultValue": true
   },
   "expectValues": [
-    [["key0"], "key0", {"locale": "fr"}],
-    [["key1"], "key1", {"locale": "fr"}],
-    [["key0"], "key0", {"locale": "en"}],
-    [["key1"], "key1", {"locale": "en"}]
+    [{"key0": "key0", "key1": "key1"}, {"locale": "fr"}],
+    [{"key0": "key0", "key1": "key1"}, {"locale": "en"}]
   ]
 }

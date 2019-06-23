@@ -1,10 +1,10 @@
 {
   "description": "test simple extractions with comment skips",
   "pluginOptions": {},
-  "expectValues": [
-    [["ok0"], ""],
-    [["ok1"], ""],
-    [["ok2"], ""],
-    [["ok3"], ""]
-  ]
+  "expectValues": {
+    "ok0": "",
+    "ok1": "",
+    "ok2": "",
+    "ok3": ""
+  }
 }

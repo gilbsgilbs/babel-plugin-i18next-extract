@@ -4,8 +4,8 @@
   "pluginOptions": {
     "defaultValue": "~~~DEFAULT~~~"
   },
-  "expectValues": [
-    [["key0"], "~~~DEFAULT~~~"],
-    [["key1"], "~~~DEFAULT~~~"]
-  ]
+  "expectValues": {
+    "key0": "~~~DEFAULT~~~",
+    "key1": "~~~DEFAULT~~~"
+  }
 }

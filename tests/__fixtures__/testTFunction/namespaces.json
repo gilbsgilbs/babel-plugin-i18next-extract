@@ -2,8 +2,7 @@
   "description": "test corner cases with namespaces and t call",
   "pluginOptions": {},
   "expectValues": [
-    [["0"], "", {"ns": "prefixns"}],
-    [["1"], "", {"ns": "prefixns"}],
-    [["2"], "", {"ns": "paramns"}]
+    [{"0": "", "1": ""}, {"ns": "prefixns"}],
+    [{"2": ""}, {"ns": "paramns"}]
   ]
 }
