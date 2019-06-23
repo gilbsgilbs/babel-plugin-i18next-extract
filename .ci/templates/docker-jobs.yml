@@ -1,0 +1,12 @@
+parameters:
+  jobs: []
+  vmImage: 'ubuntu-latest'
+  container: 'node:12'
+
+jobs:
+- ${{ each job in parameters.jobs }}:
+  - ${{ each pair in job }}:
+      ${{ pair.key }}: ${{ pair.value }}
+    pool:
+      vmImage: "${{ parameters.vmImage }}"
+    container: "${{ parameters.container }}"

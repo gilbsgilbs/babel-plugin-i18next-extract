@@ -49,11 +49,13 @@
     "test": "jest"
   },
   "jest": {
-    "setupFilesAfterEnv": [
-      "jest-expect-message"
-    ],
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}"
+    ],
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,
+    "setupFilesAfterEnv": [
+      "jest-expect-message"
     ]
   }
 }

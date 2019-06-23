@@ -1,42 +1,51 @@
 trigger:
   - master
 
-pool:
-  vmImage: ubuntu-latest
-
-container: 'node:12'
-
 stages:
   - stage: checks
     displayName: Static checks
     jobs:
-      - job: lint
-        displayName: Run ESLint
-        steps:
-          - script: yarn run lint
-      - job: types
-        displayName: Run Typing Checks
-        steps:
-          - script: yarn run types
-      - job: audit
-        displayName: Run Yarn Audit
-        continueOnError: true
-        steps:
-          - script: yarn audit --groups dependencies
+      - template: .ci/templates/docker-jobs.yml
+        parameters:
+          jobs:
+            - job: lint
+              displayName: Run ESLint
+              steps:
+                - script: yarn install && yarn run lint
+            - job: types
+              displayName: Run Typing Checks
+              steps:
+                - script: yarn install && yarn run types
+            - job: audit
+              displayName: Run Yarn Audit
+              continueOnError: true
+              steps:
+                - script: yarn install && yarn audit --groups dependencies
   - stage: tests
     displayName: Run tests
     jobs:
-      - job: test
-        displayName: Run test
-        steps:
-          - script: yarn run test
+      - template: .ci/templates/docker-jobs.yml
+        parameters:
+          jobs:
+            - job: test
+              displayName: Run test
+              steps:
+                - script: yarn install && yarn run test --coverage
+                - script: yarn add --dev codecov && yarn run codecov
+                  env:
+                    CODECOV_TOKEN: $(codecov.token)
   - stage: build
     displayName: Build Project
     jobs:
-      - job: build
-        displayName: Build
-        steps:
-          - script: yarn run build --coverage
-          - publish: 'lib/'
-            artifact: build
+      - template: .ci/templates/docker-jobs.yml
+        parameters:
+          jobs:
+            - job: build
+              displayName: Build
+              steps:
+              - script: yarn install && yarn run build
+              - task: PublishPipelineArtifact@0
+                inputs:
+                  targetPath: lib/
+                  artifactName: babel-plugin-i18next-extract
   
