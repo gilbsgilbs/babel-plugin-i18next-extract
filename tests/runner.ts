@@ -1,7 +1,9 @@
+import * as BabelCore from '@babel/core';
 import fs from 'fs-extra';
 import path from 'path';
+import { sync as rimraf } from 'rimraf';
+
 import { Config } from '../src/config';
-import * as BabelCore from '@babel/core';
 import plugin from '../src';
 
 interface ExpectKeysOpts {
@@ -74,11 +76,7 @@ function* genTestData(): IterableIterator<TestData> {
           ? path.join(extractionDir, testData.pluginOptions.outputPath)
           : path.join(extractionDir, 'translations.{{ns}}.{{locale}}.json');
 
-      try {
-        fs.removeSync(extractionDir);
-      } catch (err) {
-        if (err.code !== 'ENOENT') throw err;
-      }
+      rimraf(extractionDir);
 
       yield {
         testDir: testDirEnt.name,

@@ -4,7 +4,7 @@ import { TranslationKey } from './keys';
 import { Config } from './config';
 import { PLUGIN_NAME } from './constants';
 
-class ExportError extends Error {}
+export class ExportError extends Error {}
 
 interface DeepObject<V = string> {
   [k: string]: DeepObject<V> | V;
@@ -71,6 +71,11 @@ export default function exportTranslationKeys(
           );
         }
         obj = value;
+      }
+
+      // The key was already exported.
+      if (obj[k.cleanKey] !== undefined) {
+        continue;
       }
 
       // Set the default values for the path

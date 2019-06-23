@@ -75,7 +75,6 @@
       "src/**/*.{js,jsx,ts,tsx}"
     ],
     "coverageDirectory": "./coverage/",
-    "collectCoverage": true,
     "setupFilesAfterEnv": [
       "jest-expect-message"
     ]
