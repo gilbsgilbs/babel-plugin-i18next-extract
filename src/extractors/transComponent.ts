@@ -1,14 +1,15 @@
 import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
-import {
-  evaluateIfConfident,
-  findKeyInObjectExpression,
-  iterateObjectExpression,
-  findJSXAttributeByName,
-} from '../utils';
 import { extractionIsEnabledForPath } from '../comments';
 import { COMMENT_DISABLE_LINE, COMMENT_DISABLE_NEXT_LINE } from '../constants';
-import { ExtractionError, getFirstOrNull } from './commons';
+import {
+  ExtractionError,
+  getFirstOrNull,
+  findJSXAttributeByName,
+  findKeyInObjectExpression,
+  evaluateIfConfident,
+  iterateObjectExpression,
+} from './commons';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
 

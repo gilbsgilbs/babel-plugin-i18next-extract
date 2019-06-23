@@ -1,7 +1,11 @@
 import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
-import { ExtractionError, getFirstOrNull } from './commons';
-import { evaluateIfConfident, findKeyInObjectExpression } from '../utils';
+import {
+  ExtractionError,
+  getFirstOrNull,
+  evaluateIfConfident,
+  findKeyInObjectExpression,
+} from './commons';
 import { extractionIsEnabledForPath } from '../comments';
 import { COMMENT_DISABLE_LINE, COMMENT_DISABLE_NEXT_LINE } from '../constants';
 import { ExtractedKey } from '../keys';
