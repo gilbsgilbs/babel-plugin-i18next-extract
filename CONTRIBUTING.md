@@ -66,11 +66,11 @@ the issue and specific attention points.
 
 ## Case 2: You want to develop a new feature
 
-In this case it is **very** important that you open an issue, especially if the required work is
-consequent. We may need to discuss on the design, the maintainance burden it would add, etc. If
-you still want to make it, you may follow an approach close to the previous case. Do not hesitate
-to open the PR early and prefix it with "[WIP]", so that other contributors can be informed
-that you're working on it.
+In this case it is **very** important that you open an issue first, especially if the required
+work is consequent. We may need to discuss on the design, the maintainance burden it would add,
+etc. If you still want to make it, you may follow an approach close to the previous case. Do not
+hesitate to open the PR early and prefix it with "[WIP]", so that other contributors can be
+informed that you're working on it.
 
 ## Project Structure
 

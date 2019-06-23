@@ -1,13 +1,35 @@
 {
   "name": "babel-plugin-i18next-extract",
   "version": "0.1.0-alpha.0",
-  "description": "Extract translation keys from i18next application.",
-  "repository": "gilbsgilbs/babel-plugin-i18next-extract",
+  "description": "Statically extract translation keys from i18next application.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gilbsgilbs/babel-plugin-i18next-extract.git"
+  },
+  "keywords": [
+    "babel-plugin",
+    "i18next",
+    "i18n",
+    "translation",
+    "react",
+    "react-i18next",
+    "internationalization",
+    "localization"
+  ],
+  "bugs": {
+    "url": "https://github.com/gilbsgilbs/babel-plugin-i18next-extract/issues"
+  },
   "author": "Gilbert Gilb's <gilbsgilbert@gmail.com>",
   "license": "MIT",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
   "types": "lib/src/index.d.ts",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "lib"
+  ],
   "dependencies": {
     "@babel/core": "^7.4.5",
     "@babel/types": "^7.4.4",
@@ -42,8 +64,8 @@
   "scripts": {
     "lint": "eslint --ext=.ts,.js,.tsx,.jsx src tests rollup.config.js",
     "types": "tsc --noEmit",
-    "types:watch": "${npm_execpath} run type-check -- --watch",
-    "build": "${npm_execpath} run build:types && ${npm_execpath} run build:js",
+    "build": "${npm_execpath} run build:clean && ${npm_execpath} run build:types && ${npm_execpath} run build:js",
+    "build:clean": "rimraf lib/",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "rollup -c",
     "test": "jest"
