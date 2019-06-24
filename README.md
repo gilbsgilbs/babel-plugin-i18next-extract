@@ -59,11 +59,11 @@ You can then just build your app normally or run Babel through [Babel CLI](
 https://babeljs.io/docs/en/babel-cli):
 
 ```bash
-yarn run babel -f .babelrc 'src/**/*'
+yarn run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
 
 # or
 
-npm run babel -f .babelrc 'src/**/*'
+npm run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
 ```
 
 You should then be able to see the extracted translations in the `extractedTranslations/`
@@ -72,8 +72,54 @@ directory. Magic huh? Next step is to check out all the available [configuration
 
 ## Usage with create-react-app
 
-TODO: It should be enough to use babel-preset-react-app and declare the plugin in babelrc,
-but I have to check this out.
+[create-react-app](https://github.com/facebook/create-react-app) doesn't let you modify the babel
+configuration. Fortunately, it's still possible to use this plugin without ejecting. First of all,
+install Babel CLI:
+
+```bash
+yarn add --dev @babel/cli
+
+# or
+
+npm add --save-dev @babel/cli
+```
+
+Create a minimal `.babelrc` that uses the `react-app` babel preset (DO NOT install it, it's already
+shipped with CRA):
+
+```javascript
+{
+  "presets": ["react-app"],
+  "plugins": ["i18next-extract"]
+}
+```
+
+You should then be able to extract your translations using the CLI:
+
+```bash
+# NODE_ENV must be specified for react-app preset to work properly
+NODE_ENV=development yarn run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
+```
+
+To simplify the extraction, you can add a script to your `package.json`:
+
+```javascript
+"scripts": {
+  […]
+  "i18n-extract": "NODE_ENV=development yarn run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'",
+  […]
+}
+```
+
+And then just run:
+
+```bash
+yarn run i18n-extract
+
+# or
+
+npm run i18n-extract
+```
 
 ## Features
 
