@@ -29,7 +29,7 @@ interface I18NextExtractState {
 
 // We have to store which nodes were extracted because the plugin might be called multiple times
 // by Babel and the state would be lost across calls.
-const extractedNodes = new WeakSet<BabelCore.NodePath>();
+const extractedNodes = new WeakSet<BabelTypes.Node>();
 
 /**
  * Handle the extraction.
@@ -51,11 +51,11 @@ function handleExtraction<T>(
 
   const collect = (keys: ExtractedKey[]): void => {
     for (const key of keys) {
-      if (extractedNodes.has(key.nodePath)) {
+      if (extractedNodes.has(key.nodePath.node)) {
         // The node was already extracted. Skip it.
         continue;
       }
-      extractedNodes.add(key.nodePath);
+      extractedNodes.add(key.nodePath.node);
       state.I18NextExtract.extractedKeys.push(key);
     }
   };
@@ -136,12 +136,10 @@ export default function(
     post() {
       const extractState = this.I18NextExtract;
 
-      if (!extractState.extractedKeys) return;
+      if (extractState.extractedKeys.length === 0) return;
 
       for (const locale of extractState.config.locales) {
-        // eslint-disable-next-line no-console
-        console.log(`Exporting locale: ${locale}.`);
-        const derivedKeys = this.I18NextExtract.extractedKeys.reduce(
+        const derivedKeys = extractState.extractedKeys.reduce(
           (accumulator, k) => [
             ...accumulator,
             ...computeDerivedKeys(k, locale, extractState.config),
