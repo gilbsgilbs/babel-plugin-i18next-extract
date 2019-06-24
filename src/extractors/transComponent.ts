@@ -265,6 +265,7 @@ export default function extractTransComponent(
     {
       key: keyEvaluation,
       parsedOptions,
+      nodePath: path,
     },
   ];
 }

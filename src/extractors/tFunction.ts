@@ -107,6 +107,7 @@ function extractTCall(
   return {
     key: keyEvaluation,
     parsedOptions,
+    nodePath: path,
   };
 }
 

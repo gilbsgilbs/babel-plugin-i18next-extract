@@ -10,6 +10,9 @@ function createSimpleKey(key: string, keyPath: string[] = []): TranslationKey {
   return {
     key,
     keyPath,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    nodePath: {} as any,
+    isDerivedKey: false,
     parsedOptions: {
       hasContext: false,
       hasCount: false,
@@ -26,7 +29,7 @@ describe('Test exporter works', () => {
 
   it('can export simple key', () => {
     const outputPath = path.join(outputDir, 'simple.json');
-    const config = parseConfig({ exporterStrategy: 'MERGE', outputPath });
+    const config = parseConfig({ outputPath });
     const key = createSimpleKey('key0');
     exportTranslationKeys([key], 'fr', config);
     expect(fs.readJSONSync(outputPath)).toEqual({ key0: '' });
@@ -36,7 +39,7 @@ describe('Test exporter works', () => {
     const outputPath = path.join(outputDir, 'not_overwrite.json');
     fs.writeJSONSync(outputPath, { key0: 'has value' });
 
-    const config = parseConfig({ exporterStrategy: 'MERGE', outputPath });
+    const config = parseConfig({ outputPath });
     const key = createSimpleKey('key0');
     exportTranslationKeys([key], 'fr', config);
     expect(fs.readJSONSync(outputPath)).toEqual({ key0: 'has value' });
@@ -46,7 +49,7 @@ describe('Test exporter works', () => {
     const outputPath = path.join(outputDir, 'throws_if_cannot_merge.json');
     fs.writeJSONSync(outputPath, { deep: 'has value' });
 
-    const config = parseConfig({ exporterStrategy: 'MERGE', outputPath });
+    const config = parseConfig({ outputPath });
     const key = createSimpleKey('key', ['deep']);
 
     let hasThrown = false;

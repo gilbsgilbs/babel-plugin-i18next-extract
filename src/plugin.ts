@@ -12,13 +12,6 @@ import { Config, parseConfig } from './config';
 import exportTranslationKeys from './exporter';
 import { PLUGIN_NAME } from './constants';
 
-interface I18NextExtractState {
-  extractedKeys: ExtractedKey[];
-  extractedNodes: Set<BabelCore.Node>;
-  disableExtractionIntervals: [number, number][];
-  config: Config;
-}
-
 export interface VisitorState {
   // Options inherited from Babel.
   file: any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -28,22 +21,47 @@ export interface VisitorState {
   I18NextExtract: I18NextExtractState;
 }
 
+interface I18NextExtractState {
+  extractedKeys: ExtractedKey[];
+  disableExtractionIntervals: [number, number][];
+  config: Config;
+}
+
+// We have to store which nodes were extracted because the plugin might be called multiple times
+// by Babel and the state would be lost across calls.
+const extractedNodes = new WeakSet<BabelCore.NodePath>();
+
 /**
- * Display useful information in case of ExtractionError
+ * Handle the extraction.
+ *
+ * In case of ExtractionError occurring in the callback, a useful error
+ * message will display and extraction will continue.
+ *
  * @param path Current node path.
  * @param state Current visitor state.
- * @param callback Function to call that may throw ExtractionError
+ * @param callback Function to call that may throw ExtractionError.
  */
-function handleExtractionError<T>(
+function handleExtraction<T>(
   path: BabelCore.NodePath,
   state: VisitorState,
-  callback: () => T,
+  callback: (collect: (keys: ExtractedKey[]) => void) => T,
 ): T | undefined {
   const filename = (state.file && state.file.opts.filename) || '???';
   const lineNumber = (path.node.loc && path.node.loc.start.line) || '???';
 
+  const collect = (keys: ExtractedKey[]): void => {
+    for (const key of keys) {
+      if (extractedNodes.has(key.nodePath)) {
+        // The node was already extracted. Skip it.
+        continue;
+      }
+      extractedNodes.add(key.nodePath);
+      state.I18NextExtract.extractedKeys.push(key);
+    }
+  };
+
   try {
-    return callback();
+    return callback(collect);
   } catch (err) {
     if (err instanceof ExtractionError) {
       // eslint-disable-next-line no-console
@@ -61,46 +79,42 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
   CallExpression(path, state: VisitorState) {
     const extractState = this.I18NextExtract;
 
-    if (extractState.extractedNodes.has(path.node)) return;
-    extractState.extractedNodes.add(path.node);
-
-    handleExtractionError(path, state, () => {
-      extractState.extractedKeys = [
-        ...extractState.extractedKeys,
-        ...extractUseTranslationHook(
+    handleExtraction(path, state, collect => {
+      collect(
+        extractUseTranslationHook(
           path,
           extractState.config,
           extractState.disableExtractionIntervals,
         ),
-        ...extractTFunction(
+      );
+      collect(
+        extractTFunction(
           path,
           extractState.config,
           extractState.disableExtractionIntervals,
         ),
-      ];
+      );
     });
   },
 
   JSXElement(path, state: VisitorState) {
     const extractState = this.I18NextExtract;
 
-    if (extractState.extractedNodes.has(path.node)) return;
-    extractState.extractedNodes.add(path.node);
-
-    handleExtractionError(path, state, () => {
-      extractState.extractedKeys = [
-        ...extractState.extractedKeys,
-        ...extractTranslationRenderProp(
+    handleExtraction(path, state, collect => {
+      collect(
+        extractTranslationRenderProp(
           path,
           extractState.config,
           extractState.disableExtractionIntervals,
         ),
-        ...extractTransComponent(
+      );
+      collect(
+        extractTransComponent(
           path,
           extractState.config,
           extractState.disableExtractionIntervals,
         ),
-      ];
+      );
     });
   },
 };
@@ -115,13 +129,14 @@ export default function(
       this.I18NextExtract = {
         config: parseConfig(this.opts),
         extractedKeys: [],
-        extractedNodes: new Set(),
         disableExtractionIntervals: [],
       };
     },
 
     post() {
       const extractState = this.I18NextExtract;
+
+      if (!extractState.extractedKeys) return;
 
       for (const locale of extractState.config.locales) {
         // eslint-disable-next-line no-console

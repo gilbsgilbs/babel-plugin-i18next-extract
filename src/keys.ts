@@ -1,3 +1,5 @@
+import * as BabelCore from '@babel/core';
+
 import i18next from 'i18next';
 import { Config } from './config';
 
@@ -13,6 +15,7 @@ interface I18NextParsedOptions {
 export interface ExtractedKey {
   key: string;
   parsedOptions: I18NextParsedOptions;
+  nodePath: BabelCore.NodePath; // NodePath from which the node was extracted.
 }
 
 /**
@@ -22,6 +25,7 @@ export interface TranslationKey extends ExtractedKey {
   cleanKey: string; // Key without namespace or path.
   keyPath: string[]; // for instance, if key is "foo.bar.baz", keyPath would be ["foo", "bar"].
   ns: string;
+  isDerivedKey: boolean;
 }
 
 /**
@@ -54,6 +58,7 @@ function parseExtractedKey(key: ExtractedKey, config: Config): TranslationKey {
     cleanKey,
     keyPath,
     ns,
+    isDerivedKey: false,
   };
 }
 
@@ -89,6 +94,7 @@ export function computeDerivedKeys(
       return {
         ...translationKey,
         cleanKey: key + config.contextSeparator + v,
+        isDerivedKey: true,
       };
     });
   }
@@ -102,13 +108,18 @@ export function computeDerivedKeys(
       keys = keys.map(k => ({
         ...k,
         cleanKey: k.cleanKey + config.pluralSeparator + '0',
+        isDerivedKey: true,
       }));
     } else if (numberOfPlurals === 2) {
       keys = keys.reduce(
         (accumulator, k) => [
           ...accumulator,
           k,
-          { ...k, cleanKey: k.cleanKey + config.pluralSeparator + 'plural' },
+          {
+            ...k,
+            cleanKey: k.cleanKey + config.pluralSeparator + 'plural',
+            isDerivedKey: true,
+          },
         ],
         Array<TranslationKey>(),
       );
@@ -121,6 +132,7 @@ export function computeDerivedKeys(
             .map((_, idx) => ({
               ...k,
               cleanKey: k.cleanKey + config.pluralSeparator + idx,
+              isDerivedKey: true,
             })),
         ],
         Array<TranslationKey>(),

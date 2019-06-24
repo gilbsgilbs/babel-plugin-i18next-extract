@@ -13,7 +13,6 @@ export interface Config {
   outputPath: string;
   defaultValue: string | null;
   useKeyAsDefaultValue: boolean | string[];
-  exporterStrategy: 'MERGE' | 'OVERWRITE';
   exporterJsonSpace: string | number;
 }
 
@@ -46,7 +45,6 @@ export function parseConfig(opts: Partial<Config>): Config {
     ),
     defaultValue: coalesce(opts.defaultValue, ''),
     useKeyAsDefaultValue: coalesce(opts.useKeyAsDefaultValue, false),
-    exporterStrategy: coalesce(opts.exporterStrategy, 'MERGE'),
     exporterJsonSpace: coalesce(opts.exporterJsonSpace, 2),
   };
 }

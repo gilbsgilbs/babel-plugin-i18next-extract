@@ -113,7 +113,6 @@ but I have to check this out.
 | outputPath | `string` | Path where translation keys should be extracted to. You can put `{{ns}}` and `{{locale}}` placeholders in the value to change the location depending on the namespace or the locale. | `extractedTranslations/{{locale}}/{{ns}}.json` |
 | defaultValue | `string` or `null` | Default value for extracted keys. | `''` (empty string) |
 | useKeyAsDefaultValue | `boolean` or `string[]` | If true, use the extracted key as defaultValue (ignoring `defaultValue` option). You can also specify an array of locales to apply this behavior only to a specific set locales (e.g. if you keys are in plain english, you may want to set this option to `['en']`). | `false` |
-| exporterStrategy | `'MERGE'` or `'OVERWRITE'` | Strategy to use if an extraction file already exists. | `'MERGE'` |
 | exporterJsonSpace | `number` | Number of indentation space to use in extracted JSON files. | 2 |
 
 ## Comment hints

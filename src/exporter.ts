@@ -52,9 +52,7 @@ export default function exportTranslationKeys(
 
   for (const [filePath, keysForFilepath] of Object.entries(keysPerFilepath)) {
     let obj: DeepObject<string | null> = {};
-    if (config.exporterStrategy === 'MERGE') {
-      obj = loadTranslationFile(filePath);
-    }
+    obj = loadTranslationFile(filePath);
     const originalObject = obj;
 
     for (const k of keysForFilepath) {
