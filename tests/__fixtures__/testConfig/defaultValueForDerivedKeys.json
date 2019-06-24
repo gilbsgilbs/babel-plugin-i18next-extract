@@ -1,0 +1,12 @@
+{
+  "description": "test key as default value for specific locales",
+  "pluginOptions": {
+    "defaultValue": null,
+    "keyAsDefaultValue": true,
+    "keyAsDefaultValueForDerivedKeys": false
+  },
+  "expectValues": {
+    "key0": "key0",
+    "key0_plural": null
+  }
+}

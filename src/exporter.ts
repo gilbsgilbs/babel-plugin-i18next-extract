@@ -78,10 +78,15 @@ export default function exportTranslationKeys(
 
       // Set the default values for the path
       let defaultValue = config.defaultValue;
+      const keyAsDefaultValueEnabled =
+        config.keyAsDefaultValue === true ||
+        (Array.isArray(config.keyAsDefaultValue) &&
+          config.keyAsDefaultValue.includes(locale));
+      const keyAsDefaultValueForDerivedKeys =
+        config.keyAsDefaultValueForDerivedKeys;
       if (
-        config.useKeyAsDefaultValue === true ||
-        (Array.isArray(config.useKeyAsDefaultValue) &&
-          config.useKeyAsDefaultValue.includes(locale))
+        keyAsDefaultValueEnabled &&
+        (keyAsDefaultValueForDerivedKeys || !k.isDerivedKey)
       ) {
         defaultValue = k.cleanKey;
       }

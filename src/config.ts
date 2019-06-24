@@ -12,7 +12,8 @@ export interface Config {
   defaultContexts: string[];
   outputPath: string;
   defaultValue: string | null;
-  useKeyAsDefaultValue: boolean | string[];
+  keyAsDefaultValue: boolean | string[];
+  keyAsDefaultValueForDerivedKeys: boolean;
   exporterJsonSpace: string | number;
 }
 
@@ -44,7 +45,11 @@ export function parseConfig(opts: Partial<Config>): Config {
       './extractedTranslations/{{locale}}/{{ns}}.json',
     ),
     defaultValue: coalesce(opts.defaultValue, ''),
-    useKeyAsDefaultValue: coalesce(opts.useKeyAsDefaultValue, false),
+    keyAsDefaultValue: coalesce(opts.keyAsDefaultValue, false),
+    keyAsDefaultValueForDerivedKeys: coalesce(
+      opts.keyAsDefaultValueForDerivedKeys,
+      true,
+    ),
     exporterJsonSpace: coalesce(opts.exporterJsonSpace, 2),
   };
 }

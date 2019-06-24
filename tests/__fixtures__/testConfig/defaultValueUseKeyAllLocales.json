@@ -4,7 +4,7 @@
   "pluginOptions": {
     "locales": ["fr", "en"],
     "defaultValue": null,
-    "useKeyAsDefaultValue": true
+    "keyAsDefaultValue": true
   },
   "expectValues": [
     [{"key0": "key0", "key1": "key1"}, {"locale": "fr"}],

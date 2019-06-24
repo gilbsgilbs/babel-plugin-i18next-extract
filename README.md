@@ -116,7 +116,8 @@ but I have to check this out.
 | defaultContexts | `string[]` | Default context keys to create when detecting a translation with context. | `['', '_male', '_female']` |
 | outputPath | `string` | Path where translation keys should be extracted to. You can put `{{ns}}` and `{{locale}}` placeholders in the value to change the location depending on the namespace or the locale. | `extractedTranslations/{{locale}}/{{ns}}.json` |
 | defaultValue | `string` or `null` | Default value for extracted keys. | `''` (empty string) |
-| useKeyAsDefaultValue | `boolean` or `string[]` | If true, use the extracted key as defaultValue (ignoring `defaultValue` option). You can also specify an array of locales to apply this behavior only to a specific set locales (e.g. if you keys are in plain english, you may want to set this option to `['en']`). | `false` |
+| keyAsDefaultValue | `boolean` or `string[]` | If true, use the extracted key as defaultValue (ignoring `defaultValue` option). You can also specify an array of locales to apply this behavior only to a specific set locales (e.g. if you keys are in plain english, you may want to set this option to `['en']`). | `false` |
+| keyAsDefaultValueForDerivedKeys | `boolean` | If false and `keyAsDefaultValue` is enabled, don't use derived keys (plural forms or contexts) as default value. `defaultValue` will be used instead. | `true` |
 | exporterJsonSpace | `number` | Number of indentation space to use in extracted JSON files. | 2 |
 
 ## Comment hints
