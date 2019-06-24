@@ -45,6 +45,14 @@ describe('Test exporter works', () => {
     expect(fs.readJSONSync(outputPath)).toEqual({ key0: 'has value' });
   });
 
+  it('can export deep keys', () => {
+    const outputPath = path.join(outputDir, 'deep.json');
+    const config = parseConfig({ outputPath });
+    const key = createSimpleKey('key0', ['deep']);
+    exportTranslationKeys([key], 'fr', config);
+    expect(fs.readJSONSync(outputPath)).toEqual({ deep: { key0: '' } });
+  });
+
   it('throws an ExportError if it cannot merge', () => {
     const outputPath = path.join(outputDir, 'throws_if_cannot_merge.json');
     fs.writeJSONSync(outputPath, { deep: 'has value' });
