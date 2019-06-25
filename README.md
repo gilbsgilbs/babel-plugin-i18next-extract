@@ -146,7 +146,7 @@ npm run i18n-extract
   - [x] Depending on the `ns` property in `Translation` render prop.
   - [x] Depending on the `ns` attribute in the `Trans` component.
 - [x] Explicitely disable extraction on a specific file sections or lines using comment hints.
-- [x] … and more?
+- [ ] [… and more?](./CONTRIBUTING.md)
 
 ## Configuration
 
