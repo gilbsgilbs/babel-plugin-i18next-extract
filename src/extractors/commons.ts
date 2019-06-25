@@ -21,9 +21,35 @@ export function getFirstOrNull<T>(val: T | null | T[]): T | null {
 // AST Helpers
 
 /**
+ * Improved version of BabelCore `referencesImport` function that also tries to detect wildcard
+ * imports.
+ */
+export function referencesImport(
+  nodePath: BabelCore.NodePath,
+  moduleSource: string,
+  importName: string,
+): boolean {
+  if (nodePath.referencesImport(moduleSource, importName)) return true;
+
+  if (nodePath.isMemberExpression() || nodePath.isJSXMemberExpression()) {
+    const obj = nodePath.get('object');
+    const prop = nodePath.get('property');
+    if (
+      Array.isArray(prop) ||
+      (!prop.isIdentifier() && !prop.isJSXIdentifier())
+    )
+      return false;
+    return (
+      obj.referencesImport(moduleSource, '*') && prop.node.name === importName
+    );
+  }
+  return false;
+}
+
+/**
  * Evaluates a node path if it can be evaluated with confidence.
  *
- * @param nodePath: node path to evaluate
+ * @param path: node path to evaluate
  * @returns null if the node path couldn't be evaluated
  */
 export function evaluateIfConfident(

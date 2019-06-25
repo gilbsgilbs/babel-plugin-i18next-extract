@@ -1,0 +1,7 @@
+{
+  "description": "test wildcard import of Trans component",
+  "pluginOptions": {},
+  "expectValues": {
+    "hello": ""
+  }
+}

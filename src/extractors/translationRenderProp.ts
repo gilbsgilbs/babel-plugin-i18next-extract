@@ -7,6 +7,7 @@ import {
   getFirstOrNull,
   findJSXAttributeByName,
   evaluateIfConfident,
+  referencesImport,
 } from './commons';
 import { CommentHint } from '../comments';
 
@@ -19,9 +20,11 @@ function isTranslationRenderProp(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
 ): boolean {
   const openingElement = path.get('openingElement');
-  return openingElement
-    .get('name')
-    .referencesImport('react-i18next', 'Translation');
+  return referencesImport(
+    openingElement.get('name'),
+    'react-i18next',
+    'Translation',
+  );
 }
 
 /**

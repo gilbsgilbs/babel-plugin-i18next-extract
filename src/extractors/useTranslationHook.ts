@@ -3,7 +3,11 @@ import * as BabelCore from '@babel/core';
 import extractTFunction from './tFunction';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
-import { getFirstOrNull, evaluateIfConfident } from './commons';
+import {
+  getFirstOrNull,
+  evaluateIfConfident,
+  referencesImport,
+} from './commons';
 import { CommentHint } from '../comments';
 
 /**
@@ -16,7 +20,7 @@ function isUseTranslationHook(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
 ): boolean {
   const callee = path.get('callee');
-  return callee.referencesImport('react-i18next', 'useTranslation');
+  return referencesImport(callee, 'react-i18next', 'useTranslation');
 }
 
 /**

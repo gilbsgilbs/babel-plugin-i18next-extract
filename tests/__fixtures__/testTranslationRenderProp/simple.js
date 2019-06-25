@@ -1,4 +1,5 @@
 import {Translation} from 'react-i18next';
+import * as ReactI18Next from 'react-i18next';
 
 const empty = (
   // Shouldn't extract anything.
@@ -30,3 +31,11 @@ export function MyComponent() {
     </Translation>
   );
 }
+
+const fromWildcardImport = (
+  <ReactI18Next.Translation>
+    {
+      (t) => <p>{t('from wildcard import')}</p>
+    }
+  </ReactI18Next.Translation>
+);

@@ -107,7 +107,19 @@ function readExtractedFile(outputPath: string, opts?: ExpectKeysOpts): any {
     .replace('{{locale}}', locale);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let extracted: any = fs.readJSONSync(realOutputPath, { encoding: 'utf8' });
+  let extracted: any;
+  try {
+    extracted = fs.readJSONSync(realOutputPath, { encoding: 'utf8' });
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      expect(
+        true,
+        `Couldn't find a JSON file to read at ${realOutputPath}. This probably means the ` +
+          `extraction didn't work out.`,
+      ).toEqual(false);
+    }
+    throw err;
+  }
   return extracted;
 }
 

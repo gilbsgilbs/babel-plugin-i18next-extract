@@ -12,6 +12,7 @@ import {
   findKeyInObjectExpression,
   evaluateIfConfident,
   iterateObjectExpression,
+  referencesImport,
 } from './commons';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
@@ -27,7 +28,11 @@ function isTransComponent(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
 ): boolean {
   const openingElement = path.get('openingElement');
-  return openingElement.get('name').referencesImport('react-i18next', 'Trans');
+  return referencesImport(
+    openingElement.get('name'),
+    'react-i18next',
+    'Trans',
+  );
 }
 
 /**

@@ -4,6 +4,7 @@
   "expectValues": {
     "key0": "",
     "key1": "",
-    "key2": ""
+    "key2": "",
+    "from wildcard import": ""
   }
 }
