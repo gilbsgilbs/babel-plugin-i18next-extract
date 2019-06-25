@@ -1,7 +1,7 @@
 import * as BabelCore from '@babel/core';
 import * as BabelTypes from '@babel/types';
 
-import { computeCommentDisableIntervals } from './comments';
+import { parseCommentHints, CommentHint } from './comments';
 import { ExtractionError } from './extractors/commons';
 import extractUseTranslationHook from './extractors/useTranslationHook';
 import extractTFunction from './extractors/tFunction';
@@ -23,7 +23,7 @@ export interface VisitorState {
 
 interface I18NextExtractState {
   extractedKeys: ExtractedKey[];
-  disableExtractionIntervals: [number, number][];
+  commentHints: CommentHint[];
   config: Config;
 }
 
@@ -84,15 +84,11 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
         extractUseTranslationHook(
           path,
           extractState.config,
-          extractState.disableExtractionIntervals,
+          extractState.commentHints,
         ),
       );
       collect(
-        extractTFunction(
-          path,
-          extractState.config,
-          extractState.disableExtractionIntervals,
-        ),
+        extractTFunction(path, extractState.config, extractState.commentHints),
       );
     });
   },
@@ -105,14 +101,14 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
         extractTranslationRenderProp(
           path,
           extractState.config,
-          extractState.disableExtractionIntervals,
+          extractState.commentHints,
         ),
       );
       collect(
         extractTransComponent(
           path,
           extractState.config,
-          extractState.disableExtractionIntervals,
+          extractState.commentHints,
         ),
       );
     });
@@ -129,7 +125,7 @@ export default function(
       this.I18NextExtract = {
         config: parseConfig(this.opts),
         extractedKeys: [],
-        disableExtractionIntervals: [],
+        commentHints: [],
       };
     },
 
@@ -155,7 +151,7 @@ export default function(
         // FIXME can't put this in Visitor because `path.traverse()` on a
         // Program node doesn't call the visitor for Program node.
         if (BabelTypes.isFile(path.container)) {
-          this.I18NextExtract.disableExtractionIntervals = computeCommentDisableIntervals(
+          this.I18NextExtract.commentHints = parseCommentHints(
             path.container.comments,
           );
         }

@@ -1,84 +1,194 @@
 import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
-import {
-  COMMENT_DISABLE_LINE,
-  COMMENT_DISABLE_NEXT_LINE,
-  COMMENT_DISABLE_SECTION_START,
-  COMMENT_DISABLE_SECTION_STOP,
-} from './constants';
+
+type CommentHintType = 'DISABLE' | 'NAMESPACE' | 'CONTEXT' | 'PLURAL';
+type CommentHintScope =
+  | 'LINE'
+  | 'NEXT_LINE'
+  | 'SECTION_START'
+  | 'SECTION_STOP';
 
 /**
- * Computes line intervals where i18n extraction should be disabled.
- * @param comments Babel comments
- * @returns sections on which extraction should be disabled
+ * Comment Hint without line location information.
  */
-export function computeCommentDisableIntervals(
-  comments: BabelTypes.BaseComment[],
-): [number, number][] {
-  const result = Array<[number, number]>();
+interface BaseCommentHint {
+  type: CommentHintType;
+  scope: CommentHintScope;
+  value: string;
+  baseComment: BabelTypes.BaseComment;
+}
 
-  let lastDisableLine: number | null = null;
+/**
+ * Line intervals
+ */
+interface Interval {
+  startLine: number;
+  stopLine: number;
+}
 
-  for (const { value, loc } of comments) {
-    const commentWords = value.split(/\s+/);
+/**
+ * Comment Hint with line intervals information.
+ */
+export interface CommentHint extends BaseCommentHint, Interval {}
 
-    if (commentWords.includes(COMMENT_DISABLE_LINE)) {
-      result.push([loc.start.line, loc.start.line]);
-    }
+export const COMMENT_HINT_PREFIX = 'i18next-extract-';
+export const COMMENT_HINTS_KEYWORDS: {
+  [k in CommentHintType]: { [s in CommentHintScope]: string };
+} = {
+  DISABLE: {
+    LINE: COMMENT_HINT_PREFIX + 'disable-line',
+    NEXT_LINE: COMMENT_HINT_PREFIX + 'disable-next-line',
+    SECTION_START: COMMENT_HINT_PREFIX + 'disable',
+    SECTION_STOP: COMMENT_HINT_PREFIX + 'enable',
+  },
+  NAMESPACE: {
+    LINE: COMMENT_HINT_PREFIX + 'mark-ns-line',
+    NEXT_LINE: COMMENT_HINT_PREFIX + 'mark-ns-next-line',
+    SECTION_START: COMMENT_HINT_PREFIX + 'mark-ns-start',
+    SECTION_STOP: COMMENT_HINT_PREFIX + 'mark-ns-stop',
+  },
+  CONTEXT: {
+    LINE: COMMENT_HINT_PREFIX + 'mark-context-line',
+    NEXT_LINE: COMMENT_HINT_PREFIX + 'mark-context-next-line',
+    SECTION_START: COMMENT_HINT_PREFIX + 'mark-context-start',
+    SECTION_STOP: COMMENT_HINT_PREFIX + 'mark-context-stop',
+  },
+  PLURAL: {
+    LINE: COMMENT_HINT_PREFIX + 'mark-plural-line',
+    NEXT_LINE: COMMENT_HINT_PREFIX + 'mark-plural-next-line',
+    SECTION_START: COMMENT_HINT_PREFIX + 'mark-plural-start',
+    SECTION_STOP: COMMENT_HINT_PREFIX + 'mark-plural-stop',
+  },
+};
 
-    if (commentWords.includes(COMMENT_DISABLE_NEXT_LINE)) {
-      result.push([loc.end.line + 1, loc.end.line + 1]);
-    }
+/**
+ * Given a Babel BaseComment, try to extract a comment hint.
+ * @param baseComment babel comment
+ * @returns A comment hint without line interval information.
+ */
+function extractCommentHint(
+  baseComment: BabelTypes.BaseComment,
+): BaseCommentHint | null {
+  const trimmedValue = baseComment.value.trim();
+  const keyword = trimmedValue.split(/\s+/)[0];
+  const value = trimmedValue.split(/\s+(.+)/)[1] || '';
 
-    if (commentWords.includes(COMMENT_DISABLE_SECTION_START)) {
-      lastDisableLine = loc.start.line;
-    }
-
-    if (
-      commentWords.includes(COMMENT_DISABLE_SECTION_STOP) &&
-      lastDisableLine !== null
-    ) {
-      result.push([lastDisableLine, loc.end.line]);
-      lastDisableLine = null;
+  for (let [commentHintType, commentHintKeywords] of Object.entries(
+    COMMENT_HINTS_KEYWORDS,
+  )) {
+    for (let [commentHintScope, commentHintKeyword] of Object.entries(
+      commentHintKeywords,
+    )) {
+      if (keyword === commentHintKeyword) {
+        return {
+          type: commentHintType as CommentHintType,
+          scope: commentHintScope as CommentHintScope,
+          value,
+          baseComment: baseComment,
+        };
+      }
     }
   }
 
-  if (lastDisableLine !== null) {
-    result.push([lastDisableLine, Infinity]);
+  return null;
+}
+
+/**
+ * Given an array of comment hints, compute their intervals.
+ * @param commentHints comment hints without line intervals information.
+ * @returns Comment hints with line interval information.
+ */
+function computeCommentHintsIntervals(
+  commentHints: BaseCommentHint[],
+): CommentHint[] {
+  const result = Array<CommentHint>();
+
+  for (const commentHint of commentHints) {
+    if (commentHint.scope === 'LINE') {
+      result.push({
+        startLine: commentHint.baseComment.loc.start.line,
+        stopLine: commentHint.baseComment.loc.start.line,
+        ...commentHint,
+      });
+    }
+
+    if (commentHint.scope === 'NEXT_LINE') {
+      result.push({
+        startLine: commentHint.baseComment.loc.start.line + 1,
+        stopLine: commentHint.baseComment.loc.start.line + 1,
+        ...commentHint,
+      });
+    }
+
+    if (commentHint.scope === 'SECTION_START') {
+      result.push({
+        startLine: commentHint.baseComment.loc.start.line,
+        stopLine: Infinity,
+        ...commentHint,
+      });
+    }
+
+    if (commentHint.scope === 'SECTION_STOP') {
+      for (const res of result) {
+        if (
+          res.type === commentHint.type &&
+          res.scope === 'SECTION_START' &&
+          res.stopLine === Infinity
+        ) {
+          res.stopLine = commentHint.baseComment.loc.start.line;
+        }
+      }
+    }
   }
 
   return result;
 }
 
 /**
- * Check if a given number is within any of the given intervals.
- * @param num number to check
- * @param intervals array of intervals
- * @returns true if num is within any of the intervals.
+ * Given Babel comments, extract the comment hints.
+ * @param baseComments Babel comments (ordered by line)
  */
-function numberIsWithinIntervals(
-  num: number,
-  intervals: [number, number][],
-): boolean {
-  return intervals.some(([v0, v1]) => v0 <= num && num <= v1);
+export function parseCommentHints(
+  baseComments: BabelTypes.BaseComment[],
+): CommentHint[] {
+  const result = Array<BaseCommentHint>();
+
+  for (const baseComment of baseComments) {
+    const commentHint = extractCommentHint(baseComment);
+
+    if (commentHint === null) {
+      continue;
+    }
+
+    result.push(commentHint);
+  }
+
+  return computeCommentHintsIntervals(result);
 }
 
 /**
- * Check whether extraction is enables for a given path.
- * @param path: path to check
- * @param disableExtractionIntervals: line intervals where extraction is
- *   disabled.
- * @returns true if the extraction is enabled for the given path.
+ * Find comment hint of a given type that applies to a Babel node path.
+ * @param path babel node path
+ * @param commentHintType Type of comment hint to look for.
+ * @param commentHints All the comment hints, as returned by parseCommentHints function.
  */
-export function extractionIsEnabledForPath(
+export function getCommentHintForPath(
   path: BabelCore.NodePath,
-  disableExtractionIntervals: [number, number][],
-): boolean {
-  return !(
-    path.node.loc &&
-    numberIsWithinIntervals(
-      path.node.loc.start.line,
-      disableExtractionIntervals,
-    )
-  );
+  commentHintType: BaseCommentHint['type'],
+  commentHints: CommentHint[],
+): CommentHint | null {
+  if (!path.node.loc) return null;
+  const nodeLine = path.node.loc.start.line;
+
+  for (const commentHint of commentHints) {
+    if (
+      commentHint.type === commentHintType &&
+      commentHint.startLine <= nodeLine &&
+      nodeLine <= commentHint.stopLine
+    ) {
+      return commentHint;
+    }
+  }
+
+  return null;
 }

@@ -1,7 +1,10 @@
 import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
-import { extractionIsEnabledForPath } from '../comments';
-import { COMMENT_DISABLE_LINE, COMMENT_DISABLE_NEXT_LINE } from '../constants';
+import {
+  COMMENT_HINTS_KEYWORDS,
+  getCommentHintForPath,
+  CommentHint,
+} from '../comments';
 import {
   ExtractionError,
   getFirstOrNull,
@@ -83,8 +86,8 @@ function parseTransComponentKeyFromAttributes(
   const error = new ExtractionError(
     `Couldn't evaluate i18next key in Trans component. You should either ` +
       `make the i18nKey attribute evaluable or skip the line using a skip ` +
-      `comment (/* ${COMMENT_DISABLE_LINE} */ or /* ` +
-      `${COMMENT_DISABLE_NEXT_LINE} */).`,
+      `comment (/* ${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
+      `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
   );
 
   const keyAttribute = findJSXAttributeByName(path, 'i18nKey');
@@ -118,7 +121,8 @@ function parseTransComponentKeyFromChildren(
     `Couldn't evaluate i18next key in Trans component. You should either ` +
       `set the i18nKey attribute to an evaluable value, or make the Trans ` +
       `component content evaluable or skip the line using a skip comment ` +
-      `(/* ${COMMENT_DISABLE_LINE} */ or /* ${COMMENT_DISABLE_NEXT_LINE} */).`,
+      `(/* ${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
+      `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
   );
 
   let children = path.get('children');
@@ -251,9 +255,9 @@ function parseTransComponentKeyFromChildren(
 export default function extractTransComponent(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
   config: Config,
-  disableExtractionIntervals: [number, number][] = [],
+  commentHints: CommentHint[] = [],
 ): ExtractedKey[] {
-  if (!extractionIsEnabledForPath(path, disableExtractionIntervals)) return [];
+  if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
   if (!isTransComponent(path)) return [];
 
   const keyEvaluation =

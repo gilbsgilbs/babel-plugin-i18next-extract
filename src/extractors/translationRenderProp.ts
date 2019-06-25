@@ -8,6 +8,7 @@ import {
   findJSXAttributeByName,
   evaluateIfConfident,
 } from './commons';
+import { CommentHint } from '../comments';
 
 /**
  * Check whether a given JSXElement is a Translation render prop.
@@ -35,7 +36,7 @@ function isTranslationRenderProp(
 export default function extractTranslationRenderProp(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
   config: Config,
-  disableExtractionIntervals: [number, number][] = [],
+  commentHints: CommentHint[] = [],
 ): ExtractedKey[] {
   if (!isTranslationRenderProp(path)) return [];
 
@@ -73,7 +74,7 @@ export default function extractTranslationRenderProp(
         ...extractTFunction(
           reference.parentPath,
           config,
-          disableExtractionIntervals,
+          commentHints,
           true,
         ).map(k => ({
           // Add namespace if it was not explicitely set in t() call.

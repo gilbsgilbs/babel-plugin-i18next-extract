@@ -4,6 +4,7 @@ import extractTFunction from './tFunction';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
 import { getFirstOrNull, evaluateIfConfident } from './commons';
+import { CommentHint } from '../comments';
 
 /**
  * Check whether a given CallExpression path is a call to `useTranslation` hook.
@@ -29,7 +30,7 @@ function isUseTranslationHook(
 export default function extractUseTranslationHook(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
   config: Config,
-  disableExtractionIntervals: [number, number][] = [],
+  commentHints: CommentHint[] = [],
 ): ExtractedKey[] {
   if (!isUseTranslationHook(path)) return [];
 
@@ -52,7 +53,7 @@ export default function extractUseTranslationHook(
         ...extractTFunction(
           reference.parentPath,
           config,
-          disableExtractionIntervals,
+          commentHints,
           true,
         ).map(k => ({
           // Add namespace if it was not explicitely set in t() call.

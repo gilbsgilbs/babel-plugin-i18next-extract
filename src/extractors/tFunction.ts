@@ -6,8 +6,11 @@ import {
   evaluateIfConfident,
   findKeyInObjectExpression,
 } from './commons';
-import { extractionIsEnabledForPath } from '../comments';
-import { COMMENT_DISABLE_LINE, COMMENT_DISABLE_NEXT_LINE } from '../constants';
+import {
+  COMMENT_HINTS_KEYWORDS,
+  getCommentHintForPath,
+  CommentHint,
+} from '../comments';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
 
@@ -99,7 +102,8 @@ function extractTCall(
     throw new ExtractionError(
       `Couldn't evaluate i18next key. You should either make the key ` +
         `evaluable or skip the line using a skip comment (/* ` +
-        `${COMMENT_DISABLE_LINE} */ or /* ${COMMENT_DISABLE_NEXT_LINE} */).`,
+        `${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
+        `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
     );
   }
 
@@ -124,10 +128,10 @@ function extractTCall(
 export default function extractTFunction(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
   config: Config,
-  disableExtractionIntervals: [number, number][] = [],
+  commentHints: CommentHint[] = [],
   skipCheck: boolean = false,
 ): ExtractedKey[] {
-  if (!extractionIsEnabledForPath(path, disableExtractionIntervals)) return [];
+  if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
   if (!skipCheck && !isSimpleTCall(path, config)) return [];
   return [extractTCall(path)];
 }
