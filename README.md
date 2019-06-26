@@ -123,12 +123,12 @@ npm run i18n-extract
   - [x] Keys derivation depending on the locale.
   - [x] Automatic detection from `i18next.t` function calls.
   - [x] Automatic detection from `react-i18next` properties.
-  - [x] Manual detection from comment hints.
+  - [x] Manual detection from [comment hints](#comment-hints).
 - [x] Contexts support:
   - [x] Naïve implementation with default contexts.
   - [x] Automatic detection from `i18next.t` function calls.
   - [x] Automatic detection from `react-i18next` properties.
-  - [x] Manual detection from comment hints.
+  - [x] Manual detection from [comment hints](#comment-hints).
 - [x] [react-i18next](https://react.i18next.com/) support:
   - [x] `Trans` component support (with plural forms, contexts and namespaces).
   - [x] `useTranslation` hook support (with plural forms, contexts and namespaces).
@@ -139,7 +139,7 @@ npm run i18n-extract
   - [x] Depending on the `t()` function options.
   - [x] Depending on the `ns` property in `Translation` render prop.
   - [x] Depending on the `ns` attribute in the `Trans` component.
-- [x] Explicitely disable extraction on a specific file sections or lines using comment hints.
+- [x] Explicitely disable extraction on a specific file sections or lines using [comment hints](#comment-hints).
 - [ ] [… and more?](./CONTRIBUTING.md)
 
 ## Configuration
