@@ -62,35 +62,35 @@ export const COMMENT_HINTS_KEYWORDS: {
 };
 
 /**
- * Given a Babel BaseComment, try to extract a comment hint.
+ * Given a Babel BaseComment, extract base comment hints.
  * @param baseComment babel comment
- * @returns A comment hint without line interval information.
+ * @yields Comment hint without line interval information.
  */
-function extractCommentHint(
+function* extractCommentHintFromBaseComment(
   baseComment: BabelTypes.BaseComment,
-): BaseCommentHint | null {
-  const trimmedValue = baseComment.value.trim();
-  const keyword = trimmedValue.split(/\s+/)[0];
-  const value = trimmedValue.split(/\s+(.+)/)[1] || '';
+): IterableIterator<BaseCommentHint> {
+  for (const line of baseComment.value.split(/\r?\n/)) {
+    const trimmedValue = line.trim();
+    const keyword = trimmedValue.split(/\s+/)[0];
+    const value = trimmedValue.split(/\s+(.+)/)[1] || '';
 
-  for (let [commentHintType, commentHintKeywords] of Object.entries(
-    COMMENT_HINTS_KEYWORDS,
-  )) {
-    for (let [commentHintScope, commentHintKeyword] of Object.entries(
-      commentHintKeywords,
+    for (let [commentHintType, commentHintKeywords] of Object.entries(
+      COMMENT_HINTS_KEYWORDS,
     )) {
-      if (keyword === commentHintKeyword) {
-        return {
-          type: commentHintType as CommentHintType,
-          scope: commentHintScope as CommentHintScope,
-          value,
-          baseComment: baseComment,
-        };
+      for (let [commentHintScope, commentHintKeyword] of Object.entries(
+        commentHintKeywords,
+      )) {
+        if (keyword === commentHintKeyword) {
+          yield {
+            type: commentHintType as CommentHintType,
+            scope: commentHintScope as CommentHintScope,
+            value,
+            baseComment: baseComment,
+          };
+        }
       }
     }
   }
-
-  return null;
 }
 
 /**
@@ -114,8 +114,8 @@ function computeCommentHintsIntervals(
 
     if (commentHint.scope === 'NEXT_LINE') {
       result.push({
-        startLine: commentHint.baseComment.loc.start.line + 1,
-        stopLine: commentHint.baseComment.loc.start.line + 1,
+        startLine: commentHint.baseComment.loc.end.line + 1,
+        stopLine: commentHint.baseComment.loc.end.line + 1,
         ...commentHint,
       });
     }
@@ -151,19 +151,13 @@ function computeCommentHintsIntervals(
 export function parseCommentHints(
   baseComments: BabelTypes.BaseComment[],
 ): CommentHint[] {
-  const result = Array<BaseCommentHint>();
+  const baseCommentHints = Array<BaseCommentHint>();
 
   for (const baseComment of baseComments) {
-    const commentHint = extractCommentHint(baseComment);
-
-    if (commentHint === null) {
-      continue;
-    }
-
-    result.push(commentHint);
+    baseCommentHints.push(...extractCommentHintFromBaseComment(baseComment));
   }
 
-  return computeCommentHintsIntervals(result);
+  return computeCommentHintsIntervals(baseCommentHints);
 }
 
 /**

@@ -1,5 +1,5 @@
 {
-  "description": "test simple extractions with comment skips",
+  "description": "test simple extractions with comment hints",
   "pluginOptions": {},
   "expectValues": {
     "ok0": "",

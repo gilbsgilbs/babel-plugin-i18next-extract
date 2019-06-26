@@ -1,5 +1,5 @@
 {
-  "description": "test disable comment is greedy",
+  "description": "test section comment hints are greedy",
   "pluginOptions": {},
   "expectValues": {
     "ok": ""

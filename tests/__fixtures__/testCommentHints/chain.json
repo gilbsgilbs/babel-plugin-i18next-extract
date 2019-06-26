@@ -1,0 +1,17 @@
+{
+  "description": "test we can chain next-line comment hints",
+  "pluginOptions": {},
+  "expectValues": [
+    [
+      {
+        "with context, purals and secret-ns": "",
+        "with context, purals and secret-ns_plural": "",
+        "with context, purals and secret-ns_male": "",
+        "with context, purals and secret-ns_male_plural": "",
+        "with context, purals and secret-ns_female": "",
+        "with context, purals and secret-ns_female_plural": ""
+      },
+      {"ns": "secret-ns"}
+    ]
+  ]
+}
