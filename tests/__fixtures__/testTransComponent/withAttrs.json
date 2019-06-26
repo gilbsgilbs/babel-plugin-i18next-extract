@@ -16,6 +16,7 @@
       "withContextOnlyIdentifier_female": ""
     }],
     [{"withJSXNS": "", "withJSXArrayNS": ""}, {"ns": "jsxns"}],
-    [{"withLiteralNS": ""}, {"ns": "literalns"}]
+    [{"withLiteralNS": ""}, {"ns": "literalns"}],
+    [{"withHintNS": ""}, {"ns": "hintns"}]
   ]
 }

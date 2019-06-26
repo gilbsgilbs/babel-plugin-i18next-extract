@@ -13,6 +13,7 @@ import {
   evaluateIfConfident,
   iterateObjectExpression,
   referencesImport,
+  parseI18NextOptionsFromCommentHints,
 } from './commons';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
@@ -38,17 +39,21 @@ function isTransComponent(
 /**
  * Given a Trans component, extract its options.
  * @param path The node path of the JSX Element of the trans component
+ * @param commentHints Parsed comment hints.
  * @returns The parsed i18next options
  */
 function parseTransComponentOptions(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
+  commentHints: CommentHint[],
 ): ExtractedKey['parsedOptions'] {
-  let hasCount = false;
-  let hasContext = false;
-  let ns = null;
+  const res: ExtractedKey['parsedOptions'] = {
+    contexts: false,
+    hasCount: false,
+    ns: null,
+  };
 
   const countAttr = findJSXAttributeByName(path, 'count');
-  hasCount = countAttr !== null;
+  res.hasCount = countAttr !== null;
 
   const tOptionsAttr = findJSXAttributeByName(path, 'tOptions');
   if (tOptionsAttr) {
@@ -56,7 +61,8 @@ function parseTransComponentOptions(
     if (value.isJSXExpressionContainer()) {
       const expression = value.get('expression');
       if (expression.isObjectExpression()) {
-        hasContext = findKeyInObjectExpression(expression, 'context') !== null;
+        res.contexts =
+          findKeyInObjectExpression(expression, 'context') !== null;
       }
     }
   }
@@ -67,13 +73,12 @@ function parseTransComponentOptions(
       'value',
     );
     if (value.isJSXExpressionContainer()) value = value.get('expression');
-    ns = getFirstOrNull(evaluateIfConfident(value));
+    res.ns = getFirstOrNull(evaluateIfConfident(value));
   }
 
   return {
-    hasContext,
-    hasCount,
-    ns,
+    ...res,
+    ...parseI18NextOptionsFromCommentHints(path, commentHints),
   };
 }
 
@@ -254,8 +259,7 @@ function parseTransComponentKeyFromChildren(
  *
  * @param path: node path of Trans JSX element.
  * @param config: plugin configuration
- * @param disableExtractionIntervals: interval of lines where extraction is
- *   disabled
+ * @param commentHints: parsed comment hints
  */
 export default function extractTransComponent(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
@@ -269,7 +273,7 @@ export default function extractTransComponent(
     parseTransComponentKeyFromAttributes(path) ||
     parseTransComponentKeyFromChildren(path);
 
-  const parsedOptions = parseTransComponentOptions(path);
+  const parsedOptions = parseTransComponentOptions(path, commentHints);
   return [
     {
       key: keyEvaluation,

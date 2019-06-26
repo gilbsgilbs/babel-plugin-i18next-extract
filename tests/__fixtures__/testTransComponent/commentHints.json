@@ -1,0 +1,21 @@
+{
+  "description": "test JSX attributes for Trans component",
+  "pluginOptions": {
+    "keySeparator": null,
+    "nsSeparator": null
+  },
+  "expectValues": [
+    [{
+      "plural": "",
+      "plural_plural": "",
+      "not plural": "",
+      "no context": "",
+      "default context": "",
+      "default context_male": "",
+      "default context_female": "",
+      "custom context_cat": "",
+      "custom context_dog": ""
+    }],
+    [{"custom ns": ""}, {"ns": "forcedns"}]
+  ]
+}

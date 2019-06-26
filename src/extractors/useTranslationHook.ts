@@ -8,7 +8,7 @@ import {
   evaluateIfConfident,
   referencesImport,
 } from './commons';
-import { CommentHint } from '../comments';
+import { CommentHint, getCommentHintForPath } from '../comments';
 
 /**
  * Check whether a given CallExpression path is a call to `useTranslation` hook.
@@ -28,8 +28,7 @@ function isUseTranslationHook(
  * options.
  * @param path: useTranslation call node path.
  * @param config: plugin configuration
- * @param disableExtractionIntervals: interval of lines where extraction is
- *   disabled
+ * @param commentHints: parsed comment hints
  */
 export default function extractUseTranslationHook(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
@@ -38,8 +37,16 @@ export default function extractUseTranslationHook(
 ): ExtractedKey[] {
   if (!isUseTranslationHook(path)) return [];
 
-  const namespaceArgument = path.get('arguments')[0];
-  const ns = getFirstOrNull(evaluateIfConfident(namespaceArgument));
+  let ns: string | null;
+  const nsCommentHint = getCommentHintForPath(path, 'NAMESPACE', commentHints);
+  if (nsCommentHint) {
+    // We got a comment hint, take its value as namespace.
+    ns = nsCommentHint.value;
+  } else {
+    // Otherwise, try to get namespace from arguments.
+    const namespaceArgument = path.get('arguments')[0];
+    ns = getFirstOrNull(evaluateIfConfident(namespaceArgument));
+  }
 
   const parentPath = path.parentPath;
   if (!parentPath.isVariableDeclarator()) return [];

@@ -1,0 +1,9 @@
+{
+  "description": "test namespace extraction of useTranslation hook",
+  "pluginOptions": {},
+  "expectValues": [
+    [{"key0": ""}, {"ns": "ns0"}],
+    [{"key0": ""}, {"ns": "ns1"}],
+    [{"key0": ""}, {"ns": "ns2"}]
+  ]
+}

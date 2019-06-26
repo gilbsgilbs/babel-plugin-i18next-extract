@@ -5,6 +5,7 @@ import {
   getFirstOrNull,
   evaluateIfConfident,
   findKeyInObjectExpression,
+  parseI18NextOptionsFromCommentHints,
 } from './commons';
 import {
   COMMENT_HINTS_KEYWORDS,
@@ -49,51 +50,47 @@ function isSimpleTCall(
  *   and/or count.
  */
 function parseTCallOptions(
-  path?: BabelCore.NodePath,
+  path: BabelCore.NodePath | undefined,
 ): ExtractedKey['parsedOptions'] {
-  let hasContext = false;
-  let hasCount = false;
-  let ns: string | null = null;
+  const res: ExtractedKey['parsedOptions'] = {
+    contexts: false,
+    hasCount: false,
+    ns: null,
+  };
 
-  if (!path) return { hasContext, hasCount, ns };
+  if (!path) return res;
 
   // Try brutal evaluation first.
   const optsEvaluation = evaluateIfConfident(path);
   if (optsEvaluation !== null) {
-    hasContext = 'context' in optsEvaluation;
-    hasCount = 'count' in optsEvaluation;
+    res.contexts = 'context' in optsEvaluation;
+    res.hasCount = 'count' in optsEvaluation;
 
     const evaluatedNamespace = optsEvaluation['ns'];
-    ns = getFirstOrNull(evaluatedNamespace);
-
-    return { hasContext, hasCount, ns };
-  }
-
-  // It didn't work. Let's try to parse object expression keys.
-  if (path.isObjectExpression()) {
-    hasContext = findKeyInObjectExpression(path, 'context') !== null;
-    hasCount = findKeyInObjectExpression(path, 'count') !== null;
+    res.ns = getFirstOrNull(evaluatedNamespace);
+  } else if (path.isObjectExpression()) {
+    // It didn't work. Let's try to parse object expression keys.
+    res.contexts = findKeyInObjectExpression(path, 'context') !== null;
+    res.hasCount = findKeyInObjectExpression(path, 'count') !== null;
 
     const nsNode = findKeyInObjectExpression(path, 'ns');
     const nsNodeEvaluation = evaluateIfConfident(nsNode);
-    ns = getFirstOrNull(nsNodeEvaluation);
-
-    return { hasContext, hasCount, ns };
+    res.ns = getFirstOrNull(nsNodeEvaluation);
   }
 
-  throw new ExtractionError(
-    "Couldn't evaluate i18next options. Please, provide options as an object expression.",
-  );
+  return res;
 }
 
 /**
  * Given a call to `i18next.t`, find the key and the options.
  *
  * @param path NodePath of the `i18next.t` call.
+ * @param commentHints parsed comment hints
  * @throws ExtractionError when the extraction failed for the `t` call.
  */
 function extractTCall(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
+  commentHints: CommentHint[],
 ): ExtractedKey {
   const args = path.get('arguments');
   const keyEvaluation = evaluateIfConfident(args[0]);
@@ -107,10 +104,12 @@ function extractTCall(
     );
   }
 
-  const parsedOptions = parseTCallOptions(args[1]);
   return {
     key: keyEvaluation,
-    parsedOptions,
+    parsedOptions: {
+      ...parseTCallOptions(args[1]),
+      ...parseI18NextOptionsFromCommentHints(path, commentHints),
+    },
     nodePath: path,
   };
 }
@@ -121,7 +120,7 @@ function extractTCall(
  *
  * @param path: node path of the t function call.
  * @param config: plugin configuration
- * @param disableExtractionIntervals: interval of lines where extraction is disabled
+ * @param commentHints: parsed comment hints
  * @param skipCheck: set to true if you know that the call expression arguments
  *   already is a `t` function.
  */
@@ -133,5 +132,5 @@ export default function extractTFunction(
 ): ExtractedKey[] {
   if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
   if (!skipCheck && !isSimpleTCall(path, config)) return [];
-  return [extractTCall(path)];
+  return [extractTCall(path, commentHints)];
 }

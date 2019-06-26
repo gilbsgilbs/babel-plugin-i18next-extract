@@ -15,8 +15,6 @@ traverse your JavaScript/Typescript code in order to find i18next translation ke
 
 ## Installation
 
-Just install the plugin from npm:
-
 ```bash
 yarn add --dev babel-plugin-i18next-extract
 
@@ -27,7 +25,7 @@ npm i --save-dev babel-plugin-i18next-extract
 
 ## Usage
 
-If you already use [Babel](https://babeljs.io), chances are you already have an existing babel
+If you already use [Babel](https://babeljs.io), chances are you already have an babel
 configuration (e.g. a `.babelrc` file). Just add declare the plugin and you're good to go:
 
 ```javascript
@@ -39,9 +37,7 @@ configuration (e.g. a `.babelrc` file). Just add declare the plugin and you're g
 }
 ```
 
-> To work properly, the plugin must run **before** any JSX transformation step.
-
-You can pass additional options to the plugin by declaring it as follow:
+You can also specify additional [configuration options](#configuration) to the plugin:
 
 ```javascript
 {
@@ -52,10 +48,7 @@ You can pass additional options to the plugin by declaring it as follow:
 }
 ```
 
-If you don't have a babel configuration yet, you can follow the [Configure Babel](
-https://babeljs.io/docs/en/configuration) documentation to try setting it up.
-
-You can then just build your app normally or run Babel through [Babel CLI](
+Once you are set up, you can build your app normally or run Babel through [Babel CLI](
 https://babeljs.io/docs/en/babel-cli):
 
 ```bash
@@ -66,9 +59,10 @@ yarn run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
 npm run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
 ```
 
-You should then be able to see the extracted translations in the `extractedTranslations/`
-directory. Magic huh? Next step is to check out all the available [configuration options
-](#configuration).
+Extracted translations should land in the `extractedTranslations/` directory. Magic huh?
+
+If you don't have a babel configuration yet, you can follow the [Configure Babel](
+https://babeljs.io/docs/en/configuration) documentation to try setting it up.
 
 ## Usage with create-react-app
 
@@ -106,7 +100,7 @@ To simplify the extraction, you can add a script to your `package.json`:
 ```javascript
 "scripts": {
   […]
-  "i18n-extract": "NODE_ENV=development yarn run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'",
+  "i18n-extract": "NODE_ENV=development babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'",
   […]
 }
 ```
@@ -129,12 +123,12 @@ npm run i18n-extract
   - [x] Keys derivation depending on the locale.
   - [x] Automatic detection from `i18next.t` function calls.
   - [x] Automatic detection from `react-i18next` properties.
-  - [ ] (todo) Manual detection from comment hints.
+  - [x] Manual detection from comment hints.
 - [x] Contexts support:
   - [x] Naïve implementation with default contexts.
   - [x] Automatic detection from `i18next.t` function calls.
   - [x] Automatic detection from `react-i18next` properties.
-  - [ ] (todo) Manual detection from comment hints.
+  - [x] Manual detection from comment hints.
 - [x] [react-i18next](https://react.i18next.com/) support:
   - [x] `Trans` component support (with plural forms, contexts and namespaces).
   - [x] `useTranslation` hook support (with plural forms, contexts and namespaces).
@@ -168,6 +162,8 @@ npm run i18n-extract
 
 ## Comment hints
 
+### Disable extraction on a specific section
+
 If the plugin extracts a key you want to skip or erroneously tries to parse a function that doesn't
 belong to i18next, you can use a comment hint to disable the extraction:
 
@@ -185,11 +181,58 @@ i18next.t("and this one")
 i18next.t("but this one will be")
 ```
 
-Notice you can put a `// i18next-extract-disable` comment at the top of the file in order to
-disable extraction on the entire file.
+You can put a `// i18next-extract-disable` comment at the top of the file in order to disable
+extraction on the entire file.
 
-Comment hints may also be used in the future to explicitly mark keys as having plural forms or
-contexts (and specify which ones), or to specify a namespace. Stay tuned.
+### Explicitly specify contexts for a key
+
+This is very useful if you want to use different contexts than the default `male` and `female`
+for a given key:
+
+```javascript
+// i18next-extract-mark-context-next-line ["dog", "cat"]
+i18next.t("this key will have dog and cat context", {context: dogOrCat})
+
+// i18next-extract-mark-context-next-line
+i18next.t("this key will have default context, although no context is specified")
+
+// i18next-extract-mark-context-next-line disable
+i18next.t("this key wont have a context, although a context is specified", {context})
+
+i18next.t("can be used on line") // i18next-extract-mark-context-line
+
+// i18next-extract-mark-context-start
+i18next.t("or on sections") 
+// i18next-extract-mark-context-stop
+
+const transComponent = (
+  // i18next-extract-mark-context-next-line
+  <Trans>it also works on Trans components</Trans>
+)
+```
+
+### Explicitly use a namespace for a key
+
+```javascript
+// i18next-extract-mark-ns-next-line forced-ns
+i18next.t("this key will be in forced-ns namespace")
+
+i18next.t("this one also", {ns: 'this-ns-wont-be-used'}) // i18next-extract-mark-ns-line forced-ns
+
+// i18next-extract-mark-ns-start forced-ns
+i18next.t("and still this one")
+// i18next-extract-mark-ns-stop forced-ns
+```
+
+### Explicitly enable/disable a plural form for a key
+
+```javascript
+// i18next-extract-mark-plural-next-line
+i18next.t("this key will be in forced in plural form")
+
+// i18next-extract-mark-plural-next-line disable
+i18next.t("this key wont have plural form", {count})
+```
 
 ## Gotchas
 

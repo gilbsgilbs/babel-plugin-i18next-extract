@@ -14,7 +14,7 @@ function createSimpleKey(key: string, keyPath: string[] = []): TranslationKey {
     nodePath: {} as any,
     isDerivedKey: false,
     parsedOptions: {
-      hasContext: false,
+      contexts: false,
       hasCount: false,
       ns: null,
     },

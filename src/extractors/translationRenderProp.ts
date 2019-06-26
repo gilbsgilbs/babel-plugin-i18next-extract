@@ -9,7 +9,7 @@ import {
   evaluateIfConfident,
   referencesImport,
 } from './commons';
-import { CommentHint } from '../comments';
+import { CommentHint, getCommentHintForPath } from '../comments';
 
 /**
  * Check whether a given JSXElement is a Translation render prop.
@@ -33,8 +33,7 @@ function isTranslationRenderProp(
  *
  * @param path: node path of Translation JSX element.
  * @param config: plugin configuration
- * @param disableExtractionIntervals: interval of lines where extraction is
- *   disabled
+ * @param commentHints: parsed comment hints
  */
 export default function extractTranslationRenderProp(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
@@ -43,15 +42,22 @@ export default function extractTranslationRenderProp(
 ): ExtractedKey[] {
   if (!isTranslationRenderProp(path)) return [];
 
-  // Try to parse ns property
-  let ns: string | null = null;
-  const nsAttr = findJSXAttributeByName(path, 'ns');
-  if (nsAttr) {
-    let value: BabelCore.NodePath<BabelTypes.Node | null> = nsAttr.get(
-      'value',
-    );
-    if (value.isJSXExpressionContainer()) value = value.get('expression');
-    ns = getFirstOrNull(evaluateIfConfident(value));
+  let ns: string | null;
+
+  const nsCommentHint = getCommentHintForPath(path, 'NAMESPACE', commentHints);
+  if (nsCommentHint) {
+    // We got a comment hint, take its value as namespace.
+    ns = nsCommentHint.value;
+  } else {
+    // Try to parse ns property
+    const nsAttr = findJSXAttributeByName(path, 'ns');
+    if (nsAttr) {
+      let value: BabelCore.NodePath<BabelTypes.Node | null> = nsAttr.get(
+        'value',
+      );
+      if (value.isJSXExpressionContainer()) value = value.get('expression');
+      ns = getFirstOrNull(evaluateIfConfident(value));
+    }
   }
 
   // We expect at least "<Translation>{(t) => …}</Translation>

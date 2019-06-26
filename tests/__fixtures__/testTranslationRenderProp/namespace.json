@@ -5,6 +5,7 @@
     [{"hello world": ""}],
     [{"hello world": ""}, {"ns": "nsLiteral"}],
     [{"hello world": ""}, {"ns": "nsJSXLiteral"}],
-    [{"hello world": ""}, {"ns": "nsJSXArray"}]
+    [{"hello world": ""}, {"ns": "nsJSXArray"}],
+    [{"hello world": ""}, {"ns": "nsHint"}]
   ]
 }

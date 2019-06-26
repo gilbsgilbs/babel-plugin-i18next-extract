@@ -124,16 +124,14 @@ function readExtractedFile(outputPath: string, opts?: ExpectKeysOpts): any {
 }
 
 function assertHasExpectedValues(testData: TestData): void {
-  it(`should have all expected values`, () => {
-    for (const [expected, opts] of testData.expectValues) {
-      const extracted = readExtractedFile(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        testData.pluginOptions.outputPath!,
-        opts,
-      );
-      expect(extracted, `opts=${JSON.stringify(opts)}`).toEqual(expected);
-    }
-  });
+  for (const [expected, opts] of testData.expectValues) {
+    const extracted = readExtractedFile(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      testData.pluginOptions.outputPath!,
+      opts,
+    );
+    expect(extracted, `opts=${JSON.stringify(opts)}`).toEqual(expected);
+  }
 }
 
 /**
@@ -144,18 +142,20 @@ export function runChecks(): void {
     describe(`${testData.testDir}/${path.basename(testData.inputFiles[0])}: ${
       testData.description
     }`, () => {
-      // Run extraction
-      for (const jsFilePath of testData.inputFiles) {
-        const transformResult = BabelCore.transformFileSync(jsFilePath, {
-          plugins: [[plugin, testData.pluginOptions]],
-        });
-        expect(
-          transformResult && transformResult.code,
-          `Babel transformation failed.`,
-        ).toBeTruthy();
-      }
+      it(`should have all expected values`, () => {
+        // Run extraction
+        for (const jsFilePath of testData.inputFiles) {
+          const transformResult = BabelCore.transformFileSync(jsFilePath, {
+            plugins: [[plugin, testData.pluginOptions]],
+          });
+          expect(
+            transformResult && transformResult.code,
+            `Babel transformation failed.`,
+          ).toBeTruthy();
+        }
 
-      assertHasExpectedValues(testData);
+        assertHasExpectedValues(testData);
+      });
     });
   }
 }

@@ -4,7 +4,10 @@ import i18next from 'i18next';
 import { Config } from './config';
 
 interface I18NextParsedOptions {
-  hasContext: boolean;
+  // If contexts is an array, it's an explicit list of context.
+  // If contexts is true, default context should be used.
+  // If contexts is false, context are disable.
+  contexts: string[] | boolean;
   hasCount: boolean;
   ns: string | null;
 }
@@ -66,9 +69,9 @@ function parseExtractedKey(key: ExtractedKey, config: Config): TranslationKey {
  * Compute all derived keys for a local from a key and parsed i18next options.
  *
  * e.g.
- *   ({'foo', {hasContext: false, hasCount: true}}, 'en')
+ *   ({'foo', {contexts: false, hasCount: true}}, 'en')
  *     => ['foo', 'foo_plural']
- *   ({'bar', {hasContext: true, hasCount: true}}, 'en')
+ *   ({'bar', {contexts: ['male', 'female'], hasCount: true}}, 'en')
  *     => ['foo_male', 'foo_male_plural', 'foo_female', 'foo_female_plural']
  *
  * @param extractedKey key that was extracted with an extractor.
@@ -85,11 +88,14 @@ export function computeDerivedKeys(
   const { parsedOptions, cleanKey: key } = translationKey;
   let keys = [translationKey];
 
-  if (parsedOptions.hasContext) {
+  if (parsedOptions.contexts !== false) {
     // Add all context suffixes
     // For instance, if key is "foo", may want
     // ["foo", "foo_male", "foo_female"] depending on defaultContexts value.
-    keys = config.defaultContexts.map(v => {
+    const contexts = Array.isArray(parsedOptions.contexts)
+      ? parsedOptions.contexts
+      : config.defaultContexts;
+    keys = contexts.map(v => {
       if (v === '') return translationKey;
       return {
         ...translationKey,

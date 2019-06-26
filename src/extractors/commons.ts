@@ -1,5 +1,7 @@
 import * as BabelCore from '@babel/core';
 import * as BabelTypes from '@babel/types';
+import { CommentHint, getCommentHintForPath } from '../comments';
+import { ExtractedKey } from '../keys';
 
 /**
  * Error thrown in case extraction of a node failed.
@@ -18,7 +20,56 @@ export function getFirstOrNull<T>(val: T | null | T[]): T | null {
   return val === undefined ? null : val;
 }
 
-// AST Helpers
+/**
+ * Given comment hints and a path, infer every I18NextOption we can from the comment hints.
+ * @param path path on which the comment hints should apply
+ * @param commentHints parsed comment hints
+ * @returns every parsed option that could be infered.
+ */
+export function parseI18NextOptionsFromCommentHints(
+  path: BabelCore.NodePath,
+  commentHints: CommentHint[],
+): Partial<ExtractedKey['parsedOptions']> {
+  const nsCommentHint = getCommentHintForPath(path, 'NAMESPACE', commentHints);
+  const contextCommentHint = getCommentHintForPath(
+    path,
+    'CONTEXT',
+    commentHints,
+  );
+  const pluralCommentHint = getCommentHintForPath(
+    path,
+    'PLURAL',
+    commentHints,
+  );
+  const res: Partial<ExtractedKey['parsedOptions']> = {};
+
+  if (nsCommentHint !== null) {
+    res.ns = nsCommentHint.value;
+  }
+  if (contextCommentHint !== null) {
+    if (['', 'enable'].includes(contextCommentHint.value)) {
+      res.contexts = true;
+    } else if (contextCommentHint.value === 'disable') {
+      res.contexts = false;
+    } else {
+      try {
+        let val = JSON.parse(contextCommentHint.value);
+        if (Array.isArray(val)) res.contexts = val;
+        else res.contexts = [contextCommentHint.value];
+      } catch (err) {
+        res.contexts = [contextCommentHint.value];
+      }
+    }
+  }
+  if (pluralCommentHint !== null) {
+    if (pluralCommentHint.value === 'disable') {
+      res.hasCount = false;
+    } else {
+      res.hasCount = true;
+    }
+  }
+  return res;
+}
 
 /**
  * Improved version of BabelCore `referencesImport` function that also tries to detect wildcard

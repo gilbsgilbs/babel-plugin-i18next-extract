@@ -24,8 +24,18 @@ const comp2 = (
   </Translation>
 );
 
-const comp4 = (
+const comp3 = (
   <Translation>
+    {
+      (t) => t('hello world')
+    }
+  </Translation>
+);
+
+const noob = 'noob';
+const comp4 = (
+  // i18next-extract-mark-ns-next-line nsHint
+  <Translation ns={noob}>
     {
       (t) => t('hello world')
     }
