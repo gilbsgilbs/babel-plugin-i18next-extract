@@ -44,7 +44,7 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
-    "@types/fs-extra": "^7.0.0",
+    "@types/fs-extra": "^8.0.0",
     "@types/jest": "^24.0.15",
     "@types/jest-expect-message": "^1.0.0",
     "@types/rimraf": "^2.0.2",
