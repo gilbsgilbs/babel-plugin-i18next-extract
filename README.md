@@ -8,8 +8,6 @@
 
 ---
 
-> Note: This project is still under active, early development.
-
 babel-plugin-i18next-extract is a [Babel Plugin](https://babeljs.io/docs/en/plugins/) that will
 traverse your JavaScript/Typescript code in order to find i18next translation keys.
 
