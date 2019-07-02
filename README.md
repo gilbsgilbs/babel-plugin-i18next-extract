@@ -9,7 +9,21 @@
 ---
 
 babel-plugin-i18next-extract is a [Babel Plugin](https://babeljs.io/docs/en/plugins/) that will
-traverse your JavaScript/Typescript code in order to find i18next translation keys.
+traverse your Javascript/Typescript code in order to find i18next translation keys.
+
+## Features
+
+- ☑️ Keys extraction in [JSON v3 format](https://www.i18next.com/misc/json-format).
+- ☑️ Detection of `i18next.t()` function calls.
+- ☑️ Full [react-i18next](https://react.i18next.com/) support.
+- ☑️ Plurals support.
+- ☑️ Contexts support.
+- ☑️ Namespace detection.
+- ☑️ Disable extraction on a specific file sections or lines using [comment hints](
+  #comment-hints).
+- ☑️ Overwrite namespaces, plurals and contexts on-the-fly using [comment hints](
+  #comment-hints).
+- [… and more?](./CONTRIBUTING.md)
 
 ## Installation
 
@@ -61,84 +75,6 @@ Extracted translations should land in the `extractedTranslations/` directory. Ma
 
 If you don't have a babel configuration yet, you can follow the [Configure Babel](
 https://babeljs.io/docs/en/configuration) documentation to try setting it up.
-
-## Usage with create-react-app
-
-[create-react-app](https://github.com/facebook/create-react-app) doesn't let you modify the babel
-configuration. Fortunately, it's still possible to use this plugin without ejecting. First of all,
-install Babel CLI:
-
-```bash
-yarn add --dev @babel/cli
-
-# or
-
-npm add --save-dev @babel/cli
-```
-
-Create a minimal `.babelrc` that uses the `react-app` babel preset (DO NOT install it, it's already
-shipped with CRA):
-
-```javascript
-{
-  "presets": ["react-app"],
-  "plugins": ["i18next-extract"]
-}
-```
-
-You should then be able to extract your translations using the CLI:
-
-```bash
-# NODE_ENV must be specified for react-app preset to work properly
-NODE_ENV=development yarn run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
-```
-
-To simplify the extraction, you can add a script to your `package.json`:
-
-```javascript
-"scripts": {
-  […]
-  "i18n-extract": "NODE_ENV=development babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'",
-  […]
-}
-```
-
-And then just run:
-
-```bash
-yarn run i18n-extract
-
-# or
-
-npm run i18n-extract
-```
-
-## Features
-
-- [x] Translation extraction in [JSON v3 format](https://www.i18next.com/misc/json-format).
-- [x] Detection of `i18next.t()` function calls.
-- [x] Plural forms support:
-  - [x] Keys derivation depending on the locale.
-  - [x] Automatic detection from `i18next.t` function calls.
-  - [x] Automatic detection from `react-i18next` properties.
-  - [x] Manual detection from [comment hints](#comment-hints).
-- [x] Contexts support:
-  - [x] Naïve implementation with default contexts.
-  - [x] Automatic detection from `i18next.t` function calls.
-  - [x] Automatic detection from `react-i18next` properties.
-  - [x] Manual detection from [comment hints](#comment-hints).
-- [x] [react-i18next](https://react.i18next.com/) support:
-  - [x] `Trans` component support (with plural forms, contexts and namespaces).
-  - [x] `useTranslation` hook support (with plural forms, contexts and namespaces).
-  - [x] `Translation` render prop support (with plural forms, contexts and namespaces).
-  - [x] Namespace inference from `withTranslation` HOC.
-- [x] Namespace inference:
-  - [x] Depending on the key value.
-  - [x] Depending on the `t()` function options.
-  - [x] Depending on the `ns` property in `Translation` render prop.
-  - [x] Depending on the `ns` attribute in the `Trans` component.
-- [x] Explicitely disable extraction on a specific file sections or lines using [comment hints](#comment-hints).
-- [ ] [… and more?](./CONTRIBUTING.md)
 
 ## Configuration
 
@@ -232,11 +168,62 @@ i18next.t("this key will be in forced in plural form")
 i18next.t("this key wont have plural form", {count})
 ```
 
+## Usage with create-react-app
+
+[create-react-app](https://github.com/facebook/create-react-app) doesn't let you modify the babel
+configuration. Fortunately, it's still possible to use this plugin without ejecting. First of all,
+install Babel CLI:
+
+```bash
+yarn add --dev @babel/cli
+
+# or
+
+npm add --save-dev @babel/cli
+```
+
+Create a minimal `.babelrc` that uses the `react-app` babel preset (DO NOT install it, it's already
+shipped with CRA):
+
+```javascript
+{
+  "presets": ["react-app"],
+  "plugins": ["i18next-extract"]
+}
+```
+
+You should then be able to extract your translations using the CLI:
+
+```bash
+# NODE_ENV must be specified for react-app preset to work properly
+NODE_ENV=development yarn run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
+```
+
+To simplify the extraction, you can add a script to your `package.json`:
+
+```javascript
+"scripts": {
+  […]
+  "i18n-extract": "NODE_ENV=development babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'",
+  […]
+}
+```
+
+And then just run:
+
+```bash
+yarn run i18n-extract
+
+# or
+
+npm run i18n-extract
+```
+
 ## Gotchas
 
-The plugin tries to be smart, but can't do magic. i18next has a runtime unlike this plugin which
-must guess everything statically. For instance, you may want to disable extraction on dynamic
-keys:
+The plugin tries to be a little smart, but can't do magic. i18next has a runtime unlike this
+plugin which must guess everything statically. For instance, you may want to disable extraction
+on dynamic keys:
 
 ```javascript
 i18next.t(myVariable);
