@@ -1,0 +1,9 @@
+{
+  "description": "test simple extractions of the withTranslation HOC on function components",
+  "pluginOptions": {},
+  "expectValues": [
+    [{"key0": ""}, {"ns": "ns0"}],
+    [{"key1": ""}, {"ns": "ns1"}],
+    [{"key2": ""}, {"ns": "ns2"}]
+  ]
+}

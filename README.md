@@ -133,7 +133,7 @@ npm run i18n-extract
   - [x] `Trans` component support (with plural forms, contexts and namespaces).
   - [x] `useTranslation` hook support (with plural forms, contexts and namespaces).
   - [x] `Translation` render prop support (with plural forms, contexts and namespaces).
-  - [ ] (todo) Fuzzy namespace inference from `withTranslation` HoC.
+  - [x] Namespace inference from `withTranslation` HOC.
 - [x] Namespace inference:
   - [x] Depending on the key value.
   - [x] Depending on the `t()` function options.
@@ -145,8 +145,8 @@ npm run i18n-extract
 ## Configuration
 
 | Option | Type | Description | Default |
-|-----------------------|-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------|
-| locales | `string[]` | All the locales your project supports. babel-plugin-i18next-extract will generate a JSON file for each locale. | `['en']` |
+|-|-|-|-|
+| locales | `string[]` | Locales your project supports. | `['en']` |
 | defaultNS | `string` | The default namespace that your translation use. | `'translation'` |
 | pluralSeparator | `string` | String you want to use to split plural from keys. See [i18next Configuration options](https://www.i18next.com/overview/configuration-options#misc) | `'_'` |
 | contextSeparator | `string` | String you want to use to split context from keys. See [i18next Configuration options](https://www.i18next.com/overview/configuration-options#misc) | `'_'` |

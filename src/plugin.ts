@@ -11,6 +11,7 @@ import { computeDerivedKeys, ExtractedKey, TranslationKey } from './keys';
 import { Config, parseConfig } from './config';
 import exportTranslationKeys from './exporter';
 import { PLUGIN_NAME } from './constants';
+import extractWithTranslationHOC from './extractors/withTranslationHOC';
 
 export interface VisitorState {
   // Options inherited from Babel.
@@ -63,15 +64,15 @@ function handleExtraction<T>(
   try {
     return callback(collect);
   } catch (err) {
-    if (err instanceof ExtractionError) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `${PLUGIN_NAME}: Extraction error in ${filename} at line ` +
-          `${lineNumber}. ${err.message}`,
-      );
-    } else {
+    if (!(err instanceof ExtractionError)) {
       throw err;
     }
+
+    // eslint-disable-next-line no-console
+    console.warn(
+      `${PLUGIN_NAME}: Extraction error in ${filename} at line ` +
+        `${lineNumber}. ${err.message}`,
+    );
   }
 }
 
@@ -106,6 +107,34 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
       );
       collect(
         extractTransComponent(
+          path,
+          extractState.config,
+          extractState.commentHints,
+        ),
+      );
+    });
+  },
+
+  ClassDeclaration(path, state: VisitorState) {
+    const extractState = this.I18NextExtract;
+
+    handleExtraction(path, state, collect => {
+      collect(
+        extractWithTranslationHOC(
+          path,
+          extractState.config,
+          extractState.commentHints,
+        ),
+      );
+    });
+  },
+
+  Function(path, state: VisitorState) {
+    const extractState = this.I18NextExtract;
+
+    handleExtraction(path, state, collect => {
+      collect(
+        extractWithTranslationHOC(
           path,
           extractState.config,
           extractState.commentHints,
