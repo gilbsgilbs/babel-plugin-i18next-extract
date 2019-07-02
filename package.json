@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-i18next-extract",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "Statically extract translation keys from i18next application.",
   "repository": {
     "type": "git",
