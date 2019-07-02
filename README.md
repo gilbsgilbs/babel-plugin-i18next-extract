@@ -38,7 +38,7 @@ npm i --save-dev babel-plugin-i18next-extract
 ## Usage
 
 If you already use [Babel](https://babeljs.io), chances are you already have an babel
-configuration (e.g. a `.babelrc` file). Just add declare the plugin and you're good to go:
+configuration (e.g. a `.babelrc` file). Just declare the plugin and you're good to go:
 
 ```javascript
 {
@@ -49,7 +49,7 @@ configuration (e.g. a `.babelrc` file). Just add declare the plugin and you're g
 }
 ```
 
-You can also specify additional [configuration options](#configuration) to the plugin:
+You may want to specify additional [configuration options](#configuration):
 
 ```javascript
 {
@@ -60,7 +60,7 @@ You can also specify additional [configuration options](#configuration) to the p
 }
 ```
 
-Once you are set up, you can build your app normally or run Babel through [Babel CLI](
+Once the plugin is setup, you can build your app normally or run Babel through [Babel CLI](
 https://babeljs.io/docs/en/babel-cli):
 
 ```bash
@@ -71,10 +71,10 @@ yarn run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
 npm run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
 ```
 
-Extracted translations should land in the `extractedTranslations/` directory. Magic huh?
+Extracted translations should land in the `extractedTranslations/` directory by default.
 
 If you don't have a babel configuration yet, you can follow the [Configure Babel](
-https://babeljs.io/docs/en/configuration) documentation to try setting it up.
+https://babeljs.io/docs/en/configuration) documentation to get started.
 
 ## Configuration
 
