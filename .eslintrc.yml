@@ -22,6 +22,9 @@ rules:
     - allowExpressions: true
       allowTypedFunctionExpressions: true
       allowHigherOrderFunctions: true
+  '@typescript-eslint/no-empty-interface':
+    - error
+    - allowSingleExtends: true
   'prettier/prettier':
     - error
     - singleQuote: true

@@ -14,7 +14,8 @@ export interface Config {
   defaultValue: string | null;
   keyAsDefaultValue: boolean | string[];
   keyAsDefaultValueForDerivedKeys: boolean;
-  exporterJsonSpace: string | number;
+  discardOldKeys: boolean;
+  jsonSpace: string | number;
 }
 
 function coalesce<T>(v: T | undefined, defaultVal: T): T {
@@ -50,6 +51,7 @@ export function parseConfig(opts: Partial<Config>): Config {
       opts.keyAsDefaultValueForDerivedKeys,
       true,
     ),
-    exporterJsonSpace: coalesce(opts.exporterJsonSpace, 2),
+    discardOldKeys: coalesce(opts.discardOldKeys, false),
+    jsonSpace: coalesce(opts.jsonSpace, 2),
   };
 }

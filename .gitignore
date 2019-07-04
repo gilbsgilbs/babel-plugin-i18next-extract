@@ -94,4 +94,4 @@ typings/
 /extractedTranslations/
 
 # Test files
-.extracted/
+/tests/**/*.extracted/

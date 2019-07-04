@@ -9,7 +9,10 @@ import extractTranslationRenderProp from './extractors/translationRenderProp';
 import extractTransComponent from './extractors/transComponent';
 import { computeDerivedKeys, ExtractedKey, TranslationKey } from './keys';
 import { Config, parseConfig } from './config';
-import exportTranslationKeys from './exporter';
+import exportTranslationKeys, {
+  ExporterCache,
+  createExporterCache,
+} from './exporter';
 import { PLUGIN_NAME } from './constants';
 import extractWithTranslationHOC from './extractors/withTranslationHOC';
 
@@ -26,11 +29,9 @@ interface I18NextExtractState {
   extractedKeys: ExtractedKey[];
   commentHints: CommentHint[];
   config: Config;
+  extractedNodes: WeakSet<BabelTypes.Node>;
+  exporterCache: ExporterCache;
 }
-
-// We have to store which nodes were extracted because the plugin might be called multiple times
-// by Babel and the state would be lost across calls.
-const extractedNodes = new WeakSet<BabelTypes.Node>();
 
 /**
  * Handle the extraction.
@@ -49,14 +50,15 @@ function handleExtraction<T>(
 ): T | undefined {
   const filename = (state.file && state.file.opts.filename) || '???';
   const lineNumber = (path.node.loc && path.node.loc.start.line) || '???';
+  const extractState = state.I18NextExtract;
 
   const collect = (keys: ExtractedKey[]): void => {
     for (const key of keys) {
-      if (extractedNodes.has(key.nodePath.node)) {
+      if (extractState.extractedNodes.has(key.nodePath.node)) {
         // The node was already extracted. Skip it.
         continue;
       }
-      extractedNodes.add(key.nodePath.node);
+      extractState.extractedNodes.add(key.nodePath.node);
       state.I18NextExtract.extractedKeys.push(key);
     }
   };
@@ -149,12 +151,22 @@ export default function(
 ): BabelCore.PluginObj<VisitorState> {
   api.assertVersion(7);
 
+  // We have to store which nodes were extracted because the visitor might be
+  // called multiple times by Babel and the state would be lost across calls.
+  const extractedNodes = new WeakSet<BabelTypes.Node>();
+
+  // This is a cache for the exporter to keep track of the translation files.
+  // It must remain global and persist across transpiled files.
+  const exporterCache = createExporterCache();
+
   return {
     pre() {
       this.I18NextExtract = {
         config: parseConfig(this.opts),
         extractedKeys: [],
         commentHints: [],
+        extractedNodes,
+        exporterCache,
       };
     },
 
@@ -171,7 +183,12 @@ export default function(
           ],
           Array<TranslationKey>(),
         );
-        exportTranslationKeys(derivedKeys, locale, extractState.config);
+        exportTranslationKeys(
+          derivedKeys,
+          locale,
+          extractState.config,
+          extractState.exporterCache,
+        );
       }
     },
 
