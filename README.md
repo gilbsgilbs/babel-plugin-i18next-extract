@@ -92,7 +92,8 @@ https://babeljs.io/docs/en/configuration) documentation to get started.
 | defaultValue | `string` or `null` | Default value for extracted keys. | `''` (empty string) |
 | keyAsDefaultValue | `boolean` or `string[]` | If true, use the extracted key as defaultValue (ignoring `defaultValue` option). You can also specify an array of locales to apply this behavior only to a specific set locales (e.g. if you keys are in plain english, you may want to set this option to `['en']`). | `false` |
 | keyAsDefaultValueForDerivedKeys | `boolean` | If false and `keyAsDefaultValue` is enabled, don't use derived keys (plural forms or contexts) as default value. `defaultValue` will be used instead. | `true` |
-| exporterJsonSpace | `number` | Number of indentation space to use in extracted JSON files. | 2 |
+| discardOldKeys | `boolean` | When set to `true`, keys that no longer exist are removed from the JSON files. By default, new keys will be added to the JSON files and never removed. | `false` |
+| jsonSpace | `number` | Number of indentation space to use in extracted JSON files. | `2` |
 
 ## Comment hints
 
