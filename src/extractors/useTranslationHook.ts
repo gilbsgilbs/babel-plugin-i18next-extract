@@ -78,5 +78,9 @@ export default function extractUseTranslationHook(
     }
   }
 
-  return keys;
+  return keys.map(k => ({
+    ...k,
+    sourceNodePaths: [path, ...k.sourceNodePaths],
+    extractorName: extractUseTranslationHook.name,
+  }));
 }

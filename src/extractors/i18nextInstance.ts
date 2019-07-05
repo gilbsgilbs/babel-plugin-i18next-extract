@@ -49,5 +49,9 @@ export default function extractI18nextInstance(
 ): ExtractedKey[] {
   if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
   if (!isI18nextTCall(path, config)) return [];
-  return extractTFunction(path, config, commentHints, true);
+  return extractTFunction(path, config, commentHints, true).map(k => ({
+    ...k,
+    sourceNodePaths: [path, ...k.sourceNodePaths],
+    extractorName: extractI18nextInstance.name,
+  }));
 }

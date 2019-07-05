@@ -18,7 +18,13 @@ interface I18NextParsedOptions {
 export interface ExtractedKey {
   key: string;
   parsedOptions: I18NextParsedOptions;
-  nodePath: BabelCore.NodePath; // NodePath from which the node was extracted.
+
+  // Node paths that the node was extracted from.
+  // First must be the node path traversed by the main visitor.
+  // This helps at keeping track of which nodes were already extracted.
+  sourceNodePaths: BabelCore.NodePath[];
+  // Name of the extractor that extracted the key. e.g. extractTransComponent
+  extractorName: string;
 }
 
 /**
