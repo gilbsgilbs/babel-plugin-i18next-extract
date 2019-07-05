@@ -4,7 +4,7 @@ import * as BabelTypes from '@babel/types';
 import { parseCommentHints, CommentHint } from './comments';
 import { ExtractionError } from './extractors/commons';
 import extractUseTranslationHook from './extractors/useTranslationHook';
-import extractTFunction from './extractors/tFunction';
+import extractI18nextInstance from './extractors/i18nextInstance';
 import extractTranslationRenderProp from './extractors/translationRenderProp';
 import extractTransComponent from './extractors/transComponent';
 import { computeDerivedKeys, ExtractedKey, TranslationKey } from './keys';
@@ -91,7 +91,11 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
         ),
       );
       collect(
-        extractTFunction(path, extractState.config, extractState.commentHints),
+        extractI18nextInstance(
+          path,
+          extractState.config,
+          extractState.commentHints,
+        ),
       );
     });
   },

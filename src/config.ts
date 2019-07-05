@@ -9,6 +9,7 @@ export interface Config {
 
   // plugin-specific options
   i18nextInstanceNames: string[];
+  tFunctionNames: string[];
   defaultContexts: string[];
   outputPath: string;
   defaultValue: string | null;
@@ -40,6 +41,7 @@ export function parseConfig(opts: Partial<Config>): Config {
       'i18next',
       'i18n',
     ]),
+    tFunctionNames: coalesce(opts.tFunctionNames, ['t']),
     defaultContexts: coalesce(opts.defaultContexts, ['', 'male', 'female']),
     outputPath: coalesce(
       opts.outputPath,
