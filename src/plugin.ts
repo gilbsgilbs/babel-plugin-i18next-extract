@@ -54,11 +54,11 @@ function handleExtraction<T>(
 
   const collect = (keys: ExtractedKey[]): void => {
     for (const key of keys) {
-      if (extractState.extractedNodes.has(key.nodePath.node)) {
+      if (extractState.extractedNodes.has(key.sourceNodePaths[0].node)) {
         // The node was already extracted. Skip it.
         continue;
       }
-      extractState.extractedNodes.add(key.nodePath.node);
+      extractState.extractedNodes.add(key.sourceNodePaths[0].node);
       state.I18NextExtract.extractedKeys.push(key);
     }
   };

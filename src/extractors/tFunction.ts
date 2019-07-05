@@ -102,7 +102,8 @@ function extractTCall(
       ...parseTCallOptions(args[1]),
       ...parseI18NextOptionsFromCommentHints(path, commentHints),
     },
-    nodePath: path,
+    sourceNodePaths: [path],
+    extractorName: extractTFunction.name,
   };
 }
 
