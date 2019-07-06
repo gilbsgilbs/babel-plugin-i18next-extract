@@ -51,7 +51,7 @@ export default function extractI18nextInstance(
   if (!isI18nextTCall(path, config)) return [];
   return extractTFunction(path, config, commentHints, true).map(k => ({
     ...k,
-    sourceNodePaths: [path, ...k.sourceNodePaths],
+    sourceNodes: [path.node, ...k.sourceNodes],
     extractorName: extractI18nextInstance.name,
   }));
 }

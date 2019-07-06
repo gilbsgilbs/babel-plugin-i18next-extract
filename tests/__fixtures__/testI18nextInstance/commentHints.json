@@ -1,5 +1,5 @@
 {
-  "description": "test comment hints for t function",
+  "description": "test comment hints for i18next instance",
   "pluginOptions": {},
   "expectValues": [
     [{"keyns0": "", "keyns1": ""}, {"ns": "forcedns"}],

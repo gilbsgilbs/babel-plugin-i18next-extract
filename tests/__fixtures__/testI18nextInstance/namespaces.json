@@ -1,5 +1,5 @@
 {
-  "description": "test corner cases with namespaces and t call",
+  "description": "test corner cases with namespaces and i18next instances",
   "pluginOptions": {},
   "expectValues": [
     [{"0": "", "1": ""}, {"ns": "prefixns"}],
