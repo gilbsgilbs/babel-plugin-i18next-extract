@@ -13,7 +13,7 @@ function createSimpleKey(key: string, keyPath: string[] = []): TranslationKey {
   return {
     key,
     keyPath,
-    sourceNodePaths: [],
+    sourceNodes: [],
     extractorName: 'anonymous',
     isDerivedKey: false,
     parsedOptions: {

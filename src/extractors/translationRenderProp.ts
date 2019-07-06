@@ -99,7 +99,7 @@ export default function extractTranslationRenderProp(
 
   return keys.map(k => ({
     ...k,
-    sourceNodePaths: [path, ...k.sourceNodePaths],
+    sourceNodes: [path.node, ...k.sourceNodes],
     extractorName: extractTranslationRenderProp.name,
   }));
 }

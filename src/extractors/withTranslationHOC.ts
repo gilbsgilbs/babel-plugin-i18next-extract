@@ -273,7 +273,7 @@ export default function extractWithTranslationHOC(
 
   return keys.map(k => ({
     ...k,
-    sourceNodePaths: [path, ...k.sourceNodePaths],
+    sourceNodes: [path.node, ...k.sourceNodes],
     extractorName: extractWithTranslationHOC.name,
   }));
 }

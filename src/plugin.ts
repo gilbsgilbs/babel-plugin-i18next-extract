@@ -2,11 +2,10 @@ import * as BabelCore from '@babel/core';
 import * as BabelTypes from '@babel/types';
 
 import { parseCommentHints, CommentHint } from './comments';
-import { ExtractionError } from './extractors/commons';
-import extractUseTranslationHook from './extractors/useTranslationHook';
-import extractI18nextInstance from './extractors/i18nextInstance';
-import extractTranslationRenderProp from './extractors/translationRenderProp';
-import extractTransComponent from './extractors/transComponent';
+import Extractors, {
+  EXTRACTORS_PRIORITIES,
+  ExtractionError,
+} from './extractors';
 import { computeDerivedKeys, ExtractedKey, TranslationKey } from './keys';
 import { Config, parseConfig } from './config';
 import exportTranslationKeys, {
@@ -29,7 +28,6 @@ interface I18NextExtractState {
   extractedKeys: ExtractedKey[];
   commentHints: CommentHint[];
   config: Config;
-  extractedNodes: WeakSet<BabelTypes.Node>;
   exporterCache: ExporterCache;
 }
 
@@ -52,14 +50,31 @@ function handleExtraction<T>(
   const lineNumber = (path.node.loc && path.node.loc.start.line) || '???';
   const extractState = state.I18NextExtract;
 
-  const collect = (keys: ExtractedKey[]): void => {
-    for (const key of keys) {
-      if (extractState.extractedNodes.has(key.sourceNodePaths[0].node)) {
-        // The node was already extracted. Skip it.
+  const collect = (newKeys: ExtractedKey[]): void => {
+    for (const newKey of newKeys) {
+      const currentKeys = extractState.extractedKeys;
+
+      const conflictingKeyIndex = currentKeys.findIndex(extractedKey =>
+        extractedKey.sourceNodes.some(extractedNode =>
+          newKey.sourceNodes.includes(extractedNode),
+        ),
+      );
+
+      if (conflictingKeyIndex !== -1) {
+        const conflictingKey = currentKeys[conflictingKeyIndex];
+        const conflictingKeyPriority = -EXTRACTORS_PRIORITIES.findIndex(
+          v => v === conflictingKey.extractorName,
+        );
+        const newKeyPriority = -EXTRACTORS_PRIORITIES.findIndex(
+          v => v === newKey.extractorName,
+        );
+        if (conflictingKeyPriority < newKeyPriority) {
+          currentKeys[conflictingKeyIndex] = newKey;
+        }
         continue;
       }
-      extractState.extractedNodes.add(key.sourceNodePaths[0].node);
-      state.I18NextExtract.extractedKeys.push(key);
+
+      currentKeys.push(newKey);
     }
   };
 
@@ -84,14 +99,21 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
 
     handleExtraction(path, state, collect => {
       collect(
-        extractUseTranslationHook(
+        Extractors.extractUseTranslationHook(
           path,
           extractState.config,
           extractState.commentHints,
         ),
       );
       collect(
-        extractI18nextInstance(
+        Extractors.extractI18nextInstance(
+          path,
+          extractState.config,
+          extractState.commentHints,
+        ),
+      );
+      collect(
+        Extractors.extractTFunction(
           path,
           extractState.config,
           extractState.commentHints,
@@ -105,14 +127,14 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
 
     handleExtraction(path, state, collect => {
       collect(
-        extractTranslationRenderProp(
+        Extractors.extractTranslationRenderProp(
           path,
           extractState.config,
           extractState.commentHints,
         ),
       );
       collect(
-        extractTransComponent(
+        Extractors.extractTransComponent(
           path,
           extractState.config,
           extractState.commentHints,
@@ -155,10 +177,6 @@ export default function(
 ): BabelCore.PluginObj<VisitorState> {
   api.assertVersion(7);
 
-  // We have to store which nodes were extracted because the visitor might be
-  // called multiple times by Babel and the state would be lost across calls.
-  const extractedNodes = new WeakSet<BabelTypes.Node>();
-
   // This is a cache for the exporter to keep track of the translation files.
   // It must remain global and persist across transpiled files.
   const exporterCache = createExporterCache();
@@ -169,7 +187,6 @@ export default function(
         config: parseConfig(this.opts),
         extractedKeys: [],
         commentHints: [],
-        extractedNodes,
         exporterCache,
       };
     },
