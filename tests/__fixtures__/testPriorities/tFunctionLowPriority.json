@@ -1,0 +1,8 @@
+{
+  "description": "test that t function has very low priority",
+  "comment": "for instance, we want 'const { t } = useTranslation(); t('foo');' to be extracted with useTranslation and never with t.",
+  "pluginOptions": {},
+  "expectValues": [
+    [{"key0": ""}, {"ns": "custom-ns"}]
+  ]
+}

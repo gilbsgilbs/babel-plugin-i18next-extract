@@ -68,6 +68,7 @@ function handleExtraction<T>(
         const newKeyPriority = -EXTRACTORS_PRIORITIES.findIndex(
           v => v === newKey.extractorName,
         );
+
         if (conflictingKeyPriority < newKeyPriority) {
           currentKeys[conflictingKeyIndex] = newKey;
         }

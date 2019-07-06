@@ -13,18 +13,18 @@ export { ExtractionError };
  */
 export const EXTRACTORS_PRIORITIES = [
   extractTransComponent.name,
-  extractWithTranslationHOC.name,
-  extractTranslationRenderProp.name,
   extractUseTranslationHook.name,
+  extractTranslationRenderProp.name,
+  extractWithTranslationHOC.name,
   extractI18nextInstance.name,
   extractTFunction.name,
 ];
 
 export default {
   extractTransComponent,
-  extractWithTranslationHOC,
-  extractTranslationRenderProp,
   extractUseTranslationHook,
+  extractTranslationRenderProp,
+  extractWithTranslationHOC,
   extractI18nextInstance,
   extractTFunction,
 };
