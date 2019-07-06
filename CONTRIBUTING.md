@@ -54,6 +54,22 @@ You can now dig into the plugin source code to try to fix the bug. Have a look a
 Structure](#project-structure) below to better understand how the project is designed (even
 though it should rather be self-explainatory).
 
+### Test against your own project
+
+If the issue occurred in one of your own projects, you might want to check whether your patch does
+actually fix your original issue. `yarn link` can help running the extraction using your modified
+version of `babel-plugin-i18next-extract`:
+
+```bash
+cd path/to/babel-plugin-i18next-extract
+yarn link
+yarn build
+cd path/to/your/project
+yarn link babel-plugin-i18next-extract
+```
+
+Then run the extraction as you'd normally do and check if everything works as expected.
+
 ### Polish
 
 This project uses [ESLint](https://eslint.org) to detect potential issues and [Prettier
