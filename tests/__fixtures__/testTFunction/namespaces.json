@@ -1,0 +1,8 @@
+{
+  "description": "test corner cases with namespaces and t functions",
+  "pluginOptions": {},
+  "expectValues": [
+    [{"0": "", "1": ""}, {"ns": "prefixns"}],
+    [{"2": ""}, {"ns": "paramns"}]
+  ]
+}
