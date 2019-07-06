@@ -1,0 +1,29 @@
+{
+  "description": "test passing options to t function (context, count, …)",
+  "pluginOptions": {},
+  "expectValues": {
+    "withEvaluableOpts": "",
+    "withEvaluableOpts_plural": "",
+    "withEvaluableOpts_male": "",
+    "withEvaluableOpts_male_plural": "",
+    "withEvaluableOpts_female": "",
+    "withEvaluableOpts_female_plural": "",
+    "withNonEvaluableOpts": "",
+    "withNonEvaluableOpts_plural": "",
+    "withNonEvaluableOpts_male": "",
+    "withNonEvaluableOpts_male_plural": "",
+    "withNonEvaluableOpts_female": "",
+    "withNonEvaluableOpts_female_plural": "",
+    "withSimpleIdentifiers": "",
+    "withSimpleIdentifiers_plural": "",
+    "withSimpleIdentifiers_male": "",
+    "withSimpleIdentifiers_male_plural": "",
+    "withSimpleIdentifiers_female": "",
+    "withSimpleIdentifiers_female_plural": "",
+    "onlyCount": "",
+    "onlyCount_plural": "",
+    "onlyContext": "",
+    "onlyContext_male": "",
+    "onlyContext_female": ""
+  }
+}
