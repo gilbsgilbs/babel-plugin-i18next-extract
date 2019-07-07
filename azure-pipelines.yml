@@ -68,13 +68,14 @@ stages:
               steps:
               - task: DownloadPipelineArtifact@2
                 inputs:
+                  path: lib/
                   artifact: babel-plugin-i18next-extract
               - script: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
                 env:
                   NPM_TOKEN: $(npm.token)
               - script: |
-                  VERSION=`echo "${TAG_NAME}" | sed -rn 's/^releases\/(.*)/\1/p'`
-                  yarn publish --non-interactive --new-version="${VERSION}"
+                  yarn version --non-interactive --new-version "${VERSION}" --no-git-tag-version
+                  yarn publish --non-interactive
                 env:
-                  TAG_NAME: $(Build.SourceBranchName)
+                  VERSION: $(Build.SourceBranchName)
 
