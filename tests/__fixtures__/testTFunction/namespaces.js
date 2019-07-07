@@ -1,7 +1,6 @@
-i18next.t('prefixns:0');
+t('prefixns:0');
 
 // prefix should have priority
-i18next.t('prefixns:1', {ns: "noob"});
+t('prefixns:1', {ns: "noob"});
 
-
-i18next.t('2', {ns: "paramns"})
+t('2', {ns: "paramns"})

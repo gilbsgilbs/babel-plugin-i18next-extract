@@ -97,5 +97,9 @@ export default function extractTranslationRenderProp(
     }
   }
 
-  return keys;
+  return keys.map(k => ({
+    ...k,
+    sourceNodes: [path.node, ...k.sourceNodes],
+    extractorName: extractTranslationRenderProp.name,
+  }));
 }

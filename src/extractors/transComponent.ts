@@ -278,7 +278,8 @@ export default function extractTransComponent(
     {
       key: keyEvaluation,
       parsedOptions,
-      nodePath: path,
+      sourceNodes: [path.node],
+      extractorName: extractTransComponent.name,
     },
   ];
 }

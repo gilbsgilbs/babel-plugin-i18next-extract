@@ -1,4 +1,4 @@
-import * as BabelCore from '@babel/core';
+import * as BabelTypes from '@babel/types';
 
 import i18next from 'i18next';
 import { Config } from './config';
@@ -18,7 +18,16 @@ interface I18NextParsedOptions {
 export interface ExtractedKey {
   key: string;
   parsedOptions: I18NextParsedOptions;
-  nodePath: BabelCore.NodePath; // NodePath from which the node was extracted.
+
+  // Nodes (not node paths) from which the key was extracted.
+  // First item is the node being traversed by the main visitor.
+  // Other items are the nodes involved in the extraction (e.g. `t()`
+  // CallExpression).
+  // This helps keeping track of which nodes were already extracted by an
+  // extractor.
+  sourceNodes: BabelTypes.Node[];
+  // Name of the extractor that extracted the key. e.g. extractTransComponent
+  extractorName: string;
 }
 
 /**

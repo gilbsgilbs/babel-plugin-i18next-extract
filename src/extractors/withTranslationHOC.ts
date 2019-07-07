@@ -271,5 +271,9 @@ export default function extractWithTranslationHOC(
     ];
   }
 
-  return keys;
+  return keys.map(k => ({
+    ...k,
+    sourceNodes: [path.node, ...k.sourceNodes],
+    extractorName: extractWithTranslationHOC.name,
+  }));
 }

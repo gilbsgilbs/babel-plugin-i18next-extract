@@ -1,0 +1,25 @@
+{
+  "description": "test comment hints for i18next instance",
+  "pluginOptions": {},
+  "expectValues": [
+    [{"keyns0": "", "keyns1": ""}, {"ns": "forcedns"}],
+    [{
+      "pluralkey0": "",
+      "pluralkey0_plural": "",
+      "pluralkey1": "",
+      "pluralkey1_plural": "",
+      "not-pluralkey": "",
+      "default-context0": "",
+      "default-context0_male": "",
+      "default-context0_female": "",
+      "default-context1": "",
+      "default-context1_male": "",
+      "default-context1_female": "",
+      "no-context": "",
+      "custom-context0_fruit": "",
+      "custom-context0_animal": "",
+      "custom-context1_null": "",
+      "custom-context2_custom_context": ""
+    }]
+  ]
+}

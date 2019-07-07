@@ -16,8 +16,9 @@ import { ExtractedKey } from '../keys';
 import { Config } from '../config';
 
 /**
- * Check whether a given CallExpression path is a global call to `i18next.t`
+ * Check whether a given CallExpression path is a global call to the `t`
  * function.
+ *
  * @param path: node path to check
  * @param config: plugin configuration
  * @returns true if the given call expression is indeed a call to i18next.t.
@@ -28,22 +29,13 @@ function isSimpleTCall(
 ): boolean {
   const callee = path.get('callee');
 
-  if (!callee.isMemberExpression()) return false;
+  if (!callee.isIdentifier()) return false;
 
-  const obj = callee.get('object');
-  if (!obj.isIdentifier()) return false;
-
-  const prop = callee.get('property');
-  if (Array.isArray(prop) || !prop.isIdentifier()) return false;
-
-  return (
-    config.i18nextInstanceNames.includes(obj.node.name) &&
-    prop.node.name === 't'
-  );
+  return config.tFunctionNames.includes(callee.node.name);
 }
 
 /**
- * Parse options of a `i18next.t(…)` call.
+ * Parse options of a `t(…)` call.
  * @param path: NodePath representing the second argument of the `t()` call
  *   (i.e. the i18next options)
  * @returns an object indicating whether the parsed options have context
@@ -82,9 +74,9 @@ function parseTCallOptions(
 }
 
 /**
- * Given a call to `i18next.t`, find the key and the options.
+ * Given a call to the `t()` function, find the key and the options.
  *
- * @param path NodePath of the `i18next.t` call.
+ * @param path NodePath of the `t()` call.
  * @param commentHints parsed comment hints
  * @throws ExtractionError when the extraction failed for the `t` call.
  */
@@ -110,13 +102,14 @@ function extractTCall(
       ...parseTCallOptions(args[1]),
       ...parseI18NextOptionsFromCommentHints(path, commentHints),
     },
-    nodePath: path,
+    sourceNodes: [path.node],
+    extractorName: extractTFunction.name,
   };
 }
 
 /**
- * Parse a call expression (likely `i18next.t`) to find its translation keys
- * and i18next options.
+ * Parse a call expression (likely a call to a `t` function) to find its
+ * translation keys and i18next options.
  *
  * @param path: node path of the t function call.
  * @param config: plugin configuration

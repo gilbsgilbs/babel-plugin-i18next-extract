@@ -1,5 +1,5 @@
 {
-  "description": "test t function extraction within functions",
+  "description": "test simple extractions from i18next.t",
   "pluginOptions": {},
   "expectValues": {
     "hello": "",

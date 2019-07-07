@@ -1,38 +1,38 @@
-t('noob0'); // i18next-extract-disable-line
-t('noob1'); /* i18next-extract-disable-line */
+i18next.t('noob0'); // i18next-extract-disable-line
+i18next.t('noob1'); /* i18next-extract-disable-line */
 
 // i18next-extract-disable-next-line
-t('noob2');
+i18next.t('noob2');
 
 // i18next-extract-mark-ns-next-line forcedns
-t('keyns0')
+i18next.t('keyns0')
 
 // i18next-extract-mark-ns-next-line forcedns
-t('keyns1', {ns: 'noobns'})
+i18next.t('keyns1', {ns: 'noobns'})
 
 // i18next-extract-mark-plural-next-line
-t('pluralkey0');
+i18next.t('pluralkey0');
 
 // i18next-extract-mark-plural-next-line enable
-t('pluralkey1');
+i18next.t('pluralkey1');
 
 // i18next-extract-mark-plural-next-line disable
-t('not-pluralkey');
+i18next.t('not-pluralkey');
 
 // i18next-extract-mark-context-next-line
-t('default-context0');
+i18next.t('default-context0');
 
 // i18next-extract-mark-context-next-line enable
-t('default-context1');
+i18next.t('default-context1');
 
 // i18next-extract-mark-context-next-line disable
-t('no-context', {context: 'hello'});
+i18next.t('no-context', {context: 'hello'});
 
 // i18next-extract-mark-context-next-line ["fruit", "animal"]
-t('custom-context0');
+i18next.t('custom-context0');
 
 // i18next-extract-mark-context-next-line null
-t('custom-context1');
+i18next.t('custom-context1');
 
 // i18next-extract-mark-context-next-line custom_context
-t('custom-context2');
+i18next.t('custom-context2');

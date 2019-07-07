@@ -13,8 +13,8 @@ function createSimpleKey(key: string, keyPath: string[] = []): TranslationKey {
   return {
     key,
     keyPath,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    nodePath: {} as any,
+    sourceNodes: [],
+    extractorName: 'anonymous',
     isDerivedKey: false,
     parsedOptions: {
       contexts: false,

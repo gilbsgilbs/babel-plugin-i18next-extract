@@ -1,5 +1,5 @@
 {
-  "description": "test passing options to t function (context, count, …)",
+  "description": "test passing options to i18next.t (context, count, …)",
   "pluginOptions": {},
   "expectValues": {
     "withEvaluableOpts": "",
