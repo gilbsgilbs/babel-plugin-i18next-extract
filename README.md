@@ -37,7 +37,7 @@ npm i --save-dev babel-plugin-i18next-extract
 
 ## Usage
 
-If you already use [Babel](https://babeljs.io), chances are you already have an babel
+If you already use [Babel](https://babeljs.io), chances are you already have a babel
 configuration (e.g. a `.babelrc` file). Just declare the plugin and you're good to go:
 
 ```javascript
