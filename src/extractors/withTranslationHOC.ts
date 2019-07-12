@@ -34,10 +34,16 @@ function findWithTranslationHOCCallExpression(
   if (Array.isArray(functionIdentifier) || !functionIdentifier.isIdentifier())
     return null;
 
+  const bindings =
+    path.parentPath.scope.bindings[functionIdentifier.node.name];
+
+  // Likely an anonymous function not in a normal scope.
+  // e.g. "['foo', function myFunction() { return 'foo'; }]"
+  // Let's just ignore such case.
+  if (!bindings) return null;
+
   // Try to find a withTranslation() call in parent scope
-  for (const refPath of path.parentPath.scope.bindings[
-    functionIdentifier.node.name
-  ].referencePaths) {
+  for (const refPath of bindings.referencePaths) {
     const callExpr: BabelCore.NodePath = refPath.findParent(parentPath => {
       if (!parentPath.isCallExpression()) return false;
       const callee = parentPath.get('callee');
