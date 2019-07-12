@@ -1,0 +1,7 @@
+{
+  "description": "test that withTranslationHOC don't get confused with weird scopes",
+  "pluginOptions": {},
+  "expectValues": {
+      "pro": ""
+  }
+}
