@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import stringify from 'json-stable-stringify';
+
 import { TranslationKey } from './keys';
 import { Config } from './config';
 import { PLUGIN_NAME } from './constants';
@@ -240,7 +242,7 @@ export default function exportTranslationKeys(
     fs.mkdirSync(directoryPath, { recursive: true });
     fs.writeFileSync(
       filePath,
-      JSON.stringify(deepTranslationFile, null, config.jsonSpace),
+      stringify(deepTranslationFile, { space: config.jsonSpace }),
       {
         encoding: 'utf8',
       },
