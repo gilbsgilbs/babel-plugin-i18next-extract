@@ -54,7 +54,7 @@ function parseTCallOptions(
 
   // Try brutal evaluation first.
   const optsEvaluation = evaluateIfConfident(path);
-  if (optsEvaluation !== null) {
+  if (optsEvaluation !== null && typeof optsEvaluation === 'object') {
     res.contexts = 'context' in optsEvaluation;
     res.hasCount = 'count' in optsEvaluation;
 
