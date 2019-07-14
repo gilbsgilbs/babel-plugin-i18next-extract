@@ -3,3 +3,4 @@ t('withNonEvaluableOpts', {count: cnt, context: ctx});
 t('withSimpleIdentifiers', {count, context});
 t('onlyCount', {count});
 t('onlyContext', {context});
+t('onlyDefaultValue', 'some default value');
