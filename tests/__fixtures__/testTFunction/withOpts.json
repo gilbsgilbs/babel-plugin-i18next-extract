@@ -22,9 +22,10 @@
     "withSimpleIdentifiers_female_plural": "",
     "onlyCount": "",
     "onlyCount_plural": "",
-    "onlyDefaultValue": "",
+    "onlyDefaultValue": "some default value",
     "onlyContext": "",
     "onlyContext_male": "",
-    "onlyContext_female": ""
+    "onlyContext_female": "",
+    "withDefaultValue": "another default value"
   }
 }
