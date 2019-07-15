@@ -54,13 +54,26 @@ function parseTCallOptions(
 
   // Try brutal evaluation first.
   const optsEvaluation = evaluateIfConfident(path);
-  if (optsEvaluation !== null && typeof optsEvaluation === 'object') {
-    res.contexts = 'context' in optsEvaluation;
-    res.hasCount = 'count' in optsEvaluation;
+  if (optsEvaluation !== null) {
+    if (typeof optsEvaluation === 'object') {
+      res.contexts = 'context' in optsEvaluation;
+      res.hasCount = 'count' in optsEvaluation;
 
-    const evaluatedNamespace = optsEvaluation['ns'];
-    res.ns = getFirstOrNull(evaluatedNamespace);
-  } else if (path.isObjectExpression()) {
+      const evaluatedNamespace = optsEvaluation['ns'];
+      res.ns = getFirstOrNull(evaluatedNamespace);
+
+      const evaluatedDefaultValue = optsEvaluation['defaultValue'];
+      res.defaultValue = getFirstOrNull(evaluatedDefaultValue);
+
+      return res;
+    } else if (typeof optsEvaluation === 'string') {
+      res.defaultValue = optsEvaluation;
+
+      return res;
+    }
+  }
+
+  if (path.isObjectExpression()) {
     // It didn't work. Let's try to parse object expression keys.
     res.contexts = findKeyInObjectExpression(path, 'context') !== null;
     res.hasCount = findKeyInObjectExpression(path, 'count') !== null;
@@ -68,6 +81,10 @@ function parseTCallOptions(
     const nsNode = findKeyInObjectExpression(path, 'ns');
     const nsNodeEvaluation = evaluateIfConfident(nsNode);
     res.ns = getFirstOrNull(nsNodeEvaluation);
+
+    const defaultValueNode = findKeyInObjectExpression(path, 'defaultValue');
+    const defaultValueNodeEvaluation = evaluateIfConfident(defaultValueNode);
+    res.defaultValue = getFirstOrNull(defaultValueNodeEvaluation);
   }
 
   return res;

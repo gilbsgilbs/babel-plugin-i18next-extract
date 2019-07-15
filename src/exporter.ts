@@ -164,6 +164,10 @@ function addKeyToTranslationFile(
     defaultValue = key.cleanKey;
   }
 
+  if (key.parsedOptions.defaultValue) {
+    defaultValue = key.parsedOptions.defaultValue;
+  }
+
   return {
     [JSON.stringify([...key.keyPath, key.cleanKey])]: defaultValue,
     ...translationFile,
