@@ -20,6 +20,7 @@ function createSimpleKey(key: string, keyPath: string[] = []): TranslationKey {
       contexts: false,
       hasCount: false,
       ns: null,
+      defaultValue: null,
     },
     cleanKey: key,
     ns: 'translation',

@@ -50,6 +50,7 @@ function parseTransComponentOptions(
     contexts: false,
     hasCount: false,
     ns: null,
+    defaultValue: null,
   };
 
   const countAttr = findJSXAttributeByName(path, 'count');

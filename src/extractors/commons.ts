@@ -161,7 +161,7 @@ export function* iterateObjectExpression(
 export function findKeyInObjectExpression(
   path: BabelCore.NodePath<BabelTypes.ObjectExpression>,
   key: string,
-): BabelCore.NodePath | null {
+): BabelCore.NodePath<BabelTypes.ObjectExpression['properties'][0]> | null {
   for (const [keyEvaluation, prop] of iterateObjectExpression(path)) {
     if (keyEvaluation === key) return prop;
   }

@@ -164,7 +164,14 @@ function addKeyToTranslationFile(
     defaultValue = key.cleanKey;
   }
 
-  if (key.parsedOptions.defaultValue) {
+  const useI18nextDefaultValueEnabled =
+    config.useI18nextDefaultValue === true ||
+    (Array.isArray(config.useI18nextDefaultValue) &&
+      config.useI18nextDefaultValue.includes(locale));
+  if (
+    useI18nextDefaultValueEnabled &&
+    key.parsedOptions.defaultValue !== null
+  ) {
     defaultValue = key.parsedOptions.defaultValue;
   }
 

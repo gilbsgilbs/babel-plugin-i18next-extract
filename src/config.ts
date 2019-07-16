@@ -13,6 +13,7 @@ export interface Config {
   defaultContexts: string[];
   outputPath: string;
   defaultValue: string | null;
+  useI18nextDefaultValue: boolean | string[];
   keyAsDefaultValue: boolean | string[];
   keyAsDefaultValueForDerivedKeys: boolean;
   discardOldKeys: boolean;
@@ -29,8 +30,10 @@ function coalesce<T>(v: T | undefined, defaultVal: T): T {
  * @param opts plugin options given by Babel
  */
 export function parseConfig(opts: Partial<Config>): Config {
+  const defaultLocales = ['en'];
+
   return {
-    locales: coalesce(opts.locales, ['en']),
+    locales: coalesce(opts.locales, defaultLocales),
     defaultNS: coalesce(opts.defaultNS, 'translation'),
     pluralSeparator: coalesce(opts.pluralSeparator, '_'),
     contextSeparator: coalesce(opts.contextSeparator, '_'),
@@ -48,6 +51,10 @@ export function parseConfig(opts: Partial<Config>): Config {
       './extractedTranslations/{{locale}}/{{ns}}.json',
     ),
     defaultValue: coalesce(opts.defaultValue, ''),
+    useI18nextDefaultValue: coalesce(
+      opts.useI18nextDefaultValue,
+      defaultLocales,
+    ),
     keyAsDefaultValue: coalesce(opts.keyAsDefaultValue, false),
     keyAsDefaultValueForDerivedKeys: coalesce(
       opts.keyAsDefaultValueForDerivedKeys,

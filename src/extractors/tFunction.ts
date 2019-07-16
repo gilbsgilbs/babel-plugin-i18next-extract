@@ -48,43 +48,32 @@ function parseTCallOptions(
     contexts: false,
     hasCount: false,
     ns: null,
+    defaultValue: null,
   };
 
   if (!path) return res;
 
-  // Try brutal evaluation first.
+  // Try brutal evaluation of defaultValue first.
   const optsEvaluation = evaluateIfConfident(path);
-  if (optsEvaluation !== null) {
-    if (typeof optsEvaluation === 'object') {
-      res.contexts = 'context' in optsEvaluation;
-      res.hasCount = 'count' in optsEvaluation;
-
-      const evaluatedNamespace = optsEvaluation['ns'];
-      res.ns = getFirstOrNull(evaluatedNamespace);
-
-      const evaluatedDefaultValue = optsEvaluation['defaultValue'];
-      res.defaultValue = getFirstOrNull(evaluatedDefaultValue);
-
-      return res;
-    } else if (typeof optsEvaluation === 'string') {
-      res.defaultValue = optsEvaluation;
-
-      return res;
-    }
-  }
-
-  if (path.isObjectExpression()) {
-    // It didn't work. Let's try to parse object expression keys.
+  if (typeof optsEvaluation === 'string') {
+    res.defaultValue = optsEvaluation;
+  } else if (path.isObjectExpression()) {
+    // It didn't work. Let's try to parse as object expression.
     res.contexts = findKeyInObjectExpression(path, 'context') !== null;
     res.hasCount = findKeyInObjectExpression(path, 'count') !== null;
 
     const nsNode = findKeyInObjectExpression(path, 'ns');
-    const nsNodeEvaluation = evaluateIfConfident(nsNode);
-    res.ns = getFirstOrNull(nsNodeEvaluation);
+    if (nsNode !== null && nsNode.isObjectProperty()) {
+      const nsValueNode = nsNode.get('value');
+      const nsEvaluation = evaluateIfConfident(nsValueNode);
+      res.ns = getFirstOrNull(nsEvaluation);
+    }
 
     const defaultValueNode = findKeyInObjectExpression(path, 'defaultValue');
-    const defaultValueNodeEvaluation = evaluateIfConfident(defaultValueNode);
-    res.defaultValue = getFirstOrNull(defaultValueNodeEvaluation);
+    if (defaultValueNode !== null && defaultValueNode.isObjectProperty()) {
+      const defaultValueNodeValue = defaultValueNode.get('value');
+      res.defaultValue = evaluateIfConfident(defaultValueNodeValue);
+    }
   }
 
   return res;
