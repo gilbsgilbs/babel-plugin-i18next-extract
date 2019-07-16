@@ -1,0 +1,18 @@
+{
+  "inputFiles": ["i18nextDefaultValue.js"],
+  "description": "test that default i18next default value can be disabled",
+  "pluginOptions": {
+    "locales": ["en", "de"],
+    "useI18nextDefaultValue": false
+  },
+  "expectValues": [
+    [{
+      "key0": "",
+      "key1": ""
+    }, {"locale": "en"}],
+    [{
+      "key0": "",
+      "key1": ""
+    }, {"locale": "de"}]
+  ]
+}
