@@ -1,6 +1,8 @@
 {
   "description": "test wildcard import of Trans component",
-  "pluginOptions": {},
+  "pluginOptions": {
+    "useI18nextDefaultValue": false
+  },
   "expectValues": {
     "hello": ""
   }

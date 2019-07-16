@@ -2,7 +2,8 @@
   "description": "test JSX attributes for Trans component",
   "pluginOptions": {
     "keySeparator": null,
-    "nsSeparator": null
+    "nsSeparator": null,
+    "useI18nextDefaultValue": false
   },
   "expectValues": [
     [{

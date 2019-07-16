@@ -1,6 +1,7 @@
 {
   "description": "test JSX attributes for Trans component",
   "pluginOptions": {
+    "useI18nextDefaultValue": false,
     "keySeparator": null,
     "nsSeparator": null
   },
