@@ -1,6 +1,6 @@
 {
   "inputFiles": ["i18nextDefaultValue.js"],
-  "description": "test that default i18next default value is set for all locales when true",
+  "description": "test that i18next default value is set for all locales when true",
   "pluginOptions": {
     "locales": ["en", "de"],
     "useI18nextDefaultValue": true

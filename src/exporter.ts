@@ -149,8 +149,8 @@ function addKeyToTranslationFile(
   locale: string,
   config: Config,
 ): FlatTranslationFile {
-  // compute the default value
   let defaultValue = config.defaultValue;
+
   const keyAsDefaultValueEnabled =
     config.keyAsDefaultValue === true ||
     (Array.isArray(config.keyAsDefaultValue) &&
@@ -168,9 +168,12 @@ function addKeyToTranslationFile(
     config.useI18nextDefaultValue === true ||
     (Array.isArray(config.useI18nextDefaultValue) &&
       config.useI18nextDefaultValue.includes(locale));
+  const useI18nextDefaultValueForDerivedKeys =
+    config.useI18nextDefaultValueForDerivedKeys;
   if (
     useI18nextDefaultValueEnabled &&
-    key.parsedOptions.defaultValue !== null
+    key.parsedOptions.defaultValue !== null &&
+    (useI18nextDefaultValueForDerivedKeys || !key.isDerivedKey)
   ) {
     defaultValue = key.parsedOptions.defaultValue;
   }

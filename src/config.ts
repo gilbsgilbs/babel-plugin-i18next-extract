@@ -14,6 +14,7 @@ export interface Config {
   outputPath: string;
   defaultValue: string | null;
   useI18nextDefaultValue: boolean | string[];
+  useI18nextDefaultValueForDerivedKeys: boolean;
   keyAsDefaultValue: boolean | string[];
   keyAsDefaultValueForDerivedKeys: boolean;
   discardOldKeys: boolean;
@@ -54,6 +55,10 @@ export function parseConfig(opts: Partial<Config>): Config {
     useI18nextDefaultValue: coalesce(
       opts.useI18nextDefaultValue,
       defaultLocales,
+    ),
+    useI18nextDefaultValueForDerivedKeys: coalesce(
+      opts.useI18nextDefaultValueForDerivedKeys,
+      false,
     ),
     keyAsDefaultValue: coalesce(opts.keyAsDefaultValue, false),
     keyAsDefaultValueForDerivedKeys: coalesce(
