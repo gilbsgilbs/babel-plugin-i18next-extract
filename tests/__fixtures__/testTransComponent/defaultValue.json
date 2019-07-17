@@ -1,0 +1,14 @@
+{
+  "description": "test that i18next default value is extracted properly",
+  "pluginOptions": {
+    "useI18nextDefaultValue": true
+  },
+  "expectValues": {
+    "key0": "key0",
+    "key1": "key1 value",
+    "key2": "key2 value",
+    "key3": "key3 value",
+    "key4": "key4 value",
+    "key5": "key5 value"
+  }
+}

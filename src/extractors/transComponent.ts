@@ -50,6 +50,7 @@ function parseTransComponentOptions(
     contexts: false,
     hasCount: false,
     ns: null,
+    defaultValue: null,
   };
 
   const countAttr = findJSXAttributeByName(path, 'count');
@@ -74,6 +75,15 @@ function parseTransComponentOptions(
     );
     if (value.isJSXExpressionContainer()) value = value.get('expression');
     res.ns = getFirstOrNull(evaluateIfConfident(value));
+  }
+
+  const defaultsAttr = findJSXAttributeByName(path, 'defaults');
+  if (defaultsAttr) {
+    let value: BabelCore.NodePath<BabelTypes.Node | null> = defaultsAttr.get(
+      'value',
+    );
+    if (value.isJSXExpressionContainer()) value = value.get('expression');
+    res.defaultValue = evaluateIfConfident(value);
   }
 
   return {
@@ -269,14 +279,19 @@ export default function extractTransComponent(
   if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
   if (!isTransComponent(path)) return [];
 
-  const keyEvaluation =
-    parseTransComponentKeyFromAttributes(path) ||
-    parseTransComponentKeyFromChildren(path);
+  const keyEvaluationFromAttribute = parseTransComponentKeyFromAttributes(
+    path,
+  );
+  const keyEvaluationFromChildren = parseTransComponentKeyFromChildren(path);
 
   const parsedOptions = parseTransComponentOptions(path, commentHints);
+  if (parsedOptions.defaultValue === null) {
+    parsedOptions.defaultValue = keyEvaluationFromChildren;
+  }
+
   return [
     {
-      key: keyEvaluation,
+      key: keyEvaluationFromAttribute || keyEvaluationFromChildren,
       parsedOptions,
       sourceNodes: [path.node],
       extractorName: extractTransComponent.name,

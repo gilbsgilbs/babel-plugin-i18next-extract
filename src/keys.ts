@@ -10,6 +10,7 @@ interface I18NextParsedOptions {
   contexts: string[] | boolean;
   hasCount: boolean;
   ns: string | null;
+  defaultValue: string | null;
 }
 
 /**

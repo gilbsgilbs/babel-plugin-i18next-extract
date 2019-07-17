@@ -1,0 +1,18 @@
+{
+  "inputFiles": ["i18nextDefaultValue.js"],
+  "description": "test that default i18next default value can be used for specific locales",
+  "pluginOptions": {
+    "locales": ["en", "de"],
+    "useI18nextDefaultValue": ["de"]
+  },
+  "expectValues": [
+    [{
+      "key0": "",
+      "key1": ""
+    }, {"locale": "en"}],
+    [{
+      "key0": "a default value",
+      "key1": "another default value"
+    }, {"locale": "de"}]
+  ]
+}

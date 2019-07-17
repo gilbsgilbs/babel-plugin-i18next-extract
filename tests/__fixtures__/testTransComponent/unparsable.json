@@ -1,6 +1,8 @@
 {
   "description": "test soft errors don't mess up translations",
-  "pluginOptions": {},
+  "pluginOptions": {
+    "useI18nextDefaultValue": false
+  },
   "expectValues": {
     "good": ""
   }
