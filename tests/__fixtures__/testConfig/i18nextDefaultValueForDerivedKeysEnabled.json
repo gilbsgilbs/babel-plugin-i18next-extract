@@ -1,0 +1,11 @@
+{
+  "inputFiles": ["i18nextDefaultValueForDerivedKeys.js"],
+  "description": "test that i18next default value can be set for derived keys",
+  "pluginOptions": {
+    "useI18nextDefaultValueForDerivedKeys": true
+  },
+  "expectValues": {
+    "key0": "a default value",
+    "key0_plural": "a default value"
+  }
+}

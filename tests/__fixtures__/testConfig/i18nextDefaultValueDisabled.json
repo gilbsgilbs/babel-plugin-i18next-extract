@@ -1,6 +1,6 @@
 {
   "inputFiles": ["i18nextDefaultValue.js"],
-  "description": "test that default i18next default value can be disabled",
+  "description": "test that i18next default value can be disabled",
   "pluginOptions": {
     "locales": ["en", "de"],
     "useI18nextDefaultValue": false
