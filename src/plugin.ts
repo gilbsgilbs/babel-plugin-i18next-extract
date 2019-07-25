@@ -50,13 +50,14 @@ function handleExtraction<T>(
   const lineNumber = (path.node.loc && path.node.loc.start.line) || '???';
   const extractState = state.I18NextExtract;
 
-  const collect = (newKeys: ExtractedKey[]): void => {
-    for (const newKey of newKeys) {
-      const currentKeys = extractState.extractedKeys;
+  const collect = (newKeysCandidates: ExtractedKey[]): void => {
+    const currentKeys = extractState.extractedKeys;
+    const newKeys = Array<ExtractedKey>();
 
+    for (const newKeyCandidate of newKeysCandidates) {
       const conflictingKeyIndex = currentKeys.findIndex(extractedKey =>
         extractedKey.sourceNodes.some(extractedNode =>
-          newKey.sourceNodes.includes(extractedNode),
+          newKeyCandidate.sourceNodes.includes(extractedNode),
         ),
       );
 
@@ -66,17 +67,23 @@ function handleExtraction<T>(
           v => v === conflictingKey.extractorName,
         );
         const newKeyPriority = -EXTRACTORS_PRIORITIES.findIndex(
-          v => v === newKey.extractorName,
+          v => v === newKeyCandidate.extractorName,
         );
 
-        if (conflictingKeyPriority < newKeyPriority) {
-          currentKeys[conflictingKeyIndex] = newKey;
+        if (newKeyPriority <= conflictingKeyPriority) {
+          // Existing key priority is higher than the extracted key priority.
+          // Skip.
+          continue;
         }
-        continue;
+
+        // Remove the conflicting key from the extracted keys
+        currentKeys.splice(conflictingKeyIndex, 1);
       }
 
-      currentKeys.push(newKey);
+      newKeys.push(newKeyCandidate);
     }
+
+    currentKeys.push(...newKeys);
   };
 
   try {

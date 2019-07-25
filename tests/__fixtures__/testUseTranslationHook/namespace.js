@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 export function MyComponent1() {
   const [t] = useTranslation('ns0');
-  return <p>{t('key0')}</p>
+  return <p>{t('key0')}{t('key1')}</p>
 }
 
 export function MyComponent2() {
