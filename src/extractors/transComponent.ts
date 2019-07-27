@@ -18,8 +18,6 @@ import {
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
 
-type Diff<T, U> = T extends U ? never : T;
-
 /**
  * Check whether a given JSXElement is a Trans component.
  * @param path: node path to check
