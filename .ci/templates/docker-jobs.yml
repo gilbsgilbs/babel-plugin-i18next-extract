@@ -9,4 +9,4 @@ jobs:
       ${{ pair.key }}: ${{ pair.value }}
     pool:
       vmImage: "${{ parameters.vmImage }}"
-    container: "${{ parameters.container }}"
+    container: "$[ coalesce(variables.container, '${{ parameters.container }}') ]"
