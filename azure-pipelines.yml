@@ -37,6 +37,12 @@ stages:
           jobs:
             - job: test
               displayName: Run test
+              strategy:
+                matrix:
+                  node10:
+                    container: 'node:10'
+                  node12:
+                    container: 'node:12'
               steps:
                 - script: yarn install && yarn run test --coverage
                 - script: yarn add --dev codecov && yarn run codecov
