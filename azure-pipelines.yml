@@ -10,78 +10,20 @@ trigger:
       - '*'
 
 stages:
-  - stage: checks
-    displayName: Static checks
-    jobs:
-      - template: .ci/templates/docker-jobs.yml
-        parameters:
-          jobs:
-            - job: lint
-              displayName: Run ESLint
-              steps:
-                - script: yarn install && yarn run lint
-            - job: types
-              displayName: Run Typing Checks
-              steps:
-                - script: yarn install && yarn run types
-            - job: audit
-              displayName: Run Yarn Audit
-              continueOnError: true
-              steps:
-                - script: yarn install && yarn audit --groups dependencies
   - stage: tests
     displayName: Run tests
     jobs:
-      - template: .ci/templates/docker-jobs.yml
-        parameters:
-          jobs:
-            - job: test
-              displayName: Run test
-              strategy:
-                matrix:
-                  node10:
-                    container: 'node:10'
-                  node12:
-                    container: 'node:12'
-              steps:
-                - script: yarn install && yarn run test --coverage
-                - script: yarn add --dev codecov && yarn run codecov
-                  env:
-                    CODECOV_TOKEN: $(codecov.token)
-  - stage: build
-    displayName: Build Project
-    jobs:
-      - template: .ci/templates/docker-jobs.yml
-        parameters:
-          jobs:
-            - job: build
-              displayName: Build
-              steps:
-              - script: yarn install && yarn run build
-              - task: PublishPipelineArtifact@0
-                inputs:
-                  targetPath: lib/
-                  artifactName: babel-plugin-i18next-extract
-  - stage: deploy
-    displayName: Deploy Project
-    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/releases/'))
-    jobs:
-      - template: .ci/templates/docker-jobs.yml
-        parameters:
-          jobs:
-            - job: deploy
-              displayName: Deploy to NPM
-              steps:
-              - task: DownloadPipelineArtifact@2
-                inputs:
-                  path: lib/
-                  artifact: babel-plugin-i18next-extract
-              - script: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
-                env:
-                  NPM_TOKEN: $(npm.token)
-              - script: |
-                  yarn version --non-interactive --new-version "${VERSION}" --no-git-tag-version
-                  yarn publish --non-interactive
-                env:
-                  VERSION: $(Build.SourceBranchName)
+      - job: test
+        displayName: Run test
+        pool:
+          vmImage: "ubuntu-latest"
+        container: "$[ coalesce(variables.container, 'node:12') ]"
+        strategy:
+          matrix:
+            node10:
+              container: 'node:10'
+            node12:
+              container: 'node:12'
+        steps:
+          - script: yarn install && yarn run test --coverage
 
