@@ -53,7 +53,7 @@ export function parseI18NextOptionsFromCommentHints(
       res.contexts = false;
     } else {
       try {
-        let val = JSON.parse(contextCommentHint.value);
+        const val = JSON.parse(contextCommentHint.value);
         if (Array.isArray(val)) res.contexts = val;
         else res.contexts = [contextCommentHint.value];
       } catch (err) {

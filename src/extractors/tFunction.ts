@@ -127,7 +127,7 @@ export default function extractTFunction(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
   config: Config,
   commentHints: CommentHint[] = [],
-  skipCheck: boolean = false,
+  skipCheck = false,
 ): ExtractedKey[] {
   if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
   if (!skipCheck && !isSimpleTCall(path, config)) return [];
