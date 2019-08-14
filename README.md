@@ -86,7 +86,7 @@ https://babeljs.io/docs/en/configuration) documentation to get started.
 | contextSeparator | `string` | String you want to use to split context from keys. See [i18next Configuration options](https://www.i18next.com/overview/configuration-options#misc) | `'_'` |
 | keySeparator | `string` or `null` | String you want to use to split keys. Set to `null` if you don't want to split your keys or if you want to use keys as value. See [i18next Configuration options](https://www.i18next.com/overview/configuration-options#misc) | `'.'` |
 | nsSeparator | `string` or `null` | String you want to use to split namespace from keys. Set to `null` if you don't want to infer a namespace from key value or if you want to use keys as value. See [i18next Configuration options](https://www.i18next.com/overview/configuration-options#misc) | `':'` |
-| i18nextInstancesNames | `string[]` | Possible names for your `i18next` instances. This will be used to detect `i18next.t` calls. | `['i18next', 'i18n']` |
+| i18nextInstanceNames | `string[]` | Possible names for your `i18next` instances. This will be used to detect `i18next.t` calls. | `['i18next', 'i18n']` |
 | tFunctionNames | `string[]` | Possible names for your `t` functions. This will only be used for direct calls to `t` functions (i.e. `t('key')`, not `foo.t('key')`) and in very last resort. | `['t']` |
 | defaultContexts | `string[]` | Default context keys to create when detecting a translation with context. | `['', '_male', '_female']` |
 | outputPath | `string` | Path where translation keys should be extracted to. You can put `{{ns}}` and `{{locale}}` placeholders in the value to change the location depending on the namespace or the locale. | `extractedTranslations/{{locale}}/{{ns}}.json` |
