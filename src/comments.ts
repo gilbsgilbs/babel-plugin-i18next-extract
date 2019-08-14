@@ -74,10 +74,10 @@ function* extractCommentHintFromBaseComment(
     const keyword = trimmedValue.split(/\s+/)[0];
     const value = trimmedValue.split(/\s+(.+)/)[1] || '';
 
-    for (let [commentHintType, commentHintKeywords] of Object.entries(
+    for (const [commentHintType, commentHintKeywords] of Object.entries(
       COMMENT_HINTS_KEYWORDS,
     )) {
-      for (let [commentHintScope, commentHintKeyword] of Object.entries(
+      for (const [commentHintScope, commentHintKeyword] of Object.entries(
         commentHintKeywords,
       )) {
         if (keyword === commentHintKeyword) {

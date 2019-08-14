@@ -32,3 +32,6 @@ rules:
     - singleQuote: true
       trailingComma: all
       printWidth: 79
+  'prefer-const':
+    - error
+    - destructuring: all
