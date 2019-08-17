@@ -36,7 +36,7 @@ stages:
         parameters:
           jobs:
             - job: test
-              displayName: Run test
+              displayName: Run tests suite
               strategy:
                 matrix:
                   node10:
@@ -48,6 +48,11 @@ stages:
                 - script: yarn add --dev codecov && yarn run codecov
                   env:
                     CODECOV_TOKEN: $(codecov.token)
+            - job: docs
+              displayName: Check documentation is up-to-date
+              steps:
+              - script: cd docs/ && yarn install && yarn run build
+              - script: git add docs/ && git diff --cached --exit-code -- docs/
   - stage: build
     displayName: Build Project
     jobs:

@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "build": "node generateDocs.js",
+    "serve": "docsify serve ."
+  },
+  "devDependencies": {
+    "docsify-cli": "^4.3.0",
+    "js-yaml": "^3.13.1",
+    "nunjucks": "^3.2.0"
+  }
+}
