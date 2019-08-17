@@ -1,3 +1,5 @@
+<!-- THIS FILE WAS GENERATED FROM A TEMPLATE. DO NOT EDIT IT MANUALLY. -->
+
 # babel-plugin-i18next-extract
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -19,10 +21,8 @@ traverse your Javascript/Typescript code in order to find i18next translation ke
 - ☑️ Plurals support.
 - ☑️ Contexts support.
 - ☑️ Namespace detection.
-- ☑️ Disable extraction on a specific file sections or lines using [comment hints](
-  docs/commentHints.md).
-- ☑️ Overwrite namespaces, plurals and contexts on-the-fly using [comment hints](
-  docs/commentHints.md).
+- ☑️ Disable extraction on a specific file sections or lines using [comment hints](commentHints.md).
+- ☑️ Overwrite namespaces, plurals and contexts on-the-fly using [comment hints](commentHints.md).
 - [… and more?](CONTRIBUTING.md)
 
 ## Documentation
@@ -69,8 +69,7 @@ You may want to specify additional configuration options:
 }
 ```
 
-> For an exhaustive list of configuration options, check out the [Configuration](
-docs/configuration.md) page.
+> For an exhaustive list of configuration options, check out the [Configuration](configuration.md) page.
 
 Once the plugin is setup, you can build your app normally or run Babel through [Babel CLI](
 https://babeljs.io/docs/en/babel-cli):
@@ -84,3 +83,4 @@ npm run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
 ```
 
 Extracted translations land in the `extractedTranslations/` directory by default.
+

@@ -1,0 +1,6 @@
+* [Home](/)
+* [Configuration](configuration.md)
+* [Comment Hints](commentHints.md)
+* [Examples](examples.md)
+* [Gotchas](gotchas.md)
+* [Contributing](CONTRIBUTING.md)

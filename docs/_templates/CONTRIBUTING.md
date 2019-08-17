@@ -1,0 +1,1 @@
+{{ includeFile("../CONTRIBUTING.md") }}

@@ -1,3 +1,5 @@
+<!-- THIS FILE WAS GENERATED FROM A TEMPLATE. DO NOT EDIT IT MANUALLY. -->
+
 # Contribution Guide
 
 First of all, thanks for taking time to contribute.
@@ -123,3 +125,4 @@ informed that you're working on it.
 
 If you need any further information or help, do not hesitate to get in touch by opening an issue
 or any other way.
+
