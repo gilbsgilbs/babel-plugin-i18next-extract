@@ -33,5 +33,9 @@ for (const templatePath of templatePaths) {
         }
     }
 
-    fs.writeFileSync(templatePath, env.render(filePath, ctx));
+    const tpl = (
+        '<!-- THIS FILE WAS GENERATED FROM A TEMPLATE. DO NOT EDIT IT MANUALLY. -->\n\n' +
+        fs.readFileSync(filePath, 'utf-8')
+    );
+    fs.writeFileSync(templatePath, env.renderString(tpl, ctx));
 }

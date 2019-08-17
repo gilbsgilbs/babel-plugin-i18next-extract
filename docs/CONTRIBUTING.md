@@ -1,3 +1,5 @@
+<!-- THIS FILE WAS GENERATED FROM A TEMPLATE. DO NOT EDIT IT MANUALLY. -->
+
 # Contribution Guide
 
 First of all, thanks for taking time to contribute.

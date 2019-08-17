@@ -1,3 +1,5 @@
+<!-- THIS FILE WAS GENERATED FROM A TEMPLATE. DO NOT EDIT IT MANUALLY. -->
+
 # Configuration
 
 Here is the exhaustive list of configuration options you can pass to the plugin.
