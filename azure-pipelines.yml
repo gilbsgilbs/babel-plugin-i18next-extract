@@ -28,7 +28,8 @@ stages:
               displayName: Run Yarn Audit
               continueOnError: true
               steps:
-                - script: yarn install && yarn audit --groups dependencies
+                - script: yarn install && yarn audit
+                - script: cd docs && yarn install && yarn audit
   - stage: tests
     displayName: Run tests
     jobs:
