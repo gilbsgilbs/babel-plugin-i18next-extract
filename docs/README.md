@@ -25,10 +25,7 @@ traverse your Javascript/Typescript code in order to find i18next translation ke
 - ☑️ Overwrite namespaces, plurals and contexts on-the-fly using [comment hints](commentHints.md).
 - [… and more?](CONTRIBUTING.md)
 
-## Documentation
-
-You can check out the full documentation at [i18next-extract.netlify.com](
-https://i18next-extract.netlify.com).
+<!--  -->
 
 ## Quick Start
 

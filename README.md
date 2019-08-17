@@ -25,10 +25,15 @@ traverse your Javascript/Typescript code in order to find i18next translation ke
   docs/commentHints.md).
 - [… and more?](CONTRIBUTING.md)
 
+<!-- {% if false %} -->
+<!-- Don't render this in actual documentation -->
+
 ## Documentation
 
 You can check out the full documentation at [i18next-extract.netlify.com](
 https://i18next-extract.netlify.com).
+
+<!-- {% endif %} -->
 
 ## Quick Start
 
