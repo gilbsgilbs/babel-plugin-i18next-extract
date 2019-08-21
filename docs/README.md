@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://dev.azure.com/gilbsgilbert/babel-plugin-i18next-extract/_apis/build/status/gilbsgilbs.babel-plugin-i18next-extract?branchName=master)](https://dev.azure.com/gilbsgilbert/babel-plugin-i18next-extract/_build/latest?definitionId=1&branchName=master)
-[![codecov](https://codecov.io/gh/gilbsgilbs/babel-plugin-i18next-extract/branch/master/graph/badge.svg?token=qPbMt14hUY)](https://codecov.io/gh/gilbsgilbs/babel-plugin-i18next-extract)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/e4badc4fb62625cbff0e/test_coverage)](https://codeclimate.com/github/gilbsgilbs/babel-plugin-i18next-extract/test_coverage)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com) [![Greenkeeper badge](https://badges.greenkeeper.io/gilbsgilbs/babel-plugin-i18next-extract.svg)](https://greenkeeper.io/)
 [![NPM](https://nodei.co/npm/babel-plugin-i18next-extract.png?downloads=true)](https://www.npmjs.com/package/babel-plugin-i18next-extract)
 
