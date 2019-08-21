@@ -45,10 +45,16 @@ stages:
                   node12:
                     container: 'node:12'
               steps:
-                - script: yarn install && yarn run test --coverage
-                - script: yarn add --dev codecov && yarn run codecov
+                - script: >
+                    curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+                    && chmod +x ./cc-test-reporter
+                - script: yarn install
+                - script: >
+                    ./cc-test-reporter before-build
+                    && yarn run test --coverage
+                    && ./cc-test-reporter after-build --exit-code $?
                   env:
-                    CODECOV_TOKEN: $(codecov.token)
+                    CC_TEST_REPORTER_ID: $(codeclimate.token)
             - job: docs
               displayName: Check documentation is up-to-date
               steps:
