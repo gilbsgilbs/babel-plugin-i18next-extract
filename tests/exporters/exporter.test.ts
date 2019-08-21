@@ -5,27 +5,9 @@ import { sync as rimraf } from 'rimraf';
 import exportTranslationKeys, {
   ExportError,
   createExporterCache,
-} from '../src/exporter';
-import { parseConfig } from '../src/config';
-import { TranslationKey } from '../src/keys';
-
-function createSimpleKey(key: string, keyPath: string[] = []): TranslationKey {
-  return {
-    key,
-    keyPath,
-    sourceNodes: [],
-    extractorName: 'anonymous',
-    isDerivedKey: false,
-    parsedOptions: {
-      contexts: false,
-      hasCount: false,
-      ns: null,
-      defaultValue: null,
-    },
-    cleanKey: key,
-    ns: 'translation',
-  };
-}
+} from '../../src/exporters';
+import { parseConfig } from '../../src/config';
+import { createSimpleKey } from './helpers';
 
 describe('Test exporter works', () => {
   const outputDir = path.join(__dirname, '.exporter.extracted');

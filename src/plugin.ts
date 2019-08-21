@@ -11,7 +11,7 @@ import { Config, parseConfig } from './config';
 import exportTranslationKeys, {
   ExporterCache,
   createExporterCache,
-} from './exporter';
+} from './exporters';
 import { PLUGIN_NAME } from './constants';
 import extractWithTranslationHOC from './extractors/withTranslationHOC';
 
