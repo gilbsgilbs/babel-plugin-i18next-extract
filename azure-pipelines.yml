@@ -52,9 +52,11 @@ stages:
                 - script: >
                     ./cc-test-reporter before-build
                     && yarn run test --coverage
-                    && ./cc-test-reporter after-build --exit-code $?
+                    && ./cc-test-reporter after-build --debug --exit-code $?
                   env:
                     CC_TEST_REPORTER_ID: $(codeclimate.token)
+                    GIT_BRANCH: $(Build.SourceBranchName)
+                    GIT_COMMIT_SHA: $(Build.SourceVersion)
             - job: docs
               displayName: Check documentation is up-to-date
               steps:
