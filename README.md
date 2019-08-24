@@ -94,8 +94,5 @@ Extracted translations land in the `extractedTranslations/` directory by default
 
 ### Error: EEXIST: file already exists, mkdir './extractedTranslations/en'
 
-Node 10 has added native support for `mkdir` and `mkdirSync`. We use
-`mkdirSync` to create the extractedTranslations folder. Node 8 would refuse to
-create the folder if it doesn't exist.
-
-If you are having this error, check your node version.
+Make sure your node version is at least 10 by running `node --version`. This plugin doesn't support node 8.
+You can still use [nvm](https://github.com/nvm-sh/nvm) to deal with multiple node versions.
