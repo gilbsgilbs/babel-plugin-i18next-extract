@@ -21,7 +21,7 @@ env.addGlobal(
       return env.renderString(
           fs.readFileSync(src, 'utf-8')
             // Substitute documentation links
-            .replace(/\(\s*https:\/\/i18next-extract\.netlify\.com\/#\/(.+)(\?(?:.+))?\s*\)/gm, '($1$2)'),
+            .replace(/\(\s*https:\/\/i18next-extract\.netlify\.com\/#\/([^)]+(?:\?[^)]+)?)\s*\)/gm, '($1)'),
           ctx,
       );
   }

@@ -11,8 +11,8 @@ I'd be more than happy to merge it.
 
 ### Know your basics
 
-If you've never contributed to a babel plugin before, the [Babel Plugin Handbook
-](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md) is
+If you've never contributed to a babel plugin before, the [Babel Plugin Handbook](
+https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md) is
 the place to start. Unfortuntely, the plugin API is not really well documented at the moment, so
 you'll probably have to play around, dig into Babel source code and StackOverflow a bit. [
 AST Explorer](https://astexplorer.net/) might also be of help.
@@ -109,6 +109,12 @@ informed that you're working on it.
       `ExtractionError` class that is thrown with an explicit error message when an error occurs
       within an extractor.
     - Other files are just extractors for different type of nodes.
+- `exporters/`: contains code related to exporting extracted translations to files.
+    - `commons.ts`: Types and exceptions definitions for extractors.
+    - `index.ts`: Entrypoint for exporters. Calls and uses the proper extractor implementation
+      (only JSONv3 at the moment).
+    - `jsonv3.ts`: [JSONv3](https://www.i18next.com/misc/json-format#i-18-next-json-v3) extractor
+      implementation.
 - `comments.ts` parses the comment hints.
 - `config.ts` parses babel configuration options.
 - `constants.ts` exports constants that may be re-used across the project. It's mainly there to
