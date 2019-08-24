@@ -89,3 +89,11 @@ npm run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
 ```
 
 Extracted translations land in the `extractedTranslations/` directory by default.
+
+### Troubleshooting
+
+## Error: EEXIST: file already exists, mkdir './extractedTranslations/en'
+
+Node 10 has added native support for `mkdir` and `mkdirSync`. We use
+`mkdirSync` to create the extractedTranslations folder. If you are having this
+error, check your node version.
