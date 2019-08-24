@@ -57,11 +57,6 @@ stages:
                     CC_TEST_REPORTER_ID: $(codeclimate.token)
                     GIT_BRANCH: $(Build.SourceBranchName)
                     GIT_COMMIT_SHA: $(Build.SourceVersion)
-            - job: docs
-              displayName: Check documentation is up-to-date
-              steps:
-              - script: cd docs/ && yarn install && yarn run build
-              - script: git add docs/ && git diff --cached --exit-code -- docs/
   - stage: build
     displayName: Build Project
     jobs:

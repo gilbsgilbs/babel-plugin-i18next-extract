@@ -1,0 +1,6 @@
+* [Home](/)
+* [Configuration](configuration)
+* [Comment Hints](comment-hints)
+* [Examples](examples)
+* [Frequently Asked Questions](faq)
+* [Contributing](contributing)
