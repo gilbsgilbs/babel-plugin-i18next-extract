@@ -80,8 +80,8 @@ issues and code style using `yarn run lint --fix`.
 
 The documentation must reflect the changes you made if you added or changed something.
 
-- If you added or changed an option, update `docs/_templates/configuration.md.yml` accordingly.
-- Make any relevant changes to the other files in `docs/*.md`.
+- If you added or changed an option, update `docs/templates/configuration.md.yml` accordingly.
+- Make any relevant changes to the other files in `docs/templates/*.md`.
 - Build the whole doc by running `cd docs/ && yarn install && yarn run build`.
 - Check that it looks good: `yarn run serve`.
 - Commit all the changes you made to `docs/`.

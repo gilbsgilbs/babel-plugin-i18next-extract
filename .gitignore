@@ -95,3 +95,6 @@ typings/
 
 # Test files
 /tests/**/*.extracted/
+
+# Documentation build
+_build/

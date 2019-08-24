@@ -3,7 +3,16 @@ const nunjucks = require('nunjucks');
 const path = require('path');
 const yaml = require('js-yaml');
 
-const TEMPLATES_PATH = './_templates';
+const OUTPUT_PATH = './_build';
+const TEMPLATES_PATH = './templates';
+
+try {
+  fs.mkdirSync(OUTPUT_PATH);
+} catch (err) {
+  if (err.code !== 'EEXIST') {
+    throw err;
+  }
+}
 
 const env = new nunjucks.Environment(new nunjucks.FileSystemLoader('.'), {autoescape: false});
 env.addGlobal(
@@ -12,13 +21,15 @@ env.addGlobal(
       return env.renderString(
           fs.readFileSync(src, 'utf-8')
             // Substitute documentation links
-            .replace(/\(\s*docs\/([^)]+\.md)\s*\)/gm, '($1)'),
+            .replace(/\(\s*https:\/\/i18next-extract\.netlify\.com\/#\/(.+)(\?(?:.+))?\s*\)/gm, '($1$2)'),
           ctx,
       );
   }
 );
 
-const templatePaths = fs.readdirSync(TEMPLATES_PATH).filter(s => s.endsWith('.md'));
+const templatePaths = fs.readdirSync(TEMPLATES_PATH).filter(
+    s => s.endsWith('.md') || s.endsWith('.html')
+);
 
 for (const templatePath of templatePaths) {
     console.log(`Rendering ${templatePath}.`);
@@ -35,8 +46,9 @@ for (const templatePath of templatePaths) {
     }
 
     const tpl = (
-        '<!-- THIS FILE WAS GENERATED FROM A TEMPLATE. DO NOT EDIT IT MANUALLY. -->\n\n' +
+        '<!-- THIS FILE WAS GENERATED FROM A TEMPLATE. DO NOT EDIT IT MANUALLY. -->\n' +
+        '<!-- Read CONTRIBUTING.md for more information. -->\n\n' +
         fs.readFileSync(filePath, 'utf-8')
     );
-    fs.writeFileSync(templatePath, env.renderString(tpl, ctx));
+    fs.writeFileSync(path.join(OUTPUT_PATH, templatePath), env.renderString(tpl, ctx));
 }

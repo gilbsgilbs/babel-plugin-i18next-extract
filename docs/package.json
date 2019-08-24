@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "node generateDocs.js",
-    "serve": "live-server"
+    "serve": "live-server _build/"
   },
   "devDependencies": {
     "js-yaml": "^3.13.1",

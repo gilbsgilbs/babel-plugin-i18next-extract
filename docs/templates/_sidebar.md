@@ -1,6 +1,6 @@
 * [Home](/)
 * [Configuration](configuration.md)
-* [Comment Hints](commentHints.md)
+* [Comment Hints](comment-hints.md)
 * [Examples](examples.md)
 * [Gotchas](gotchas.md)
-* [Contributing](CONTRIBUTING.md)
+* [Contributing](contributing.md)
