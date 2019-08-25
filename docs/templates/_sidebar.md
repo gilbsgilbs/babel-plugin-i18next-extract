@@ -1,6 +1,6 @@
 <div style="text-align: center;">
 
-# babel-plugin-i18next-extract
+### babel-plugin-i18next-extract
 
 </div>
 
