@@ -1,10 +1,14 @@
+<!-- {% if false %} -->
+<!-- Don't render this in actual documentation -->
+![Logo](./docs/assets/imgs/babel-plugin-i18next-extract.png)
+<!-- {% endif %} -->
+
 # babel-plugin-i18next-extract
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://dev.azure.com/gilbsgilbert/babel-plugin-i18next-extract/_apis/build/status/gilbsgilbs.babel-plugin-i18next-extract?branchName=master)](https://dev.azure.com/gilbsgilbert/babel-plugin-i18next-extract/_build/latest?definitionId=1&branchName=master)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/c3597f83-d80e-428e-b194-f11fe162a893/deploy-status)](https://app.netlify.com/sites/i18next-extract/deploys)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/e4badc4fb62625cbff0e/test_coverage)](https://codeclimate.com/github/gilbsgilbs/babel-plugin-i18next-extract/test_coverage)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 [![Greenkeeper badge](https://badges.greenkeeper.io/gilbsgilbs/babel-plugin-i18next-extract.svg)](https://greenkeeper.io/)
 
 [![NPM](https://nodei.co/npm/babel-plugin-i18next-extract.png?downloads=true)](https://www.npmjs.com/package/babel-plugin-i18next-extract)
