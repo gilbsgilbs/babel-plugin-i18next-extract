@@ -67,7 +67,7 @@
     "typescript": "^3.5.2"
   },
   "scripts": {
-    "lint": "eslint --ext=.ts,.js,.tsx,.jsx src tests rollup.config.js",
+    "lint": "eslint --ext=.ts,.js,.tsx,.jsx src docs tests rollup.config.js",
     "types": "tsc --noEmit",
     "build": "${npm_execpath} run build:clean && ${npm_execpath} run build:types && ${npm_execpath} run build:js",
     "build:clean": "rimraf lib/",
