@@ -119,7 +119,6 @@ informed that you're working on it.
 - `config.ts` parses babel configuration options.
 - `constants.ts` exports constants that may be re-used across the project. It's mainly there to
   avoir cyclic dependencies.
-- `exporter.ts` exports JSON files after the keys are extracted.
 - `index.ts` exports the plugin for Babel.
 - `keys.ts` perform operations on extracted keys (keys derivation from plural forms or context,
   namespace inference from key value, …).

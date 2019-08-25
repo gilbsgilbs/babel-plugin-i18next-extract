@@ -14,7 +14,7 @@ i18next.t(`error.${code}`);
 If you try to extract keys from this code, the plugin will issue a warning because it won't be
 able to infer the translations statically. If you really want to specify variable keys, you should
 skip them with a [comment hint](
-comment-hints.md?id=disable-extraction-on-a-specific-line-or-code-section). The same goes for
+comment-hints?id=disable-extraction-on-a-specific-line-or-code-section). The same goes for
 plural forms, context and namespace detection:
 
 ```javascript

@@ -26,7 +26,7 @@ traverse your Javascript/Typescript code in order to find i18next translation ke
   https://i18next-extract.netlify.com/#/comment-hints?id=disable-extraction-on-a-specific-line-or-code-section).
 - ☑️ Overwrite namespaces, plurals and contexts on-the-fly using [comment hints](
   https://i18next-extract.netlify.com/#/comment-hints?id=explicitly-specify-contexts-for-a-key).
-- [… and more?](https://i18next-extract.netlify.com/#/contributing.md)
+- [… and more?](https://i18next-extract.netlify.com/#/contributing)
 
 <!-- {% if false %} -->
 <!-- Don't render this in actual documentation -->
