@@ -19,6 +19,7 @@ export interface Config {
   keyAsDefaultValueForDerivedKeys: boolean;
   discardOldKeys: boolean;
   jsonSpace: string | number;
+  appendNewLineAtEndOfFile: boolean;
 }
 
 function coalesce<T>(v: T | undefined, defaultVal: T): T {
@@ -67,5 +68,6 @@ export function parseConfig(opts: Partial<Config>): Config {
     ),
     discardOldKeys: coalesce(opts.discardOldKeys, false),
     jsonSpace: coalesce(opts.jsonSpace, 2),
+    appendNewLineAtEndOfFile: coalesce(opts.appendNewLineAtEndOfFile, false),
   };
 }

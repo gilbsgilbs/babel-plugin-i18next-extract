@@ -165,5 +165,8 @@ export default function exportTranslationKeys(
         encoding: 'utf8',
       },
     );
+    if (config.appendNewLineAtEndOfFile) {
+      fs.appendFileSync(filePath, '\n');
+    }
   }
 }
