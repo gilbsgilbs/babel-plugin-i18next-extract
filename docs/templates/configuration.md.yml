@@ -207,3 +207,7 @@ configOptions:
     type: "number"
     description: Number of indentation space to use in extracted JSON files.
     defaultValue: "2"
+  - name: appendNewLineAtEndOfFile
+    type: "boolean"
+    description: When set to `true`, the exported file would include a new line character at the end.
+    defaultValue: "false"
