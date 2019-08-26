@@ -114,4 +114,24 @@ describe('Test exporter works', () => {
       newKey2: '',
     });
   });
+
+  it('wont include a new line character at the end of the file by default', () => {
+    const outputPath = path.join(outputDir, 'new_line_at_end.json');
+    const config = parseConfig({ outputPath });
+    const key = createSimpleKey('key0');
+    exportTranslationKeys([key], 'fr', config, createExporterCache());
+    const output = fs.readFileSync(outputPath, { encoding: 'utf-8' });
+    expect(output.charAt(output.length - 1)).toEqual('}');
+    expect(fs.readJSONSync(outputPath)).toEqual({ key0: '' });
+  });
+
+  it('can include a new line character at the end of the exported file', () => {
+    const outputPath = path.join(outputDir, 'new_line_at_end.json');
+    const config = parseConfig({ outputPath, appendNewLineAtEndOfFile: true });
+    const key = createSimpleKey('key0');
+    exportTranslationKeys([key], 'fr', config, createExporterCache());
+    const output = fs.readFileSync(outputPath, { encoding: 'utf-8' });
+    expect(output.charAt(output.length - 1)).toEqual('\n');
+    expect(fs.readJSONSync(outputPath)).toEqual({ key0: '' });
+  });
 });
