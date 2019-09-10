@@ -15,7 +15,7 @@ interface BaseCommentHint {
   type: CommentHintType;
   scope: CommentHintScope;
   value: string;
-  baseComment: BabelTypes.BaseComment;
+  comment: BabelTypes.Comment;
 }
 
 /**
@@ -62,14 +62,14 @@ export const COMMENT_HINTS_KEYWORDS: {
 };
 
 /**
- * Given a Babel BaseComment, extract base comment hints.
- * @param baseComment babel comment
+ * Given a Babel Comment, extract BaseCommentHints.
+ * @param comment babel comment
  * @yields Comment hint without line interval information.
  */
-function* extractCommentHintFromBaseComment(
-  baseComment: BabelTypes.BaseComment,
+function* extractCommentHintsFromBabelComment(
+  comment: BabelTypes.Comment,
 ): IterableIterator<BaseCommentHint> {
-  for (const line of baseComment.value.split(/\r?\n/)) {
+  for (const line of comment.value.split(/\r?\n/)) {
     const trimmedValue = line.trim();
     const keyword = trimmedValue.split(/\s+/)[0];
     const value = trimmedValue.split(/\s+(.+)/)[1] || '';
@@ -85,7 +85,7 @@ function* extractCommentHintFromBaseComment(
             type: commentHintType as CommentHintType,
             scope: commentHintScope as CommentHintScope,
             value,
-            baseComment: baseComment,
+            comment,
           };
         }
       }
@@ -106,23 +106,23 @@ function computeCommentHintsIntervals(
   for (const commentHint of commentHints) {
     if (commentHint.scope === 'LINE') {
       result.push({
-        startLine: commentHint.baseComment.loc.start.line,
-        stopLine: commentHint.baseComment.loc.start.line,
+        startLine: commentHint.comment.loc.start.line,
+        stopLine: commentHint.comment.loc.start.line,
         ...commentHint,
       });
     }
 
     if (commentHint.scope === 'NEXT_LINE') {
       result.push({
-        startLine: commentHint.baseComment.loc.end.line + 1,
-        stopLine: commentHint.baseComment.loc.end.line + 1,
+        startLine: commentHint.comment.loc.end.line + 1,
+        stopLine: commentHint.comment.loc.end.line + 1,
         ...commentHint,
       });
     }
 
     if (commentHint.scope === 'SECTION_START') {
       result.push({
-        startLine: commentHint.baseComment.loc.start.line,
+        startLine: commentHint.comment.loc.start.line,
         stopLine: Infinity,
         ...commentHint,
       });
@@ -135,7 +135,7 @@ function computeCommentHintsIntervals(
           res.scope === 'SECTION_START' &&
           res.stopLine === Infinity
         ) {
-          res.stopLine = commentHint.baseComment.loc.start.line;
+          res.stopLine = commentHint.comment.loc.start.line;
         }
       }
     }
@@ -146,15 +146,15 @@ function computeCommentHintsIntervals(
 
 /**
  * Given Babel comments, extract the comment hints.
- * @param baseComments Babel comments (ordered by line)
+ * @param comments Babel comments (ordered by line)
  */
 export function parseCommentHints(
-  baseComments: BabelTypes.BaseComment[],
+  comments: BabelTypes.Comment[],
 ): CommentHint[] {
   const baseCommentHints = Array<BaseCommentHint>();
 
-  for (const baseComment of baseComments) {
-    baseCommentHints.push(...extractCommentHintFromBaseComment(baseComment));
+  for (const comment of comments) {
+    baseCommentHints.push(...extractCommentHintsFromBabelComment(comment));
   }
 
   return computeCommentHintsIntervals(baseCommentHints);

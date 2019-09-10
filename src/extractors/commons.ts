@@ -86,6 +86,7 @@ export function referencesImport(
     const obj = nodePath.get('object');
     const prop = nodePath.get('property');
     if (
+      Array.isArray(obj) ||
       Array.isArray(prop) ||
       (!prop.isIdentifier() && !prop.isJSXIdentifier())
     )
