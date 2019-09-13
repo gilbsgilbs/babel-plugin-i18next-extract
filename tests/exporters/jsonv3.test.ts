@@ -7,25 +7,37 @@ describe('Test JSONv3 exporter', () => {
   const config = parseConfig({ jsonSpace: 0 });
 
   it('can init', () => {
-    expect(jsonv3Exporter.init({ config })).toEqual({});
+    expect(jsonv3Exporter.init({ config })).toEqual({
+      whitespacesBefore: '',
+      whitespacesAfter: '\n',
+      content: {},
+    });
   });
 
   it('can parse', () => {
     expect(
       jsonv3Exporter.parse({
         config,
-        content: '{"hello": "world"}',
+        content: '\n\n\t\r\n  {"hello": "world"}\n\t  \r\n',
       }),
-    ).toEqual({ hello: 'world' });
+    ).toEqual({
+      whitespacesBefore: '\n\n\t\r\n  ',
+      whitespacesAfter: '\n\t  \r\n',
+      content: { hello: 'world' },
+    });
   });
 
   it('can stringify', () => {
     expect(
       jsonv3Exporter.stringify({
         config,
-        file: { hello: 'world' },
+        file: {
+          whitespacesBefore: '\n\n\t\r\n  ',
+          whitespacesAfter: '\n\t  \r\n',
+          content: { hello: 'world' },
+        },
       }),
-    ).toEqual('{"hello":"world"}');
+    ).toEqual('\n\n\t\r\n  {"hello":"world"}\n\t  \r\n');
   });
 
   it('can stringify with custom spacing', () => {
@@ -33,7 +45,11 @@ describe('Test JSONv3 exporter', () => {
     expect(
       jsonv3Exporter.stringify({
         config,
-        file: { hello: 'world' },
+        file: {
+          whitespacesBefore: '',
+          whitespacesAfter: '',
+          content: { hello: 'world' },
+        },
       }),
     ).toEqual('{\n  "hello": "world"\n}');
   });
@@ -44,7 +60,11 @@ describe('Test JSONv3 exporter', () => {
         config,
         keyPath: [],
         cleanKey: 'hello',
-        file: { hello: 'world' },
+        file: {
+          whitespacesBefore: '',
+          whitespacesAfter: '',
+          content: { hello: 'world' },
+        },
       }),
     ).toEqual('world');
   });
@@ -55,7 +75,11 @@ describe('Test JSONv3 exporter', () => {
         config,
         keyPath: ['hello'],
         cleanKey: 'new',
-        file: { hello: { new: 'world' } },
+        file: {
+          whitespacesBefore: '',
+          whitespacesAfter: '',
+          content: { hello: { new: 'world' } },
+        },
       }),
     ).toEqual('world');
   });
@@ -66,7 +90,11 @@ describe('Test JSONv3 exporter', () => {
         config,
         keyPath: ['what'],
         cleanKey: 'new',
-        file: { hello: { notSoNew: 'world' } },
+        file: {
+          whitespacesBefore: '',
+          whitespacesAfter: '',
+          content: { hello: { notSoNew: 'world' } },
+        },
       }),
     ).toBeUndefined();
   });
@@ -77,7 +105,11 @@ describe('Test JSONv3 exporter', () => {
         config,
         keyPath: [],
         cleanKey: 'hello',
-        file: { hello: { new: 'world' } },
+        file: {
+          whitespacesBefore: '',
+          whitespacesAfter: '',
+          content: { hello: { new: 'world' } },
+        },
       }),
     ).toThrow(ConflictError);
 
@@ -86,7 +118,11 @@ describe('Test JSONv3 exporter', () => {
         config,
         keyPath: ['hello'],
         cleanKey: 'world',
-        file: { hello: null },
+        file: {
+          whitespacesBefore: '',
+          whitespacesAfter: '',
+          content: { hello: null },
+        },
       }),
     ).toThrow(ConflictError);
   });
@@ -95,10 +131,10 @@ describe('Test JSONv3 exporter', () => {
     expect(
       jsonv3Exporter.addKey({
         config,
-        file: {},
+        file: { whitespacesBefore: '', whitespacesAfter: '', content: {} },
         key: createSimpleKey('hello'),
         value: 'world',
-      }),
+      }).content,
     ).toEqual({ hello: 'world' });
   });
 
@@ -106,10 +142,10 @@ describe('Test JSONv3 exporter', () => {
     expect(
       jsonv3Exporter.addKey({
         config,
-        file: {},
+        file: { whitespacesBefore: '', whitespacesAfter: '', content: {} },
         key: createSimpleKey('new', ['hello', 'brave']),
         value: 'world',
-      }),
+      }).content,
     ).toEqual({ hello: { brave: { new: 'world' } } });
   });
 
@@ -117,7 +153,11 @@ describe('Test JSONv3 exporter', () => {
     expect(() =>
       jsonv3Exporter.addKey({
         config,
-        file: { hello: { brave: 'world' } },
+        file: {
+          whitespacesBefore: '',
+          whitespacesAfter: '',
+          content: { hello: { brave: 'world' } },
+        },
         key: createSimpleKey('new', ['hello', 'brave']),
         value: 'world',
       }),
