@@ -1,0 +1,9 @@
+{
+  "description": "test that i18next can deal with single spaces correctly",
+  "pluginOptions": {
+    "useI18nextDefaultValue": true
+  },
+  "expectValues": {
+    "key1": "I read the <2>TOS</2> and the <6>Privacy Policy</6> and accept them."
+  }
+}

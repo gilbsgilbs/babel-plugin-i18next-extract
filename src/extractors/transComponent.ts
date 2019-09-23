@@ -146,24 +146,10 @@ function parseTransComponentKeyFromChildren(
   let children = path.get('children');
   let result = '';
 
-  // Remove trailing empty JSXText nodes. They should not be taken into
-  // account for the indices.
-  const firstChild = children[0];
-  if (
-    firstChild &&
-    firstChild.isJSXText() &&
-    firstChild.node.value.trim() === ''
-  ) {
-    children = children.slice(1);
-  }
-  const lastChild = children[children.length - 1];
-  if (
-    lastChild &&
-    lastChild.isJSXText() &&
-    lastChild.node.value.trim() === ''
-  ) {
-    children = children.slice(0, children.length - 1);
-  }
+  // Remove empty JSXText nodes. They should not be taken into account for the indices.
+  children = children.filter(child => {
+    return !(child.isJSXText() && child.node.value.trim() === '');
+  });
 
   // Filter out empty containers. They do not affect indices.
   children = children.filter(p => {
