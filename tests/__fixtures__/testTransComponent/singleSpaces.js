@@ -3,7 +3,7 @@ import { Trans } from "react-i18next";
 <Trans i18nKey="key1">
   I read the{" "}
   <a
-    href="https://www.polymore.com/tos"
+    href="https://www.example.com/tos"
     target="_blank"
     rel="noopener noreferrer"
   >
@@ -11,7 +11,7 @@ import { Trans } from "react-i18next";
   </a>{" "}
   and the{" "}
   <a
-    href="https://www.polymore.com/privacy"
+    href="https://www.example.com/privacy"
     target="_blank"
     rel="noopener noreferrer"
   >
