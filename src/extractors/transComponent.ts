@@ -106,6 +106,7 @@ function parseTransComponentKeyFromAttributes(
       `make the i18nKey attribute evaluable or skip the line using a skip ` +
       `comment (/* ${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
       `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
+    path,
   );
 
   const keyAttribute = findJSXAttributeByName(path, 'i18nKey');
@@ -141,6 +142,7 @@ function parseTransComponentKeyFromChildren(
       `component content evaluable or skip the line using a skip comment ` +
       `(/* ${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
       `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
+    path,
   );
 
   let children = path.get('children');
