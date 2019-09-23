@@ -16,3 +16,10 @@ export function MyComponent3() {
   const [t] = useTranslation(foo);
   return <p>{t('key0')}</p>
 }
+
+export function MyComponent4() {
+  // see https://github.com/gilbsgilbs/babel-plugin-i18next-extract/issues/69
+  const { t } = useTranslation('ns3');
+  someFunc(t);
+  return <p>{t('key0')}</p>
+}
