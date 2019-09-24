@@ -99,6 +99,7 @@ function extractTCall(
         `evaluable or skip the line using a skip comment (/* ` +
         `${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
         `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
+      path,
     );
   }
 

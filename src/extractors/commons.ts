@@ -6,7 +6,14 @@ import { ExtractedKey } from '../keys';
 /**
  * Error thrown in case extraction of a node failed.
  */
-export class ExtractionError extends Error {}
+export class ExtractionError extends Error {
+  nodePath: BabelCore.NodePath;
+
+  constructor(message: string, node: BabelCore.NodePath) {
+    super(message);
+    this.nodePath = node;
+  }
+}
 
 /**
  * Given a value, if the value is an array, return the first
