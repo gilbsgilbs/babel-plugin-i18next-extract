@@ -47,7 +47,6 @@ function handleExtraction<T>(
   callback: (collect: (keys: ExtractedKey[]) => void) => T,
 ): T | undefined {
   const filename = (state.file && state.file.opts.filename) || '???';
-  const lineNumber = (path.node.loc && path.node.loc.start.line) || '???';
   const extractState = state.I18NextExtract;
 
   const collect = (newKeysCandidates: ExtractedKey[]): void => {
@@ -93,6 +92,8 @@ function handleExtraction<T>(
       throw err;
     }
 
+    const lineNumber =
+      (err.nodePath.node.loc && err.nodePath.node.loc.start.line) || '???';
     // eslint-disable-next-line no-console
     console.warn(
       `${PLUGIN_NAME}: Extraction error in ${filename} at line ` +
