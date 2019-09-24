@@ -58,7 +58,10 @@ export default function extractUseTranslationHook(
 
   let keys = Array<ExtractedKey>();
   for (const reference of tBinding.referencePaths) {
-    if (reference.parentPath.isCallExpression()) {
+    if (
+      reference.parentPath.isCallExpression() &&
+      reference.parentPath.get('callee') === reference
+    ) {
       keys = [
         ...keys,
         ...extractTFunction(

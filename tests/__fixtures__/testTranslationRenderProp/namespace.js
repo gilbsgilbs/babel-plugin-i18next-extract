@@ -41,3 +41,15 @@ const comp4 = (
     }
   </Translation>
 );
+
+const comp5 = (
+  // see https://github.com/gilbsgilbs/babel-plugin-i18next-extract/issues/69
+  <Translation ns='nsPartial'>
+    {
+      (t) => {
+        foobar(t);
+        return t('hello world');
+      }
+    }
+  </Translation>
+);
