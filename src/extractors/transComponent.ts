@@ -14,6 +14,7 @@ import {
   iterateObjectExpression,
   referencesImport,
   parseI18NextOptionsFromCommentHints,
+  resolveIdentifier,
 } from './commons';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
@@ -173,8 +174,9 @@ function formatJSXElementKey(
  */
 function parseTransComponentKeyFromChildren(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
+  config: Config,
 ): string {
-  const error = new ExtractionError(
+  const transComponentExtractionError = new ExtractionError(
     `Couldn't evaluate i18next key in Trans component. You should either ` +
       `set the i18nKey attribute to an evaluable value, or make the Trans ` +
       `component content evaluable or skip the line using a skip comment ` +
@@ -218,7 +220,7 @@ function parseTransComponentKeyFromChildren(
         if (!key0 || !it.next().done) {
           // Probably got empty object expression like {{}}
           // or {{foo,bar}}
-          throw error;
+          throw transComponentExtractionError;
         }
         result += `{{${key0[0]}}}`;
         continue;
@@ -227,31 +229,20 @@ function parseTransComponentKeyFromChildren(
       if (expression.isIdentifier()) {
         // We have an identifier like {myPartialComponent}
         // We try to find the latest declaration and substitute the identifier.
-        const bindings = expression.scope.bindings[expression.node.name];
-        if (!bindings) throw error;
-
-        const declarationExpressions = [
-          ...(bindings.path.isVariableDeclarator()
-            ? [bindings.path.get('init')]
-            : []),
-          ...bindings.constantViolations
-            .filter(p => p.isAssignmentExpression())
-            .map(p => p.get('right')),
-        ];
-        if (declarationExpressions.length === 0) throw error;
-        const latestDeclarator =
-          declarationExpressions[declarationExpressions.length - 1];
-        if (Array.isArray(latestDeclarator)) throw error;
-        const evaluation = evaluateIfConfident(latestDeclarator);
+        const declarationExpression = resolveIdentifier(expression);
+        const evaluation = evaluateIfConfident(declarationExpression);
         if (evaluation !== null) {
           // It could be evaluated, it's probably something like 'hello'
           result += evaluation;
           continue;
-        } else if (latestDeclarator.isJSXElement()) {
+        } else if (
+          declarationExpression !== null &&
+          declarationExpression.isJSXElement()
+        ) {
           // It's a JSX element. Let's act as if it was inline and move along.
-          child = latestDeclarator;
+          child = declarationExpression;
         } else {
-          throw error;
+          throw transComponentExtractionError;
         }
       }
     }

@@ -202,3 +202,41 @@ export function findJSXAttributeByName(
 
   return null;
 }
+
+/**
+ * Attempt to find the latest assigned value for a given identifier.
+ *
+ * For instance, given the following code:
+ *   const foo = 'bar';
+ *   console.log(foo);
+ *
+ * resolveIdentifier(fooNodePath) should return the 'bar' literal.
+ *
+ * Obviously, this will only work in quite simple cases.
+ *
+ * @param nodePath: node path to resolve
+ * @return the resolved expression or null if it could not be resolved.
+ */
+export function resolveIdentifier(
+  nodePath: BabelCore.NodePath<BabelTypes.Identifier>,
+): BabelCore.NodePath<BabelTypes.Expression> | null {
+  const bindings = nodePath.scope.bindings[nodePath.node.name];
+  if (!bindings) return null;
+
+  const declarationExpressions = [
+    ...(bindings.path.isVariableDeclarator()
+      ? [bindings.path.get('init')]
+      : []),
+    ...bindings.constantViolations
+      .filter(p => p.isAssignmentExpression())
+      .map(p => p.get('right')),
+  ];
+  if (declarationExpressions.length === 0) return null;
+
+  const latestDeclarator =
+    declarationExpressions[declarationExpressions.length - 1];
+  if (Array.isArray(latestDeclarator)) return null;
+  if (!latestDeclarator.isExpression()) return null;
+
+  return latestDeclarator;
+}
