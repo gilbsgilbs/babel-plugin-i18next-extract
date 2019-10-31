@@ -71,26 +71,4 @@ stages:
                 inputs:
                   targetPath: lib/
                   artifactName: babel-plugin-i18next-extract
-  - stage: deploy
-    displayName: Deploy Project
-    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/releases/'))
-    jobs:
-      - template: .ci/templates/docker-jobs.yml
-        parameters:
-          jobs:
-            - job: deploy
-              displayName: Deploy to NPM
-              steps:
-              - task: DownloadPipelineArtifact@2
-                inputs:
-                  path: lib/
-                  artifact: babel-plugin-i18next-extract
-              - script: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
-                env:
-                  NPM_TOKEN: $(npm.token)
-              - script: |
-                  yarn version --non-interactive --new-version "${VERSION}" --no-git-tag-version
-                  yarn publish --non-interactive
-                env:
-                  VERSION: $(Build.SourceBranchName)
 
