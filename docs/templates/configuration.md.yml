@@ -30,6 +30,12 @@ configOptions:
     type: "string|null"
     description: String you want to use to split namespace from keys. Set to `null` if you don't want to infer a namespace from key value or if you want to use keys as value. See [i18next Configuration options](https://www.i18next.com/overview/configuration-options#misc).
     defaultValue: "':'"
+  - name: transKeepBasicHtmlNodesFor
+    type: "string[]"
+    description: >
+      List of tag names that shouldn't be converted to indices when exporting `Trans` component.
+      The value of this option should reflect the react-i18next configuration in your codebase. See [react-i18next Trans Component](https://react.i18next.com/latest/trans-component#additional-options-on-i-18-next-init).
+    defaultValue: "['br', 'strong', 'i', 'p']"
   - name: i18nextInstanceNames
     type: "string[]"
     description: Possible names for your `i18next` instances. This will be used to detect `i18next.t` calls.
