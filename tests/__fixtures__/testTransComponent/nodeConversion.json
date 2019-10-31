@@ -8,8 +8,8 @@
   "expectValues": {
     "Hello <1>{{name}}</1>, you have {{count}} unread message. <5>Go to messages</5>.": "",
     "Hello <1>{{name}}</1>, you have {{count}} unread message. <5>Go to messages</5>._plural": "",
-    "Hello <1>{{name}}</1>, you are strong.": "",
-    "Hi <1>{{name}}<1></1>, how<3> are you doing?": "",
+    "Hello <strong>{{name}}</strong>, you are strong.": "",
+    "Hi <1>{{name}}<br/></1>, how<3></3> are you doing?": "",
     "nameTitle": ""
   }
 }

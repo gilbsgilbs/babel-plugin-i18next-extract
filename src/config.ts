@@ -6,6 +6,7 @@ export interface Config {
   contextSeparator: string;
   keySeparator: string | null;
   nsSeparator: string | null;
+  transKeepBasicHtmlNodesFor: string[];
 
   // plugin-specific options
   i18nextInstanceNames: string[];
@@ -40,6 +41,13 @@ export function parseConfig(opts: Partial<Config>): Config {
     contextSeparator: coalesce(opts.contextSeparator, '_'),
     keySeparator: coalesce(opts.keySeparator, '.'),
     nsSeparator: coalesce(opts.nsSeparator, ':'),
+    // From react-i18next: https://github.com/i18next/react-i18next/blob/90f0e44ac2710ae422f1e8b0270de95fedc6429c/react-i18next.js#L334
+    transKeepBasicHtmlNodesFor: coalesce(opts.transKeepBasicHtmlNodesFor, [
+      'br',
+      'strong',
+      'i',
+      'p',
+    ]),
 
     i18nextInstanceNames: coalesce(opts.i18nextInstanceNames, [
       'i18next',

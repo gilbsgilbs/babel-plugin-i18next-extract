@@ -16,7 +16,7 @@ function foo() {
 // As well as complex references.
 const complexRef = (
   <div>
-    <strong>Deep reference</strong>
+    <u>Deep reference</u>
   </div>
 );
 const trans1 = (

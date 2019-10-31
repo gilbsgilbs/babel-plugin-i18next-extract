@@ -127,6 +127,44 @@ function parseTransComponentKeyFromAttributes(
 }
 
 /**
+ * Format the key of a JSX element.
+ *
+ * @param path node path of the JSX element to format.
+ * @param index the current index of the node being parsed.
+ * @param config plugin configuration.
+ */
+function formatJSXElementKey(
+  path: BabelCore.NodePath<BabelTypes.JSXElement>,
+  index: number,
+  config: Config,
+): string {
+  const openingElement = path.get('openingElement');
+  const closingElement = path.get('closingElement');
+  let resultTagName = `${index}`; // Tag name we will use in the exported file
+
+  const tagName = openingElement.get('name');
+  if (
+    openingElement.get('attributes').length === 0 &&
+    tagName.isJSXIdentifier() &&
+    config.transKeepBasicHtmlNodesFor.includes(tagName.node.name)
+  ) {
+    // The tag name should not be transformed to an index
+    resultTagName = tagName.node.name;
+
+    if (closingElement.node === null) {
+      // opening tag without closing tag (e.g. <br />)
+      return `<${resultTagName}/>`;
+    }
+  }
+
+  // it's nested. let's recurse.
+  return `<${resultTagName}>${parseTransComponentKeyFromChildren(
+    path,
+    config,
+  )}</${resultTagName}>`;
+}
+
+/**
  * Given the node path of a Trans component, try to extract its key from its
  *   children.
  * @param path node path of the Trans component.
@@ -234,14 +272,7 @@ function parseTransComponentKeyFromChildren(
 
     if (child.isJSXElement()) {
       // got a JSX element.
-      if (child.get('closingElement').node === null) {
-        // opening tag without closing tag (e.g. <br />)
-        result += `<${i}>`;
-        continue;
-      }
-
-      // it's nested. let's recurse.
-      result += `<${i}>${parseTransComponentKeyFromChildren(child)}</${i}>`;
+      result += formatJSXElementKey(child, i, config);
       continue;
     }
   }
@@ -268,7 +299,10 @@ export default function extractTransComponent(
   const keyEvaluationFromAttribute = parseTransComponentKeyFromAttributes(
     path,
   );
-  const keyEvaluationFromChildren = parseTransComponentKeyFromChildren(path);
+  const keyEvaluationFromChildren = parseTransComponentKeyFromChildren(
+    path,
+    config,
+  );
 
   const parsedOptions = parseTransComponentOptions(path, commentHints);
   if (parsedOptions.defaultValue === null) {
