@@ -2,23 +2,25 @@
 
 ## Why does the plugin show a warning when extracting my key?
 
-The plugin tries to be a little smart, but can't do magic. i18next has a runtime unlike this
-plugin which must guess everything statically. For instance, you may want to disable extraction
-on dynamic keys:
+The plugin tries to be a little smart, but can't do magic. i18next itself has a runtime unlike
+this plugin which must guess everything statically. For instance, specifying keys that depend on a
+variable would issue a warning:
 
 ```javascript
 i18next.t(myVariable);
 i18next.t(`error.${code}`);
 ```
 
-If you try to extract keys from this code, the plugin will issue a warning because it won't be
-able to infer the translations statically. If you really want to specify variable keys, you should
-skip them with a [comment hint](
-comment-hints?id=disable-extraction-on-a-specific-line-or-code-section). The same goes for
-plural forms, context and namespace detection:
+See [How to deal with variable keys](#how-to-deal-with-variable-keys) for more insights on how to
+work around this use-case. Yet if you really need to stick to variable keys, you will have to skip
+them explicitly by using a [comment hint](
+comment-hints?id=disable-extraction-on-a-specific-line-or-code-section).
+
+For the same reason, you must always pass i18next options directly:
 
 ```javascript
-i18next.t("myKey", myOpts); // This won't work.
+i18next.t("hello", { count: myCnt, defaultValue: 'Hello!' }); // This is OK.
+i18next.t("hello", myOpts); // This won't work.
 ```
 
 However, in React components, it might come handy to be a little smarter than that. That's why
@@ -106,6 +108,38 @@ may help you getting started with natural keys:
 
   // Ignore plurals and contexts. We can't use natural keys for those.
   "keyAsDefaultValueForDerivedKeys": false,
+}
+```
+
+## How to deal with variable keys?
+
+It is sometimes useful to have a translation key depend on the value of variable:
+
+```javascript
+let code = 404;
+i18next.t(`error.${error}`); // "File not found"
+
+code = 500;
+i18next.t(`error.${error}`); // "Internal server error"
+```
+
+However, this plugin will fail to extract such key because it is not able to guess all the
+possible values the `error` variable can take.
+
+The recommended way to cope with this use-case is to use contexts:
+
+```javascript
+// i18next-extract-mark-context-next-line ["", "404", "500"]
+i18next.t("error", { context: code.toString() });
+```
+
+This would extract the following JSON:
+
+```json
+{
+  "error": "Unknown error",
+  "error_404": "File not found",
+  "error_500": "Internal server error"
 }
 ```
 
