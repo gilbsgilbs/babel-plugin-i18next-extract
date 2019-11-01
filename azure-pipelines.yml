@@ -44,6 +44,8 @@ stages:
                     container: 'node:10'
                   node12:
                     container: 'node:12'
+                  node13:
+                    container: 'node:13'
               steps:
                 - script: >
                     curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
