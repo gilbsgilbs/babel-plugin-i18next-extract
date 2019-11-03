@@ -20,15 +20,15 @@ traverse your Javascript/Typescript code in order to find i18next translation ke
 
 ## Features
 
-- ☑️ Keys extraction in [JSON v3 format](https://www.i18next.com/misc/json-format).
-- ☑️ Detection of `i18next.t()` function calls.
-- ☑️ Full [react-i18next](https://react.i18next.com/) support.
-- ☑️ Plurals support.
-- ☑️ Contexts support.
-- ☑️ Namespace detection.
-- ☑️ Disable extraction on a specific file sections or lines using [comment hints](
+- ✅ Keys extraction in [JSON v3 format](https://www.i18next.com/misc/json-format).
+- ✅ Detection of `i18next.t()` function calls.
+- ✅ Full [react-i18next](https://react.i18next.com/) support.
+- ✅ Plurals support.
+- ✅ Contexts support.
+- ✅ Namespace detection.
+- ✅ Disable extraction on a specific file sections or lines using [comment hints](
   https://i18next-extract.netlify.com/#/comment-hints?id=disable-extraction-on-a-specific-line-or-code-section).
-- ☑️ Overwrite namespaces, plurals and contexts on-the-fly using [comment hints](
+- ✅ Overwrite namespaces, plurals and contexts on-the-fly using [comment hints](
   https://i18next-extract.netlify.com/#/comment-hints?id=explicitly-specify-contexts-for-a-key).
 - [… and more?](https://i18next-extract.netlify.com/#/contributing)
 
