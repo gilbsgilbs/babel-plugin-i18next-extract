@@ -11,6 +11,95 @@ import {
 import { CommentHint, getCommentHintForPath } from '../comments';
 
 /**
+ * Check whether a given node is a withTranslation call expression.
+ *
+ * @param path Node path to check
+ * @returns true if the given node is an HOC call expression.
+ */
+function isWithTranslationHOCCallExpression(
+  path: BabelCore.NodePath,
+): path is BabelCore.NodePath<BabelTypes.CallExpression> {
+  return (
+    path.isCallExpression() &&
+    referencesImport(path.get('callee'), 'react-i18next', 'withTranslation')
+  );
+}
+
+/**
+ * If the given node is wrapped in a withTranslation call expression,
+ * then return the call expression.
+ *
+ * @param path node path that is suspected to be part of a withTranslation call expression.
+ * @returns withTranslation call expression if found, else null
+ */
+function findWithTranslationHOCCallExpressionInParents(
+  path: BabelCore.NodePath<BabelTypes.Node>,
+): BabelCore.NodePath<BabelTypes.CallExpression> | null {
+  const callExpr: BabelCore.NodePath = path.findParent(parentPath => {
+    if (!parentPath.isCallExpression()) return false;
+    const callee = parentPath.get('callee');
+    return isWithTranslationHOCCallExpression(callee);
+  });
+
+  if (callExpr === null) {
+    return null;
+  }
+
+  const callee = callExpr.get('callee');
+  if (Array.isArray(callee) || !callee.isCallExpression()) return null;
+
+  return callee;
+}
+
+/**
+ * Just like findWithTranslationHOCCallExpressionInParents, finds a withTranslation call
+ * expression, but expects the callExpression to be curried in a "compose" function.
+ *
+ * e.g. compose(connect(), withTranslation())(MyComponent)
+ *
+ * @param path node path that is suspected to be part of a composed withTranslation call
+ *   expression.
+ * @returns withTranslation call expression if found, else null
+ */
+function findWithTranslationHOCCallExpressionInCompose(
+  path: BabelCore.NodePath<BabelTypes.Node>,
+): BabelCore.NodePath<BabelTypes.CallExpression> | null {
+  const composeFunctionNames = ['compose', 'flow', 'flowRight'];
+
+  let currentPath = path.parentPath;
+  let withTranslationCallExpr: BabelCore.NodePath<
+    BabelTypes.CallExpression
+  > | null = null;
+
+  while (currentPath.isCallExpression()) {
+    if (withTranslationCallExpr === null) {
+      const args: BabelCore.NodePath[] = currentPath.get('arguments');
+      withTranslationCallExpr =
+        args.find(isWithTranslationHOCCallExpression) || null;
+    }
+
+    let callee = currentPath.get('callee');
+    if (callee.isMemberExpression()) {
+      // If we have a member expression, we take the right operand
+      // e.g. _.compose
+      const result = callee.get('property');
+      if (!Array.isArray(result)) {
+        callee = result;
+      }
+    }
+    if (
+      callee.isIdentifier() &&
+      composeFunctionNames.includes(callee.node.name)
+    ) {
+      return withTranslationCallExpr;
+    }
+    currentPath = callee;
+  }
+
+  return null;
+}
+
+/**
  * Find whether a given function or class is wrapped with "withTranslation" HOC
  * somewhere.
  * @param path Function or class declaration node path.
@@ -27,7 +116,7 @@ function findWithTranslationHOCCallExpression(
     path.parentPath.isVariableDeclarator()
   ) {
     // It doesn't look like "function MyComponent(…)"
-    // but like be "const MyComponent = (…) => …" or "const MyComponent = function(…) { … }"
+    // but could be "const MyComponent = (…) => …" or "const MyComponent = function(…) { … }"
     functionIdentifier = path.parentPath.get('id');
   }
 
@@ -44,23 +133,11 @@ function findWithTranslationHOCCallExpression(
 
   // Try to find a withTranslation() call in parent scope
   for (const refPath of bindings.referencePaths) {
-    const callExpr: BabelCore.NodePath = refPath.findParent(parentPath => {
-      if (!parentPath.isCallExpression()) return false;
-      const callee = parentPath.get('callee');
-      return (
-        callee.isCallExpression() &&
-        referencesImport(
-          callee.get('callee'),
-          'react-i18next',
-          'withTranslation',
-        )
-      );
-    });
-
-    if (callExpr !== null) {
-      return callExpr.get('callee') as BabelCore.NodePath<
-        BabelTypes.CallExpression
-      >;
+    const callee =
+      findWithTranslationHOCCallExpressionInParents(refPath) ||
+      findWithTranslationHOCCallExpressionInCompose(refPath);
+    if (callee !== null) {
+      return callee;
     }
   }
 
