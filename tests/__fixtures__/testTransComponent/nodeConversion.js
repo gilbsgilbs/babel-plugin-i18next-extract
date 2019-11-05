@@ -18,6 +18,6 @@ const comp1 = (
 // non-closing tags need special handling
 const comp2 = (
   <Trans>
-    Hi <strong>{{name}}<br /></strong>, how<br /> are you doing?
+    Hi <strong title={t('nameTitle')}>{{name}}<br /></strong>, how<hr /> are you doing?
   </Trans>
 );

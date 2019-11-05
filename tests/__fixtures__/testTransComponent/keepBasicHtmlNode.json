@@ -1,0 +1,14 @@
+{
+  "description": "Test that HTML tags are untouched when exported for given nodes",
+  "pluginOptions": {
+    "keySeparator": null,
+    "nsSeparator": null,
+    "transKeepBasicHtmlNodesFor": ["br", "p"]
+  },
+  "expectValues": {
+    "Trans<br/>0": "Trans<br/>0",
+    "<p>Trans 1</p>": "<p>Trans 1</p>",
+    "<0>Trans 2</0>": "<0>Trans 2</0>",
+    "<0>Trans 3<1></1></0>": "<0>Trans 3<1></1></0>"
+  }
+}

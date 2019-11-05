@@ -14,6 +14,7 @@ import {
   iterateObjectExpression,
   referencesImport,
   parseI18NextOptionsFromCommentHints,
+  resolveIdentifier,
 } from './commons';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
@@ -127,6 +128,44 @@ function parseTransComponentKeyFromAttributes(
 }
 
 /**
+ * Format the key of a JSX element.
+ *
+ * @param path node path of the JSX element to format.
+ * @param index the current index of the node being parsed.
+ * @param config plugin configuration.
+ */
+function formatJSXElementKey(
+  path: BabelCore.NodePath<BabelTypes.JSXElement>,
+  index: number,
+  config: Config,
+): string {
+  const openingElement = path.get('openingElement');
+  const closingElement = path.get('closingElement');
+  let resultTagName = `${index}`; // Tag name we will use in the exported file
+
+  const tagName = openingElement.get('name');
+  if (
+    openingElement.get('attributes').length === 0 &&
+    tagName.isJSXIdentifier() &&
+    config.transKeepBasicHtmlNodesFor.includes(tagName.node.name)
+  ) {
+    // The tag name should not be transformed to an index
+    resultTagName = tagName.node.name;
+
+    if (closingElement.node === null) {
+      // opening tag without closing tag (e.g. <br />)
+      return `<${resultTagName}/>`;
+    }
+  }
+
+  // it's nested. let's recurse.
+  return `<${resultTagName}>${parseTransComponentKeyFromChildren(
+    path,
+    config,
+  )}</${resultTagName}>`;
+}
+
+/**
  * Given the node path of a Trans component, try to extract its key from its
  *   children.
  * @param path node path of the Trans component.
@@ -135,8 +174,9 @@ function parseTransComponentKeyFromAttributes(
  */
 function parseTransComponentKeyFromChildren(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
+  config: Config,
 ): string {
-  const error = new ExtractionError(
+  const transComponentExtractionError = new ExtractionError(
     `Couldn't evaluate i18next key in Trans component. You should either ` +
       `set the i18nKey attribute to an evaluable value, or make the Trans ` +
       `component content evaluable or skip the line using a skip comment ` +
@@ -180,7 +220,7 @@ function parseTransComponentKeyFromChildren(
         if (!key0 || !it.next().done) {
           // Probably got empty object expression like {{}}
           // or {{foo,bar}}
-          throw error;
+          throw transComponentExtractionError;
         }
         result += `{{${key0[0]}}}`;
         continue;
@@ -189,31 +229,20 @@ function parseTransComponentKeyFromChildren(
       if (expression.isIdentifier()) {
         // We have an identifier like {myPartialComponent}
         // We try to find the latest declaration and substitute the identifier.
-        const bindings = expression.scope.bindings[expression.node.name];
-        if (!bindings) throw error;
-
-        const declarationExpressions = [
-          ...(bindings.path.isVariableDeclarator()
-            ? [bindings.path.get('init')]
-            : []),
-          ...bindings.constantViolations
-            .filter(p => p.isAssignmentExpression())
-            .map(p => p.get('right')),
-        ];
-        if (declarationExpressions.length === 0) throw error;
-        const latestDeclarator =
-          declarationExpressions[declarationExpressions.length - 1];
-        if (Array.isArray(latestDeclarator)) throw error;
-        const evaluation = evaluateIfConfident(latestDeclarator);
+        const declarationExpression = resolveIdentifier(expression);
+        const evaluation = evaluateIfConfident(declarationExpression);
         if (evaluation !== null) {
           // It could be evaluated, it's probably something like 'hello'
           result += evaluation;
           continue;
-        } else if (latestDeclarator.isJSXElement()) {
+        } else if (
+          declarationExpression !== null &&
+          declarationExpression.isJSXElement()
+        ) {
           // It's a JSX element. Let's act as if it was inline and move along.
-          child = latestDeclarator;
+          child = declarationExpression;
         } else {
-          throw error;
+          throw transComponentExtractionError;
         }
       }
     }
@@ -234,14 +263,7 @@ function parseTransComponentKeyFromChildren(
 
     if (child.isJSXElement()) {
       // got a JSX element.
-      if (child.get('closingElement').node === null) {
-        // opening tag without closing tag (e.g. <br />)
-        result += `<${i}>`;
-        continue;
-      }
-
-      // it's nested. let's recurse.
-      result += `<${i}>${parseTransComponentKeyFromChildren(child)}</${i}>`;
+      result += formatJSXElementKey(child, i, config);
       continue;
     }
   }
@@ -268,7 +290,10 @@ export default function extractTransComponent(
   const keyEvaluationFromAttribute = parseTransComponentKeyFromAttributes(
     path,
   );
-  const keyEvaluationFromChildren = parseTransComponentKeyFromChildren(path);
+  const keyEvaluationFromChildren = parseTransComponentKeyFromChildren(
+    path,
+    config,
+  );
 
   const parsedOptions = parseTransComponentOptions(path, commentHints);
   if (parsedOptions.defaultValue === null) {
