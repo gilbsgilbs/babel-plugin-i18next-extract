@@ -316,9 +316,9 @@ export default function extractWithTranslationHOC(
   if (path.isClassDeclaration()) {
     tCalls = findTFunctionCallsInClassComponent(path);
   } else {
-    tCalls = findTFunctionCallsInFunctionComponent(path as BabelCore.NodePath<
-      BabelTypes.Function
-    >);
+    tCalls = findTFunctionCallsInFunctionComponent(
+      path as BabelCore.NodePath<BabelTypes.Function>,
+    );
   }
 
   // Extract namespace
