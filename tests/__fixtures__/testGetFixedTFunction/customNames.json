@@ -1,0 +1,11 @@
+{
+  "description": "test giving custom instance name to t function",
+  "pluginOptions": {
+    "tFunctionNames": ["_", "iceT"]
+  },
+  "expectValues": [
+    [{"pgm": ""}, {"ns": "ns0"}],
+    [{"_": ""}, {"ns": "ns1"}],
+    [{"ctm": ""}, {"ns": "ns2"}]
+  ]
+}

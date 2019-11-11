@@ -1,0 +1,7 @@
+{
+  "description": "test comments usage of getFixedT TFunction",
+  "pluginOptions": {},
+  "expectValues": [
+    [{"key0": ""}, {"ns": "ns0"}]
+  ]
+}

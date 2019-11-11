@@ -115,6 +115,13 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
         ),
       );
       collect(
+        Extractors.extractGetFixedTFunction(
+          path,
+          extractState.config,
+          extractState.commentHints,
+        ),
+      );
+      collect(
         Extractors.extractI18nextInstance(
           path,
           extractState.config,
