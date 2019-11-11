@@ -7,11 +7,12 @@ import { getFirstOrNull, evaluateIfConfident } from './commons';
 import { CommentHint, getCommentHintForPath } from '../comments';
 
 /**
- * Check whether a given CallExpression path is a call to `useTranslation` hook.
+ * Check whether a given CallExpression path is a call to `getFixedT()`
+ *    function.
  * @param path: node path to check
  * @param config: plugin configuration
  * @returns true if the given call expression is indeed a call to
- *   `useTranslation`
+ *   `getFixedT`
  */
 function isGetFixedTFunction(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
@@ -34,8 +35,8 @@ function isGetFixedTFunction(
 }
 
 /**
- * Parse `useTranslation()` hook to extract all its translation keys and
- * options.
+ * Parse `getFixedT()` getter to extract all its translation keys and
+ * options (see https://www.i18next.com/overview/api#getfixedt)
  * @param path: useTranslation call node path.
  * @param config: plugin configuration
  * @param commentHints: parsed comment hints
@@ -62,8 +63,9 @@ export default function extractGetFixedTFunction(
   if (!parentPath.isVariableDeclarator()) return [];
 
   const id = parentPath.get('id');
+  if (!id.isIdentifier()) return [];
 
-  const tBinding = id.scope.bindings['t'];
+  const tBinding = id.scope.bindings[id.node.name];
   if (!tBinding) return [];
 
   let keys = Array<ExtractedKey>();

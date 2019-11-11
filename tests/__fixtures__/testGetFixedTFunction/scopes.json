@@ -1,0 +1,8 @@
+{
+  "description": "test scope usage of getFixedT TFunction",
+  "pluginOptions": {},
+  "expectValues": [
+    [{"key0": "", "key1": ""}, {"ns": "ns0"}],
+    [{"key2": ""}, {"ns": "ns1"}]
+  ]
+}
