@@ -106,6 +106,28 @@ export function referencesImport(
 }
 
 /**
+ * Whether a class-instance function call expression matches a known method
+ * @param nodePath: node path to evaluate
+ * @param parentNames: list for any class-instance names to match
+ * @param childName specific function from parent module to match
+ */
+export function referencesChildIdentifier(
+  nodePath: BabelCore.NodePath,
+  parentNames: string[],
+  childName: string,
+): boolean {
+  if (!nodePath.isMemberExpression()) return false;
+
+  const obj = nodePath.get('object');
+  if (!obj.isIdentifier()) return false;
+
+  const prop = nodePath.get('property');
+  if (Array.isArray(prop) || !prop.isIdentifier()) return false;
+
+  return parentNames.includes(obj.node.name) && prop.node.name === childName;
+}
+
+/**
  * Evaluates a node path if it can be evaluated with confidence.
  *
  * @param path: node path to evaluate

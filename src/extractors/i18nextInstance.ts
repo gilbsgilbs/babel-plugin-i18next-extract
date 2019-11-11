@@ -4,6 +4,7 @@ import { getCommentHintForPath, CommentHint } from '../comments';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
 import extractTFunction from './tFunction';
+import { referencesChildIdentifier } from './commons';
 
 /**
  * Check whether a given CallExpression path is a global call to `i18next.t`
@@ -18,18 +19,7 @@ function isI18nextTCall(
 ): boolean {
   const callee = path.get('callee');
 
-  if (!callee.isMemberExpression()) return false;
-
-  const obj = callee.get('object');
-  if (!obj.isIdentifier()) return false;
-
-  const prop = callee.get('property');
-  if (Array.isArray(prop) || !prop.isIdentifier()) return false;
-
-  return (
-    config.i18nextInstanceNames.includes(obj.node.name) &&
-    prop.node.name === 't'
-  );
+  return referencesChildIdentifier(callee, config.i18nextInstanceNames, 't');
 }
 
 /**

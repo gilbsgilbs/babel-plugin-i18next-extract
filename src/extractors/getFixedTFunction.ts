@@ -3,7 +3,11 @@ import * as BabelCore from '@babel/core';
 import extractTFunction from './tFunction';
 import { ExtractedKey } from '../keys';
 import { Config } from '../config';
-import { getFirstOrNull, evaluateIfConfident } from './commons';
+import {
+  getFirstOrNull,
+  evaluateIfConfident,
+  referencesChildIdentifier,
+} from './commons';
 import { CommentHint, getCommentHintForPath } from '../comments';
 
 /**
@@ -20,17 +24,10 @@ function isGetFixedTFunction(
 ): boolean {
   const callee = path.get('callee');
 
-  if (!callee.isMemberExpression()) return false;
-
-  const obj = callee.get('object');
-  if (!obj.isIdentifier()) return false;
-
-  const prop = callee.get('property');
-  if (Array.isArray(prop) || !prop.isIdentifier()) return false;
-
-  return (
-    config.i18nextInstanceNames.includes(obj.node.name) &&
-    prop.node.name === 'getFixedT'
+  return referencesChildIdentifier(
+    callee,
+    config.i18nextInstanceNames,
+    'getFixedT',
   );
 }
 
