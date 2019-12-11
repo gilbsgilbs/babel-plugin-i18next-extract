@@ -2,7 +2,6 @@ import * as BabelTypes from '@babel/types';
 
 import i18next from 'i18next';
 import { Config } from './config';
-import { Z_BUF_ERROR } from 'zlib';
 
 interface I18NextParsedOptions {
   // If contexts is an array, it's an explicit list of context.
