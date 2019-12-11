@@ -128,11 +128,66 @@ function parseTransComponentKeyFromAttributes(
 }
 
 /**
+ * Check if a JSX element has nested children or if it's a simple text node.
+ *
+ * Tries to mimic hasChildren function from React i18next:
+ * see https://github.com/i18next/react-i18next/blob/8b6caf105/src/Trans.js#L6
+ *
+ * @param path node path of the JSX element to check
+ * @returns whether the node has nested children
+ */
+function hasChildren(
+  path: BabelCore.NodePath<BabelTypes.JSXElement>,
+): boolean {
+  const children = path.get('children').filter(path => {
+    // Filter out empty JSX expression containers
+    // (they do not count, even if they contain comments)
+
+    if (path.isJSXExpressionContainer()) {
+      const expression = path.get('expression');
+      return !expression.isJSXEmptyExpression();
+    }
+
+    return true;
+  });
+
+  if (children.length === 0) return false;
+  if (1 < children.length) return true;
+
+  const child = children[0];
+
+  if (child.isJSXExpressionContainer()) {
+    let expression = child.get('expression');
+
+    if (expression.isIdentifier()) {
+      const resolvedExpression = resolveIdentifier(expression);
+
+      if (resolvedExpression === null) {
+        // We weren't able to resolve the identifier. We consider this as
+        // an absence of children, but it isn't very relevant anyways
+        // because the extraction is very likely to fail later on.
+        return false;
+      }
+
+      expression = resolvedExpression;
+    }
+
+    // If the expression is a string, we have an interpolation like {"foo"}
+    // The only other valid interpolation would be {{myVar}} but apparently,
+    // it is considered as a nested child.
+    return typeof evaluateIfConfident(expression) !== 'string';
+  }
+
+  return false;
+}
+
+/**
  * Format the key of a JSX element.
  *
  * @param path node path of the JSX element to format.
  * @param index the current index of the node being parsed.
  * @param config plugin configuration.
+ * @returns key corresponding to the JSX element.
  */
 function formatJSXElementKey(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
@@ -147,7 +202,8 @@ function formatJSXElementKey(
   if (
     openingElement.get('attributes').length === 0 &&
     tagName.isJSXIdentifier() &&
-    config.transKeepBasicHtmlNodesFor.includes(tagName.node.name)
+    config.transKeepBasicHtmlNodesFor.includes(tagName.node.name) &&
+    !hasChildren(path)
   ) {
     // The tag name should not be transformed to an index
     resultTagName = tagName.node.name;
