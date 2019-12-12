@@ -9,6 +9,10 @@
     "Trans<br/>0": "Trans<br/>0",
     "<p>Trans 1</p>": "<p>Trans 1</p>",
     "<0>Trans 2</0>": "<0>Trans 2</0>",
-    "<0>Trans 3<1></1></0>": "<0>Trans 3<1></1></0>"
+    "<0>Trans 3</0>": "<0>Trans 3</0>",
+    "<p>Trans 4</p><p></p><p>foo</p><p>bar</p>": "<p>Trans 4</p><p></p><p>foo</p><p>bar</p>",
+    "<p>Trans 5</p>": "<p>Trans 5</p>",
+    "<0>{{myString}}</0>": "<0>{{myString}}</0>",
+    "<0>Trans 7<1></1></0>": "<0>Trans 7<1></1></0>"
   }
 }
