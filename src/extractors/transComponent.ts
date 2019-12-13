@@ -244,9 +244,14 @@ function parseTransComponentKeyFromChildren(
   let children = path.get('children');
   let result = '';
 
-  // Remove empty JSXText nodes. They should not be taken into account for the indices.
+  // Filter out JSXText nodes that only consist of whitespaces with one or
+  // more linefeeds. Such node do not count for the indices.
   children = children.filter(child => {
-    return !(child.isJSXText() && child.node.value.trim() === '');
+    return !(
+      child.isJSXText() &&
+      child.node.value.trim() === '' &&
+      child.node.value.includes('\n')
+    );
   });
 
   // Filter out empty containers. They do not affect indices.
