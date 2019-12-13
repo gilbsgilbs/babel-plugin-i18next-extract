@@ -19,6 +19,7 @@
     "internationalization",
     "localization"
   ],
+  "homepage": "https://i18next-extract.netlify.com/",
   "bugs": {
     "url": "https://github.com/gilbsgilbs/babel-plugin-i18next-extract/issues"
   },
