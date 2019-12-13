@@ -1,0 +1,12 @@
+{
+  "description": "test that Trans component extractor can deal with whitespaces correctly",
+  "pluginOptions": {
+    "useI18nextDefaultValue": true
+  },
+  "expectValues": {
+    "key0": "I read the <2>TOS</2> and the <6>Privacy Policy</6> and accept them.",
+    "key1": "<0>Hello</0><1>World 1</1>",
+    "key2": "<0>Hello</0> <2>World 2</2>",
+    "key3": "<0>Hello</0>   <2>World 3</2>"
+  }
+}
