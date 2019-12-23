@@ -37,7 +37,7 @@ const withLiteralNS = (
 );
 
 const withNSHint = (
-  <Trans ns='noob'> {/* i18next-extract-mark-ns-line hintns */}
+  <Trans ns='noob'>{/* i18next-extract-mark-ns-line hintns */}
     withHintNS
   </Trans>
 );
