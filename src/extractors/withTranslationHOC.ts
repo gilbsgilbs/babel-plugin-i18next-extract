@@ -169,6 +169,23 @@ function findTFunctionIdentifierInObjectPattern(
 }
 
 /**
+ * Check whether a node path is the callee of a call expression.
+ *
+ * @param path the node to check.
+ * @returns true if the path is the callee of a call expression.
+ */
+function isCallee(
+  path: BabelCore.NodePath,
+): path is BabelCore.NodePath & {
+  parentPath: BabelCore.NodePath<BabelTypes.CallExpression>;
+} {
+  return (
+    path.parentPath.isCallExpression() &&
+    path === path.parentPath.get('callee')
+  );
+}
+
+/**
  * Find T function calls from a props assignment. Prop assignment can occur
  * in function parameters (i.e. "function Component(props)" or
  * "function Component({t})") or in a variable declarator (i.e.
@@ -214,7 +231,7 @@ function findTFunctionCallsFromPropsAssignment(
   // function
   const tCalls = Array<BabelCore.NodePath<BabelTypes.CallExpression>>();
   for (const tCall of tReferences) {
-    if (tCall.parentPath.isCallExpression()) {
+    if (isCallee(tCall)) {
       tCalls.push(tCall.parentPath);
     }
   }
@@ -250,18 +267,18 @@ function findTFunctionCallsInClassComponent(
 
         // We have something in the form "this.props.t". Let's see if it's an
         // actual function call or an assignment.
-        const tExpression = path.parentPath.parentPath.parentPath;
-        if (tExpression.isCallExpression()) {
+        const tExpression = path.parentPath.parentPath;
+        if (isCallee(tExpression)) {
           // Simple case. Direct call to "this.props.t()"
-          result.push(tExpression);
-        } else if (tExpression.isVariableDeclarator()) {
+          result.push(tExpression.parentPath);
+        } else if (tExpression.parentPath.isVariableDeclarator()) {
           // Hard case. const t = this.props.t;
           // Let's loop through all references to t.
-          const id = tExpression.get('id');
+          const id = tExpression.parentPath.get('id');
           if (!id.isIdentifier()) return;
           for (const reference of id.scope.bindings[id.node.name]
             .referencePaths) {
-            if (reference.parentPath.isCallExpression()) {
+            if (isCallee(reference)) {
               result.push(reference.parentPath);
             }
           }
