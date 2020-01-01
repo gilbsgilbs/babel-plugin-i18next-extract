@@ -9,36 +9,43 @@ configOptions:
     defaultValue: "'translation'"
   - name: pluralSeparator
     type: "string"
-    description: >
-      String you want to use to split plural from keys.
-      See [i18next Configuration options](https://www.i18next.com/overview/configuration-options#misc).
+    description: |
+      String you want to use to split plural from keys. See [i18next Configuration options](
+      https://www.i18next.com/overview/configuration-options#misc).
     defaultValue: "'_'"
   - name: contextSeparator
     type: "string"
-    description: >
-      String you want to use to split context from keys.
-      See [i18next Configuration options](https://www.i18next.com/overview/configuration-options#misc).
+    description: |
+      String you want to use to split context from keys. See [i18next Configuration options](
+      https://www.i18next.com/overview/configuration-options#misc).
     defaultValue: "'_'"
   - name: keySeparator
     type: "string|null"
-    description: >
-      String you want to use to split keys.
-      Set to `null` if you don't want to split your keys or if you want to use keys as value.
-      See [i18next Configuration options](https://www.i18next.com/overview/configuration-options#misc).
+    description: |
+      String you want to use to split keys. Set to `null` if you don't want to split your keys or
+      if you want to use keys as value. See [i18next Configuration options](
+      https://www.i18next.com/overview/configuration-options#misc).
     defaultValue: "'.'"
   - name: nsSeparator
     type: "string|null"
-    description: String you want to use to split namespace from keys. Set to `null` if you don't want to infer a namespace from key value or if you want to use keys as value. See [i18next Configuration options](https://www.i18next.com/overview/configuration-options#misc).
+    description: |
+      String you want to use to split namespace from keys. Set to `null` if you don't want to
+      infer a namespace from key value or if you want to use keys as value. See [i18next
+      Configuration options](https://www.i18next.com/overview/configuration-options#misc).
     defaultValue: "':'"
   - name: transKeepBasicHtmlNodesFor
     type: "string[]"
-    description: >
+    description: |
       List of tag names that shouldn't be converted to indices when exporting `Trans` component.
-      The value of this option should reflect the react-i18next configuration in your codebase. See [react-i18next Trans Component](https://react.i18next.com/latest/trans-component#additional-options-on-i-18-next-init).
+
+      The value of this option should reflect the react-i18next configuration in your codebase.
+      See [react-i18next Trans Component](
+      https://react.i18next.com/latest/trans-component#additional-options-on-i-18-next-init).
     defaultValue: "['br', 'strong', 'i', 'p']"
   - name: i18nextInstanceNames
     type: "string[]"
-    description: Possible names for your `i18next` instances. This will be used to detect `i18next.t` calls.
+    description: |
+      Possible names for your `i18next` instances. This will be used to detect `i18next.t` calls.
     defaultValue: "['i18next', 'i18n']"
     examples:
       - name: Custom i18next instance name
@@ -53,7 +60,9 @@ configOptions:
           ```
   - name: tFunctionNames
     type: "string[]"
-    description: Possible names for your `t` functions. This will only be used for direct calls to `t` functions (i.e. `t('key')`, not `foo.t('key')`) and in very last resort.
+    description: |
+      Possible names for your `t` functions. This will only be used for direct calls to `t`
+      functions (i.e. `t('key')`, not `foo.t('key')`) and in very last resort.
     defaultValue: "['t']"
     examples:
       - name: Custom t function name
@@ -90,7 +99,9 @@ configOptions:
           ```
   - name: outputPath
     type: "string"
-    description: Path where translation keys should be extracted to. You can use `{{ns}}` and `{{locale}}` placeholders in the value to change the location depending on the namespace or the locale.
+    description: |
+      Path where translation keys should be extracted to. You can use `{{ns}}` and `{{locale}}`
+      placeholders in the value to change the location depending on the namespace or the locale.
     defaultValue: "extractedTranslations/{{locale}}/{{ns}}.json"
   - name: defaultValue
     type: "string|null"
@@ -110,9 +121,16 @@ configOptions:
   - name: useI18nextDefaultValue
     type: "boolean|string[]"
     description: |
-      If `true` and a [i18next default value](https://www.i18next.com/translation-function/essentials#passing-a-default-value) is set for the key, use this default value (ignoring `defaultValue` option).  
-      You can also specify an array of locales to apply this behavior only to a specific set locales (e.g. if your i18next default values are in plain french, you may want to set this option to `['fr']`).  
-      _Note: For `react-i18next` `Trans` component, the children might also be used as default value._
+      If `true` and a [i18next default value](
+      https://www.i18next.com/translation-function/essentials#passing-a-default-value) is set for
+      the key, use this default value (ignoring `defaultValue` option).
+
+      You can also specify an array of locales to apply this behavior only to a specific set
+      locales (e.g. if your i18next default values are in plain french, you may want to set this
+      option to `['fr']`).
+
+      _Note: For `react-i18next` `Trans` component, the children might also be used as default
+      value._
     defaultValue: "['en']"
     examples:
       - name: Use i18next default value for all locales
@@ -138,7 +156,9 @@ configOptions:
           ```
   - name: useI18nextDefaultValueForDerivedKeys
     type: "boolean"
-    description: If `false` and `useI18nextDefaultValue` is enabled, don't use i18next default value for derived keys (plural forms or contexts). `defaultValue` option will be used instead.
+    description: |
+      If `false` and `useI18nextDefaultValue` is enabled, don't use i18next default value for
+      derived keys (plural forms or contexts). `defaultValue` option will be used instead.
     defaultValue: "false"
     examples:
       - name: Skip default value for derived keys
@@ -164,9 +184,13 @@ configOptions:
           ```
   - name: keyAsDefaultValue
     type: "boolean|string[]"
-    description: >
-      If `true`, use the extracted key as defaultValue (ignoring `defaultValue` option). This is sometimes refered to as "natural keys".  
-      You can also specify an array of locales to apply this behavior only to a specific set locales (e.g. if your keys are in plain english, you may want to set this option to `['en']`).
+    description: |
+      If `true`, use the extracted key as defaultValue (ignoring `defaultValue` option). This is
+      sometimes refered to as "natural keys".
+
+      You can also specify an array of locales to apply this behavior only to a specific set
+      locales (e.g. if your keys are in plain english, you may want to set this option to
+      `['en']`).
     defaultValue: "false"
     examples:
       - name: Use keys as default value for a set of locales
@@ -185,8 +209,9 @@ configOptions:
           ```
   - name: keyAsDefaultValueForDerivedKeys
     type: "boolean"
-    description: >
-      If `false` and `keyAsDefaultValue` is enabled, don't use derived keys (plural forms or contexts) as default value. `defaultValue` option will be used instead.
+    description: |
+      If `false` and `keyAsDefaultValue` is enabled, don't use derived keys (plural forms or
+      contexts) as default value. `defaultValue` option will be used instead.
     defaultValue: "true"
     examples:
       - name: Don't use key as default value for derived keys
@@ -207,9 +232,20 @@ configOptions:
           ```
   - name: discardOldKeys
     type: "boolean"
-    description: When set to `true`, keys that no longer exist are removed from the JSON files. By default, new keys will be added to the JSON files and never removed.
+    description: |
+      When set to `true`, keys that no longer exist are removed from the JSON files. By default,
+      new keys will be added to the JSON files and never removed.
     defaultValue: "false"
   - name: jsonSpace
     type: "number"
     description: Number of indentation space to use in extracted JSON files.
     defaultValue: "2"
+  - name: enableExperimentalIcu
+    type: "boolean"
+    description: |
+      Enable experimental support for [ICU message syntax](
+      http://userguide.icu-project.org/formatparse/messages). Only plurals are supported for now.
+
+      ☠️  *This feature is incomplete and might change or move into an third-party module in the
+      future. Stay tuned.* ☠️
+    defaultValue: "false"
