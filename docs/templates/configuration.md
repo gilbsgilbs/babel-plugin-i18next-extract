@@ -6,7 +6,7 @@ Here is the exhaustive list of configuration options you can pass to the plugin.
 ## {{ option.name }}
 
 - **Type**: `{{ option.type }}`
-- **Description**: {{ option.description }}
+- **Description**: {{ option.description | trim | indent(2) }}
 - **Default value**: `{{ option.defaultValue }}`
 
 {% if 0 < (option.examples | length) %}

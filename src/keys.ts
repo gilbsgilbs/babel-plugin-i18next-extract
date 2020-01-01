@@ -120,41 +120,77 @@ export function computeDerivedKeys(
     const pluralRule = i18next.services.pluralResolver.getRule(locale);
     const numberOfPlurals = pluralRule.numbers.length;
 
-    if (numberOfPlurals === 1) {
-      keys = keys.map(k => ({
-        ...k,
-        cleanKey: k.cleanKey + config.pluralSeparator + '0',
-        isDerivedKey: true,
-      }));
-    } else if (numberOfPlurals === 2) {
-      keys = keys.reduce(
-        (accumulator, k) => [
-          ...accumulator,
-          k,
-          {
-            ...k,
-            cleanKey: k.cleanKey + config.pluralSeparator + 'plural',
-            isDerivedKey: true,
-          },
-        ],
-        Array<TranslationKey>(),
+    if (config.enableExperimentalIcu) {
+      const pluralNumbersAsText = Array.from<string>(
+        new Set(pluralRule.numbers.map(pluralNumberToText)),
       );
+
+      const icuPlurals = pluralNumbersAsText
+        .map(
+          (numAsText: string) =>
+            `${numAsText} {${icuPluralValue(
+              extractedKey.parsedOptions.defaultValue,
+            )}}`,
+        )
+        .join(' ');
+
+      extractedKey.parsedOptions.defaultValue = `{count, plural, ${icuPlurals}`;
     } else {
-      keys = keys.reduce(
-        (accumulator, k) => [
-          ...accumulator,
-          ...Array(numberOfPlurals)
-            .fill(null)
-            .map((_, idx) => ({
+      if (numberOfPlurals === 1) {
+        keys = keys.map(k => ({
+          ...k,
+          cleanKey: k.cleanKey + config.pluralSeparator + '0',
+          isDerivedKey: true,
+        }));
+      } else if (numberOfPlurals === 2) {
+        keys = keys.reduce(
+          (accumulator, k) => [
+            ...accumulator,
+            k,
+            {
               ...k,
-              cleanKey: k.cleanKey + config.pluralSeparator + idx,
+              cleanKey: k.cleanKey + config.pluralSeparator + 'plural',
               isDerivedKey: true,
-            })),
-        ],
-        Array<TranslationKey>(),
-      );
+            },
+          ],
+          Array<TranslationKey>(),
+        );
+      } else {
+        keys = keys.reduce(
+          (accumulator, k) => [
+            ...accumulator,
+            ...Array(numberOfPlurals)
+              .fill(null)
+              .map((_, idx) => ({
+                ...k,
+                cleanKey: k.cleanKey + config.pluralSeparator + idx,
+                isDerivedKey: true,
+              })),
+          ],
+          Array<TranslationKey>(),
+        );
+      }
     }
   }
 
   return keys;
+}
+
+function pluralNumberToText(number: number): string {
+  switch (number) {
+    case 0:
+      return 'zero';
+    case 1:
+      return 'one';
+    default:
+      return 'other';
+  }
+}
+
+function icuPluralValue(defaultValue: string | null): string {
+  const oldVal = defaultValue || '';
+  const withIcuSingleCurlyBrace = oldVal
+    .replace(/{{/g, '{')
+    .replace(/}}/g, '}');
+  return withIcuSingleCurlyBrace;
 }
