@@ -1,0 +1,7 @@
+{
+  "description": "test extraction of withTranslation HOC on class component using t not as a callee",
+  "pluginOptions": {},
+  "expectValues": {
+    "OK": ""
+  }
+}
