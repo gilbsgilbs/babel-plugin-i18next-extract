@@ -120,7 +120,7 @@ export function computeDerivedKeys(
     const pluralRule = i18next.services.pluralResolver.getRule(locale);
     const numberOfPlurals = pluralRule.numbers.length;
 
-    if (config.icu) {
+    if (config.enableExperimentalIcu) {
       const pluralNumbersAsText = Array.from<string>(
         new Set(pluralRule.numbers.map(pluralNumberToText)),
       );
