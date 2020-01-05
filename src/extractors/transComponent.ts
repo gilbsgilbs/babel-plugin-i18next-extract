@@ -1,3 +1,4 @@
+import { dirname, isAbsolute, relative, sep } from 'path';
 import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
 import {
@@ -21,18 +22,38 @@ import { Config } from '../config';
 
 /**
  * Check whether a given JSXElement is a Trans component.
+ * @param transComponentNames: the list of possible Trans components with their source modules and
+ *        import names.
  * @param path: node path to check
  * @returns true if the given element is indeed a `Trans` component.
  */
 function isTransComponent(
+  transComponentNames: Config['transComponentNames'],
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
 ): boolean {
-  const openingElement = path.get('openingElement');
-  return referencesImport(
-    openingElement.get('name'),
-    'react-i18next',
-    'Trans',
-  );
+  const openingElementName = path.get('openingElement').get('name');
+  return transComponentNames.some(([sourceModule, importName]): boolean => {
+    if (isAbsolute(sourceModule)) {
+      let relativeSourceModulePath = relative(
+        dirname(path.state.filename),
+        sourceModule,
+      );
+      if (!relativeSourceModulePath.startsWith('.')) {
+        relativeSourceModulePath = '.' + sep + relativeSourceModulePath;
+      }
+      // Absolute path to the source module, let's try a relative path first.
+      if (
+        referencesImport(
+          openingElementName,
+          relativeSourceModulePath,
+          importName,
+        )
+      ) {
+        return true;
+      }
+    }
+    return referencesImport(openingElementName, sourceModule, importName);
+  });
 }
 
 /**
@@ -346,7 +367,7 @@ export default function extractTransComponent(
   commentHints: CommentHint[] = [],
 ): ExtractedKey[] {
   if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
-  if (!isTransComponent(path)) return [];
+  if (!isTransComponent(config.transComponentNames, path)) return [];
 
   const keyEvaluationFromAttribute = parseTransComponentKeyFromAttributes(
     path,
