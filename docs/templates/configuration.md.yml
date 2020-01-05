@@ -75,6 +75,22 @@ configOptions:
           // This key will be extracted
           myT("key0");
           ```
+  - name: transComponentNames
+    type: "[string, string][]"
+    description: Possible import names of `Trans` components. Relative paths of source modules are taken as linked to the package.json file.
+    defaultValue: "[['react-i18next', 'Trans']]"
+    examples:
+      - name: Custom Trans component
+        md: |
+          ```jsx
+          /*
+            {"transComponentNames": [["custom_components/i18n", "importName"]]}
+          */
+
+          import {CustomTrans} from "custom_components/i18n";
+
+          <CustomTrans>Extracted key</CustomTrans>;
+          ```
   - name: defaultContexts
     type: "string[]"
     description: Context values to use when detecting a translation with context.
