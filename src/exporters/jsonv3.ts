@@ -12,7 +12,7 @@ interface DeepObject<V = string> {
 /**
  * JSON keys can either be strings or null.
  */
-type JsonV3Key = string | null;
+type JsonV3Key = string | null | [] | number;
 
 /**
  * Content of a JSON v3 file.
@@ -45,7 +45,7 @@ function recursiveAddKey(
   }
 
   const currentKeyPath = keyPath[0];
-  let current = fileContent[currentKeyPath];
+  let current = fileContent[currentKeyPath] as DeepObject<JsonV3Key>;
   if (current === undefined) {
     current = {};
   } else if (current === null || typeof current !== 'object') {
@@ -96,15 +96,25 @@ const jsonv3Exporter: Exporter<JsonV3File, JsonV3Key> = {
       if (val === undefined) {
         return undefined;
       }
-      if (typeof val === 'string' || val === null) {
+
+      if (typeof val !== 'object' || Array.isArray(val) || val === null) {
         throw new ConflictError();
       }
-      current = val;
+      current = val as DeepObject<JsonV3Key>;
     }
-    const val = current[cleanKey];
-    if (typeof val !== 'string' && val !== null && val !== undefined) {
+    const val = current[cleanKey] as JsonV3Key;
+
+    const valType = typeof val;
+
+    const valueIsInvalid = [
+      () => !['string', 'number', 'object', 'undefined'].includes(valType),
+      () => valType === 'number' && isNaN(val as number),
+    ].some(x => x());
+
+    if (valueIsInvalid) {
       throw new ConflictError();
     }
+
     return val;
   },
   addKey: params => {
