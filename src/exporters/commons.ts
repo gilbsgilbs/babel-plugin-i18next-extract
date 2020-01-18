@@ -47,6 +47,6 @@ export interface Exporter<F, K> {
     config: Config;
     file: F;
     key: TranslationKey;
-    value: string;
+    value: K;
   }) => F;
 }
