@@ -74,7 +74,8 @@
     "build:clean": "rimraf lib/",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "rollup -c",
-    "test": "jest"
+    "test": "jest",
+    "publish": "${npm_execpath} run build && ${npm_execpath} publish --no-git-tag-version"
   },
   "jest": {
     "collectCoverageFrom": [
