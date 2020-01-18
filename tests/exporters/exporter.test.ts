@@ -62,33 +62,6 @@ describe('Test exporter works', () => {
     expect(fs.readJSONSync(outputPath)).toEqual({ deep: 'has value' });
   });
 
-  it('throws an ExportError when the value is already an object', () => {
-    const outputPath = path.join(
-      outputDir,
-      'throws_if_already_an_object.json',
-    );
-    fs.writeJSONSync(outputPath, { alreadyDeep: { someKey: 'foo' } });
-
-    const config = parseConfig({ outputPath });
-    const key = createSimpleKey('alreadyDeep');
-
-    let hasThrown = false;
-    try {
-      exportTranslationKeys([key], 'fr', config, createExporterCache());
-    } catch (err) {
-      if (!(err instanceof ExportError)) throw err;
-      hasThrown = true;
-    }
-
-    expect(
-      hasThrown,
-      'Expected ExportError, but no exception was thrown',
-    ).toBe(true);
-    expect(fs.readJSONSync(outputPath)).toEqual({
-      alreadyDeep: { someKey: 'foo' },
-    });
-  });
-
   it('can discard old keys', () => {
     const outputPath = path.join(outputDir, 'discard_old_keys.json');
     fs.writeJSONSync(outputPath, { oldKey: 'foo' });

@@ -1,0 +1,18 @@
+{
+  "description": "test extraction of values with uncommon types",
+  "comment": "see https://github.com/gilbsgilbs/babel-plugin-i18next-extract/issues/117",
+  "pluginOptions": {},
+  "expectValues": {
+    "object": {
+      "hello": "world",
+      "value": 42,
+      "itsnull": null,
+      "nested": {
+        "obj": {},
+        "arr": []
+      }
+    },
+    "array": ["pasta", {"hello": "world"}, 42, null, ["nested"]],
+    "number": 42
+  }
+}

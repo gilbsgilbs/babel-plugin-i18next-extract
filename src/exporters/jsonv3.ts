@@ -3,16 +3,16 @@ import stringify from 'json-stable-stringify';
 import { Exporter, ConflictError } from './commons';
 
 /**
- * A deep, recursive object which leaves must be of generic type V.
+ * JSONv3 values can be any valid value for JSON file.
+ *
+ * See i18next's "returnObjects" option.
  */
-interface DeepObject<V = string> {
-  [k: string]: DeepObject<V> | V;
-}
-
-/**
- * JSON keys can either be strings or null.
- */
-type JsonV3Key = string | null;
+type JsonV3Value =
+  | string
+  | number
+  | null
+  | JsonV3Value[]
+  | { [k: string]: JsonV3Value };
 
 /**
  * Content of a JSON v3 file.
@@ -20,7 +20,16 @@ type JsonV3Key = string | null;
 interface JsonV3File {
   whitespacesBefore: string;
   whitespacesAfter: string;
-  content: DeepObject<JsonV3Key>;
+  content: { [k: string]: JsonV3Value };
+}
+
+/**
+ * Check whether a JsonV3Value is a plain object.
+ */
+function jsonV3ValueIsObject(
+  val: JsonV3Value,
+): val is { [k: string]: JsonV3Value } {
+  return typeof val === 'object' && val !== null && !Array.isArray(val);
 }
 
 /**
@@ -35,7 +44,7 @@ function recursiveAddKey(
   fileContent: JsonV3File['content'],
   keyPath: string[],
   cleanKey: string,
-  value: string | null,
+  value: JsonV3Value,
 ): JsonV3File['content'] {
   if (keyPath.length === 0) {
     return {
@@ -48,7 +57,7 @@ function recursiveAddKey(
   let current = fileContent[currentKeyPath];
   if (current === undefined) {
     current = {};
-  } else if (current === null || typeof current !== 'object') {
+  } else if (!jsonV3ValueIsObject(current)) {
     throw new ConflictError();
   }
 
@@ -63,7 +72,7 @@ function recursiveAddKey(
   };
 }
 
-const jsonv3Exporter: Exporter<JsonV3File, JsonV3Key> = {
+const jsonv3Exporter: Exporter<JsonV3File, JsonV3Value> = {
   init: () => {
     return {
       whitespacesBefore: '',
@@ -95,17 +104,12 @@ const jsonv3Exporter: Exporter<JsonV3File, JsonV3Key> = {
       const val = current[p];
       if (val === undefined) {
         return undefined;
-      }
-      if (typeof val === 'string' || val === null) {
+      } else if (!jsonV3ValueIsObject(val)) {
         throw new ConflictError();
       }
       current = val;
     }
-    const val = current[cleanKey];
-    if (typeof val !== 'string' && val !== null && val !== undefined) {
-      throw new ConflictError();
-    }
-    return val;
+    return current[cleanKey];
   },
   addKey: params => {
     const { key, file, value } = params;

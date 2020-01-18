@@ -99,20 +99,35 @@ describe('Test JSONv3 exporter', () => {
     ).toBeUndefined();
   });
 
-  it('cannot get conflicting key', () => {
+  it('throws ConflictError when path contains non JSON object', () => {
     expect(() =>
       jsonv3Exporter.getKey({
         config,
-        keyPath: [],
-        cleanKey: 'hello',
+        keyPath: ['hello'],
+        cleanKey: 'world',
         file: {
           whitespacesBefore: '',
           whitespacesAfter: '',
-          content: { hello: { new: 'world' } },
+          content: { hello: 250 },
         },
       }),
     ).toThrow(ConflictError);
 
+    expect(() =>
+      jsonv3Exporter.getKey({
+        config,
+        keyPath: ['hello'],
+        cleanKey: 'world',
+        file: {
+          whitespacesBefore: '',
+          whitespacesAfter: '',
+          content: { hello: [] },
+        },
+      }),
+    ).toThrow(ConflictError);
+  });
+
+  it('cannot get conflicting key', () => {
     expect(() =>
       jsonv3Exporter.getKey({
         config,
