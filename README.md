@@ -96,15 +96,3 @@ npm run babel -f .babelrc 'src/**/*.{js,jsx,ts,tsx}'
 ```
 
 Extracted translations land in the `extractedTranslations/` directory by default.
-
-<!-- {% if false %} -->
-<!-- Don't render this in actual documentation -->
-
-## Troubleshooting
-
-### Error: EEXIST: file already exists, mkdir './extractedTranslations/en'
-
-Make sure your node version is at least 10 by running `node --version`. This plugin doesn't support node 8.
-You can still use [nvm](https://github.com/nvm-sh/nvm) to deal with multiple node versions.
-
-<!-- {% endif %} -->

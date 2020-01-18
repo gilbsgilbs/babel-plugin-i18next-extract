@@ -142,9 +142,3 @@ This would extract the following JSON:
   "error_500": "Internal server error"
 }
 ```
-
-## Error: EEXIST: file already exists, mkdir './extractedTranslations/en'
-
-Make sure your node version is at least 10 by running `node --version`. This plugin doesn't
-support node 8. You can still use [nvm](https://github.com/nvm-sh/nvm) to deal with multiple node
-versions.
