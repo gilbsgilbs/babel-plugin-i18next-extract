@@ -10,9 +10,16 @@ interface DeepObject<V = string> {
 }
 
 /**
- * JSON keys can either be strings or null.
+ * JSONv3 values can be any valid value for JSON file.
+ *
+ * See i18next's "returnObjects" option.
  */
-type JsonV3Key = string | null | [] | number;
+type JsonV3Value =
+  | string
+  | number
+  | null
+  | JsonV3Value[]
+  | { [k: string]: JsonV3Value };
 
 /**
  * Content of a JSON v3 file.
@@ -20,7 +27,16 @@ type JsonV3Key = string | null | [] | number;
 interface JsonV3File {
   whitespacesBefore: string;
   whitespacesAfter: string;
-  content: DeepObject<JsonV3Key>;
+  content: { [k: string]: JsonV3Value };
+}
+
+/**
+ * Check whether a JsonV3Value is a plain object.
+ */
+function jsonV3ValueIsObject(
+  val: JsonV3Value,
+): val is { [k: string]: JsonV3Value } {
+  return typeof val === 'object' && val !== null && !Array.isArray(val);
 }
 
 /**
@@ -35,7 +51,7 @@ function recursiveAddKey(
   fileContent: JsonV3File['content'],
   keyPath: string[],
   cleanKey: string,
-  value: string | null,
+  value: JsonV3Value,
 ): JsonV3File['content'] {
   if (keyPath.length === 0) {
     return {
@@ -45,10 +61,10 @@ function recursiveAddKey(
   }
 
   const currentKeyPath = keyPath[0];
-  let current = fileContent[currentKeyPath] as DeepObject<JsonV3Key>;
+  let current = fileContent[currentKeyPath];
   if (current === undefined) {
     current = {};
-  } else if (current === null || typeof current !== 'object') {
+  } else if (!jsonV3ValueIsObject(current)) {
     throw new ConflictError();
   }
 
@@ -63,7 +79,7 @@ function recursiveAddKey(
   };
 }
 
-const jsonv3Exporter: Exporter<JsonV3File, JsonV3Key> = {
+const jsonv3Exporter: Exporter<JsonV3File, JsonV3Value> = {
   init: () => {
     return {
       whitespacesBefore: '',
@@ -95,27 +111,12 @@ const jsonv3Exporter: Exporter<JsonV3File, JsonV3Key> = {
       const val = current[p];
       if (val === undefined) {
         return undefined;
-      }
-
-      if (typeof val !== 'object' || Array.isArray(val) || val === null) {
+      } else if (!jsonV3ValueIsObject(val)) {
         throw new ConflictError();
       }
-      current = val as DeepObject<JsonV3Key>;
+      current = val;
     }
-    const val = current[cleanKey] as JsonV3Key;
-
-    const valType = typeof val;
-
-    const valueIsInvalid = [
-      () => !['string', 'number', 'object', 'undefined'].includes(valType),
-      () => valType === 'number' && isNaN(val as number),
-    ].some(x => x());
-
-    if (valueIsInvalid) {
-      throw new ConflictError();
-    }
-
-    return val;
+    return current[cleanKey];
   },
   addKey: params => {
     const { key, file, value } = params;
