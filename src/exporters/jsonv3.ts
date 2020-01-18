@@ -3,13 +3,6 @@ import stringify from 'json-stable-stringify';
 import { Exporter, ConflictError } from './commons';
 
 /**
- * A deep, recursive object which leaves must be of generic type V.
- */
-interface DeepObject<V = string> {
-  [k: string]: DeepObject<V> | V;
-}
-
-/**
  * JSONv3 values can be any valid value for JSON file.
  *
  * See i18next's "returnObjects" option.
