@@ -1,3 +1,5 @@
+import { resolve } from 'path';
+
 export interface Config {
   // config options that are common with i18next
   locales: string[];
@@ -21,6 +23,19 @@ export interface Config {
   discardOldKeys: boolean;
   jsonSpace: string | number;
   enableExperimentalIcu: boolean;
+  customTransComponents: readonly [string, string][];
+
+  // private cache
+  cache: {
+    absoluteCustomTransComponents: readonly [string, string][];
+  };
+}
+
+function resolveIfRelative(path: string): string {
+  if (path.startsWith('.')) {
+    return resolve(path);
+  }
+  return path;
 }
 
 function coalesce<T>(v: T | undefined, defaultVal: T): T {
@@ -34,6 +49,7 @@ function coalesce<T>(v: T | undefined, defaultVal: T): T {
  */
 export function parseConfig(opts: Partial<Config>): Config {
   const defaultLocales = ['en'];
+  const customTransComponents = coalesce(opts.customTransComponents, []);
 
   return {
     locales: coalesce(opts.locales, defaultLocales),
@@ -77,5 +93,14 @@ export function parseConfig(opts: Partial<Config>): Config {
     discardOldKeys: coalesce(opts.discardOldKeys, false),
     jsonSpace: coalesce(opts.jsonSpace, 2),
     enableExperimentalIcu: coalesce(opts.enableExperimentalIcu, false),
+    customTransComponents,
+    cache: {
+      absoluteCustomTransComponents: customTransComponents.map(
+        ([sourceModule, importName]) => [
+          resolveIfRelative(sourceModule),
+          importName,
+        ],
+      ),
+    },
   };
 }

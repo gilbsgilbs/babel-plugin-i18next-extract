@@ -339,14 +339,17 @@ function parseTransComponentKeyFromChildren(
  * @param path: node path of Trans JSX element.
  * @param config: plugin configuration
  * @param commentHints: parsed comment hints
+ * @param skipCheck: set to true if you know that the JSXElement
+ *   already is a Trans component.
  */
 export default function extractTransComponent(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
   config: Config,
   commentHints: CommentHint[] = [],
+  skipCheck = false,
 ): ExtractedKey[] {
   if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
-  if (!isTransComponent(path)) return [];
+  if (!skipCheck && !isTransComponent(path)) return [];
 
   const keyEvaluationFromAttribute = parseTransComponentKeyFromAttributes(
     path,

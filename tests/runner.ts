@@ -115,7 +115,7 @@ function readExtractedFile(outputPath: string, opts?: ExpectKeysOpts): any {
       expect(
         true,
         `Couldn't find a JSON file to read at ${realOutputPath}. This probably means the ` +
-          `extraction didn't work out.`,
+          `extraction didn't work.`,
       ).toEqual(false);
     }
     throw err;
