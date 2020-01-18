@@ -1,0 +1,19 @@
+{
+  "description": "test simple extractions of a trans component",
+  "pluginOptions": {
+    "customTransComponents": [
+      ["./tests/__fixtures__/testCustomTransComponent/i18n", "MyTransComponent"],
+      ["./tests/__fixtures__/testCustomTransComponent/i18n", "OtherTransComponent"],
+      ["third-party-module", "EnhancedTrans"],
+      ["fourth-party-module", "NotExists"]
+    ],
+    "useI18nextDefaultValue": false
+  },
+  "expectValues": {
+    "very simple key": "",
+    "other very simple key": "",
+    "using wildcard": "",
+    "from third party module": "",
+    "from third party module with wildcard": ""
+  }
+}

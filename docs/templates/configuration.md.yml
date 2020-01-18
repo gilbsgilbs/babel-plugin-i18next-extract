@@ -75,21 +75,41 @@ configOptions:
           // This key will be extracted
           myT("key0");
           ```
-  - name: transComponentNames
+  - name: customTransComponents
     type: "[string, string][]"
-    description: Possible import names of `Trans` components. Relative paths of source modules are taken as linked to the package.json file.
-    defaultValue: "[['react-i18next', 'Trans']]"
+    description: |
+      This option lets you declare custom `Trans` components (e.g. a HoC of react-i18next's
+      `Trans` component). It takes an array of source module paths and import names. See the
+      examples below for usage details.
+    defaultValue: "[]"
     examples:
-      - name: Custom Trans component
+      - name: Declare a local custom Trans component
         md: |
           ```jsx
           /*
-            {"transComponentNames": [["custom_components/i18n", "importName"]]}
+            {
+              "customTransComponents": [
+                ["./src/customComponents/i18n", "MyOwnTransComponent"]
+              ]}
           */
 
-          import {CustomTrans} from "custom_components/i18n";
+          import {MyOwnTransComponent} from "./customComponents/i18n";
 
-          <CustomTrans>Extracted key</CustomTrans>;
+          <MyOwnTransComponent>Extracted key</MyOwnTransComponent>;
+          ```
+      - name: Declare a custom Trans component from a third-party module
+        md: |
+          ```jsx
+          /*
+            {
+              "customTransComponents": [
+                ["third-party-module", "EnhancedTrans"]
+              ]}
+          */
+
+          import {EnhancedTrans} from "third-party-module";
+
+          <EnhancedTrans>Extracted key</EnhancedTrans>;
           ```
   - name: defaultContexts
     type: "string[]"

@@ -1,4 +1,5 @@
 import extractTransComponent from './transComponent';
+import extractCustomTransComponent from './customTransComponent';
 import extractWithTranslationHOC from './withTranslationHOC';
 import extractUseTranslationHook from './useTranslationHook';
 import extractGetFixedTFunction from './getFixedTFunction';
@@ -13,6 +14,7 @@ export { ExtractionError };
  * All extractors sorted by priority.
  */
 export const EXTRACTORS_PRIORITIES = [
+  extractCustomTransComponent.name,
   extractTransComponent.name,
   extractUseTranslationHook.name,
   extractGetFixedTFunction.name,
@@ -23,6 +25,7 @@ export const EXTRACTORS_PRIORITIES = [
 ];
 
 export default {
+  extractCustomTransComponent,
   extractTransComponent,
   extractUseTranslationHook,
   extractGetFixedTFunction,

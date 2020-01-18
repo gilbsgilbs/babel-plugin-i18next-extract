@@ -150,6 +150,13 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
         ),
       );
       collect(
+        Extractors.extractCustomTransComponent(
+          path,
+          extractState.config,
+          extractState.commentHints,
+        ),
+      );
+      collect(
         Extractors.extractTransComponent(
           path,
           extractState.config,
