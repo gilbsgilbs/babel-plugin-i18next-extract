@@ -3,7 +3,7 @@ import path from 'path';
 
 import { TranslationKey } from '../keys';
 import { Config } from '../config';
-import { ConflictError, ExportError } from './commons';
+import { ConflictError, Exporter, ExportError } from './commons';
 import jsonv3Exporter from './jsonv3';
 
 export { ConflictError, ExportError };
@@ -37,17 +37,21 @@ export function createExporterCache(): ExporterCache {
 /**
  * Load a translation file.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function loadTranslationFile(config: Config, filePath: string): any {
+function loadTranslationFile<F>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  exporter: Exporter<F, any>,
+  config: Config,
+  filePath: string,
+): F {
   let content: string;
   try {
     content = fs.readFileSync(filePath, { encoding: 'utf8' });
   } catch (err) {
-    if (err.code === 'ENOENT') return jsonv3Exporter.init({ config });
+    if (err.code === 'ENOENT') return exporter.init({ config });
     throw err;
   }
 
-  return jsonv3Exporter.parse({ config, content });
+  return exporter.parse({ config, content });
 }
 
 /**
@@ -107,6 +111,8 @@ export default function exportTranslationKeys(
 ): void {
   const keysPerFilepath: { [path: string]: TranslationKey[] } = {};
 
+  const exporter = jsonv3Exporter;
+
   for (const key of keys) {
     // Figure out in which path each key should go.
     const filePath = config.outputPath
@@ -120,6 +126,7 @@ export default function exportTranslationKeys(
       // Cache original translation file so that we don't loose it across babel
       // passes.
       cache.originalTranslationFiles[filePath] = loadTranslationFile(
+        exporter,
         config,
         filePath,
       );
@@ -129,17 +136,17 @@ export default function exportTranslationKeys(
     let translationFile =
       cache.currentTranslationFiles[filePath] ||
       (config.discardOldKeys
-        ? jsonv3Exporter.init({ config })
+        ? exporter.init({ config })
         : originalTranslationFile);
 
     for (const k of keysForFilepath) {
-      const previousValue = jsonv3Exporter.getKey({
+      const previousValue = exporter.getKey({
         config,
         file: originalTranslationFile,
         keyPath: k.keyPath,
         cleanKey: k.cleanKey,
       });
-      translationFile = jsonv3Exporter.addKey({
+      translationFile = exporter.addKey({
         config,
         file: translationFile,
         key: k,
@@ -157,7 +164,7 @@ export default function exportTranslationKeys(
     fs.mkdirSync(directoryPath, { recursive: true });
     fs.writeFileSync(
       filePath,
-      jsonv3Exporter.stringify({
+      exporter.stringify({
         config,
         file: translationFile,
       }),
