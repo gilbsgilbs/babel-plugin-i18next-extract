@@ -2,7 +2,8 @@
   "description": "ICU plurals test",
   "comment": "Can extract plurals into ICU format",
   "pluginOptions": {
-    "enableExperimentalIcu": true
+    "enableExperimentalIcu": true,
+    "useI18nextDefaultValue": true
   },
   "expectValues": [
     [

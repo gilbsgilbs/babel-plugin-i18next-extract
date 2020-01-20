@@ -167,7 +167,7 @@ configOptions:
 
       _Note: For `react-i18next` `Trans` component, the children might also be used as default
       value._
-    defaultValue: "['en']"
+    defaultValue: "false"
     examples:
       - name: Use i18next default value for all locales
         md: |

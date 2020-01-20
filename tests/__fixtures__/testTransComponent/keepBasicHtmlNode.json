@@ -3,7 +3,8 @@
   "pluginOptions": {
     "keySeparator": null,
     "nsSeparator": null,
-    "transKeepBasicHtmlNodesFor": ["br", "p"]
+    "transKeepBasicHtmlNodesFor": ["br", "p"],
+    "useI18nextDefaultValue": true
   },
   "expectValues": {
     "Trans<br/>0": "Trans<br/>0",

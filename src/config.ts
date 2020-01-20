@@ -77,10 +77,7 @@ export function parseConfig(opts: Partial<Config>): Config {
       './extractedTranslations/{{locale}}/{{ns}}.json',
     ),
     defaultValue: coalesce(opts.defaultValue, ''),
-    useI18nextDefaultValue: coalesce(
-      opts.useI18nextDefaultValue,
-      defaultLocales,
-    ),
+    useI18nextDefaultValue: coalesce(opts.useI18nextDefaultValue, false),
     useI18nextDefaultValueForDerivedKeys: coalesce(
       opts.useI18nextDefaultValueForDerivedKeys,
       false,
