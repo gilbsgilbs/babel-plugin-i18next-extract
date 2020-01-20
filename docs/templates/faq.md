@@ -88,8 +88,10 @@ npm run i18n-extract
 Some prefer using plain english strings as key. While it would probably be preferable to
 rely on [default values](
 https://www.i18next.com/translation-function/essentials#passing-a-default-value) instead, it is
-still possible to make natural keys work with this plugin. Here is a simple configuration that
-may help you getting started with natural keys:
+still possible to make natural keys work with this plugin.  
+Note that [useI18nextDefaultValue
+](https://i18next-extract.netlify.com/#/configuration?id=usei18nextdefaultvalue) supersedes the [keyAsDefaultValue](https://i18next-extract.netlify.com/#/configuration?id=keyasdefaultvalue) option in the cases where you do specify a default. 
+Here is a simple configuration that may help you getting started with natural keys:
 
 ```javascript
 {
@@ -105,6 +107,9 @@ may help you getting started with natural keys:
 
   // If your keys are in english
   "keyAsDefaultValue": ["en"],
+  
+  //The default value is ["en"], so it's best to turn this off explicitly
+  "useI18nextDefaultValue": false, 
 
   // Ignore plurals and contexts. We can't use natural keys for those.
   "keyAsDefaultValueForDerivedKeys": false,
