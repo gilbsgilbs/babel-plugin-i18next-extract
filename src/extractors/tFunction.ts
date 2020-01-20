@@ -31,7 +31,7 @@ function isSimpleTCall(
 
   if (!callee.isIdentifier()) return false;
 
-  return config.tFunctionNames.includes(callee.node.name);
+  return config.customTFunctionNames.includes(callee.node.name);
 }
 
 /**

@@ -58,7 +58,7 @@ configOptions:
           // This key will be extracted
           myI18next.t("key0");
           ```
-  - name: tFunctionNames
+  - name: customTFunctionNames
     type: "string[]"
     description: |
       Possible names for your `t` functions. This will only be used for direct calls to `t`
@@ -69,7 +69,7 @@ configOptions:
         md: |
           ```js
           /*
-            {"tFunctionNames": ["myT"]}
+            {"customTFunctionNames": ["myT"]}
           */
 
           // This key will be extracted
