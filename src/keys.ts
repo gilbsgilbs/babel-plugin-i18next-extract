@@ -118,6 +118,9 @@ export function computeDerivedKeys(
   if (parsedOptions.hasCount) {
     // See https://www.i18next.com/translation-function/plurals#how-to-find-the-correct-plural-suffix
     const pluralRule = i18next.services.pluralResolver.getRule(locale);
+    if (!pluralRule) {
+      throw new Error(`No plural rule found for locale '${locale}'`);
+    }
     const numberOfPlurals = pluralRule.numbers.length;
 
     if (config.enableExperimentalIcu) {
