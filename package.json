@@ -62,7 +62,7 @@
     "jest-expect-message": "^1.0.2",
     "prettier": "^1.18.2",
     "rimraf": "^3.0.0",
-    "rollup": "^1.16.2",
+    "rollup": "^2.0.0",
     "rollup-plugin-typescript": "^1.0.1",
     "tslib": "^1.10.0",
     "typescript": "^3.5.2"
