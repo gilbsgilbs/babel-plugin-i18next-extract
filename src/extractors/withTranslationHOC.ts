@@ -201,6 +201,10 @@ function findTFunctionCallsFromPropsAssignment(
 ): BabelCore.NodePath<BabelTypes.CallExpression>[] {
   const tReferences = Array<BabelCore.NodePath>();
 
+  const body = propsId.parentPath.get('body');
+  if (Array.isArray(body)) return [];
+  const scope = body.scope;
+
   if (propsId.isObjectPattern()) {
     // got "function MyComponent({t, other, props})"
     // or "const {t, other, props} = this.props"
@@ -209,16 +213,13 @@ function findTFunctionCallsFromPropsAssignment(
       propsId,
     );
     if (tFunctionIdentifier === null) return [];
-    const tBinding =
-      tFunctionIdentifier.scope.bindings[tFunctionIdentifier.node.name];
-    if (!tBinding) return [];
+    const tBinding = scope.bindings[tFunctionIdentifier.node.name];
     tReferences.push(...tBinding.referencePaths);
   } else if (propsId.isIdentifier()) {
     // got "function MyComponent(props)"
     // or "const props = this.props"
     // we want to find references to props.t
-    const references =
-      propsId.scope.bindings[propsId.node.name].referencePaths;
+    const references = scope.bindings[propsId.node.name].referencePaths;
     for (const reference of references) {
       if (reference.parentPath.isMemberExpression()) {
         const prop = reference.parentPath.get('property');
