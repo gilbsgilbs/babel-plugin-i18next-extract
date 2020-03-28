@@ -2,18 +2,18 @@ import * as BabelCore from '@babel/core';
 import * as BabelTypes from '@babel/types';
 
 import { parseCommentHints, CommentHint } from './comments';
-import Extractors, {
-  EXTRACTORS_PRIORITIES,
-  ExtractionError,
-} from './extractors';
-import { computeDerivedKeys, ExtractedKey, TranslationKey } from './keys';
 import { Config, parseConfig } from './config';
+import { PLUGIN_NAME } from './constants';
 import exportTranslationKeys, {
   ExporterCache,
   createExporterCache,
 } from './exporters';
-import { PLUGIN_NAME } from './constants';
+import Extractors, {
+  EXTRACTORS_PRIORITIES,
+  ExtractionError,
+} from './extractors';
 import extractWithTranslationHOC from './extractors/withTranslationHOC';
+import { computeDerivedKeys, ExtractedKey, TranslationKey } from './keys';
 
 export interface VisitorState {
   // Options inherited from Babel.
@@ -54,8 +54,8 @@ function handleExtraction<T>(
     const newKeys = Array<ExtractedKey>();
 
     for (const newKeyCandidate of newKeysCandidates) {
-      const conflictingKeyIndex = currentKeys.findIndex(extractedKey =>
-        extractedKey.sourceNodes.some(extractedNode =>
+      const conflictingKeyIndex = currentKeys.findIndex((extractedKey) =>
+        extractedKey.sourceNodes.some((extractedNode) =>
           newKeyCandidate.sourceNodes.includes(extractedNode),
         ),
       );
@@ -63,10 +63,10 @@ function handleExtraction<T>(
       if (conflictingKeyIndex !== -1) {
         const conflictingKey = currentKeys[conflictingKeyIndex];
         const conflictingKeyPriority = -EXTRACTORS_PRIORITIES.findIndex(
-          v => v === conflictingKey.extractorName,
+          (v) => v === conflictingKey.extractorName,
         );
         const newKeyPriority = -EXTRACTORS_PRIORITIES.findIndex(
-          v => v === newKeyCandidate.extractorName,
+          (v) => v === newKeyCandidate.extractorName,
         );
 
         if (newKeyPriority <= conflictingKeyPriority) {
@@ -106,7 +106,7 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
   CallExpression(path, state: VisitorState) {
     const extractState = this.I18NextExtract;
 
-    handleExtraction(path, state, collect => {
+    handleExtraction(path, state, (collect) => {
       collect(
         Extractors.extractUseTranslationHook(
           path,
@@ -141,7 +141,7 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
   JSXElement(path, state: VisitorState) {
     const extractState = this.I18NextExtract;
 
-    handleExtraction(path, state, collect => {
+    handleExtraction(path, state, (collect) => {
       collect(
         Extractors.extractTranslationRenderProp(
           path,
@@ -169,7 +169,7 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
   ClassDeclaration(path, state: VisitorState) {
     const extractState = this.I18NextExtract;
 
-    handleExtraction(path, state, collect => {
+    handleExtraction(path, state, (collect) => {
       collect(
         extractWithTranslationHOC(
           path,
@@ -183,7 +183,7 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
   Function(path, state: VisitorState) {
     const extractState = this.I18NextExtract;
 
-    handleExtraction(path, state, collect => {
+    handleExtraction(path, state, (collect) => {
       collect(
         extractWithTranslationHOC(
           path,
@@ -195,7 +195,7 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
   },
 };
 
-export default function(
+export default function (
   api: BabelCore.ConfigAPI,
 ): BabelCore.PluginObj<VisitorState> {
   api.assertVersion(7);

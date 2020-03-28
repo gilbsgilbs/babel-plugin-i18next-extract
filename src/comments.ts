@@ -1,5 +1,5 @@
-import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
+import * as BabelTypes from '@babel/types';
 
 type CommentHintType = 'DISABLE' | 'NAMESPACE' | 'CONTEXT' | 'PLURAL';
 type CommentHintScope =

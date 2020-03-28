@@ -1,10 +1,14 @@
-import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
+import * as BabelTypes from '@babel/types';
+
 import {
   COMMENT_HINTS_KEYWORDS,
   getCommentHintForPath,
   CommentHint,
 } from '../comments';
+import { Config } from '../config';
+import { ExtractedKey } from '../keys';
+
 import {
   ExtractionError,
   getFirstOrNull,
@@ -16,8 +20,6 @@ import {
   parseI18NextOptionsFromCommentHints,
   resolveIdentifier,
 } from './commons';
-import { ExtractedKey } from '../keys';
-import { Config } from '../config';
 
 /**
  * Check whether a given JSXElement is a Trans component.
@@ -139,7 +141,7 @@ function parseTransComponentKeyFromAttributes(
 function hasChildren(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
 ): boolean {
-  const children = path.get('children').filter(path => {
+  const children = path.get('children').filter((path) => {
     // Filter out empty JSX expression containers
     // (they do not count, even if they contain comments)
 
@@ -246,7 +248,7 @@ function parseTransComponentKeyFromChildren(
 
   // Filter out JSXText nodes that only consist of whitespaces with one or
   // more linefeeds. Such node do not count for the indices.
-  children = children.filter(child => {
+  children = children.filter((child) => {
     return !(
       child.isJSXText() &&
       child.node.value.trim() === '' &&
@@ -255,7 +257,7 @@ function parseTransComponentKeyFromChildren(
   });
 
   // Filter out empty containers. They do not affect indices.
-  children = children.filter(p => {
+  children = children.filter((p) => {
     if (!p.isJSXExpressionContainer()) return true;
     const expr = p.get('expression');
     return !expr.isJSXEmptyExpression();

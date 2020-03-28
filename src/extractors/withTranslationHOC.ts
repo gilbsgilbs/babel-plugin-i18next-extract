@@ -1,14 +1,16 @@
-import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
-import extractTFunction from './tFunction';
-import { ExtractedKey } from '../keys';
+import * as BabelTypes from '@babel/types';
+
+import { CommentHint, getCommentHintForPath } from '../comments';
 import { Config } from '../config';
+import { ExtractedKey } from '../keys';
+
 import {
   getFirstOrNull,
   evaluateIfConfident,
   referencesImport,
 } from './commons';
-import { CommentHint, getCommentHintForPath } from '../comments';
+import extractTFunction from './tFunction';
 
 /**
  * Check whether a given node is a withTranslation call expression.
@@ -35,7 +37,7 @@ function isWithTranslationHOCCallExpression(
 function findWithTranslationHOCCallExpressionInParents(
   path: BabelCore.NodePath<BabelTypes.Node>,
 ): BabelCore.NodePath<BabelTypes.CallExpression> | null {
-  const callExpr: BabelCore.NodePath = path.findParent(parentPath => {
+  const callExpr: BabelCore.NodePath = path.findParent((parentPath) => {
     if (!parentPath.isCallExpression()) return false;
     const callee = parentPath.get('callee');
     return isWithTranslationHOCCallExpression(callee);
@@ -360,7 +362,7 @@ export default function extractWithTranslationHOC(
   for (const tCall of tCalls) {
     keys = [
       ...keys,
-      ...extractTFunction(tCall, config, commentHints, true).map(k => ({
+      ...extractTFunction(tCall, config, commentHints, true).map((k) => ({
         // Add namespace if it was not explicitely set in t() call.
         ...k,
         parsedOptions: {
@@ -371,7 +373,7 @@ export default function extractWithTranslationHOC(
     ];
   }
 
-  return keys.map(k => ({
+  return keys.map((k) => ({
     ...k,
     sourceNodes: [path.node, ...k.sourceNodes],
     extractorName: extractWithTranslationHOC.name,

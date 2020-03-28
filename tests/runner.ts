@@ -1,10 +1,11 @@
+import path from 'path';
+
 import * as BabelCore from '@babel/core';
 import fs from 'fs-extra';
-import path from 'path';
 import { sync as rimraf } from 'rimraf';
 
-import { Config } from '../src/config';
 import plugin from '../src';
+import { Config } from '../src/config';
 
 interface ExpectKeysOpts {
   ns?: string;
@@ -37,7 +38,7 @@ function* genTestData(): IterableIterator<TestData> {
   // List directories in __fixtures__
   const testDirsEnt = fs
     .readdirSync(fixturesDir, { encoding: 'utf8', withFileTypes: true })
-    .filter(testDir => testDir.isDirectory());
+    .filter((testDir) => testDir.isDirectory());
 
   for (const testDirEnt of testDirsEnt) {
     // Listing JSON files in test directories
@@ -49,7 +50,7 @@ function* genTestData(): IterableIterator<TestData> {
         withFileTypes: true,
       })
       .filter(
-        testFile => testFile.isFile() && testFile.name.endsWith('.json'),
+        (testFile) => testFile.isFile() && testFile.name.endsWith('.json'),
       );
 
     for (const testFileEnt of testFilesEnt) {
@@ -66,7 +67,7 @@ function* genTestData(): IterableIterator<TestData> {
       const inputFiles =
         testData.inputFiles === undefined
           ? [testFile.replace(/\.json$/, '.js')]
-          : testData.inputFiles.map(p =>
+          : testData.inputFiles.map((p) =>
               path.join(testDir, p.replace('/', path.sep)),
             );
 

@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const fs = require('fs-extra');
-const nunjucks = require('nunjucks');
 const path = require('path');
+
+const fs = require('fs-extra');
 const yaml = require('js-yaml');
+const nunjucks = require('nunjucks');
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 const OUTPUT_PATH = './_build';
@@ -39,7 +40,7 @@ env.addGlobal('includeFile', (src, ctx) => {
 
 const templatePaths = fs
   .readdirSync(TEMPLATES_PATH)
-  .filter(s => s.endsWith('.md') || s.endsWith('.html'));
+  .filter((s) => s.endsWith('.md') || s.endsWith('.html'));
 
 for (const templatePath of templatePaths) {
   console.log(`Rendering ${templatePath}.`);
