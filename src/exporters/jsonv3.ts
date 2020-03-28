@@ -111,7 +111,7 @@ const jsonv3Exporter: Exporter<JsonV3File, JsonV3Value> = {
     }
     return current[cleanKey];
   },
-  addKey: params => {
+  addKey: (params) => {
     const { key, file, value } = params;
     return {
       ...file,

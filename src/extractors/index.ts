@@ -1,12 +1,12 @@
-import extractTransComponent from './transComponent';
+import { ExtractionError } from './commons';
 import extractCustomTransComponent from './customTransComponent';
-import extractWithTranslationHOC from './withTranslationHOC';
-import extractUseTranslationHook from './useTranslationHook';
 import extractGetFixedTFunction from './getFixedTFunction';
-import extractTranslationRenderProp from './translationRenderProp';
 import extractI18nextInstance from './i18nextInstance';
 import extractTFunction from './tFunction';
-import { ExtractionError } from './commons';
+import extractTransComponent from './transComponent';
+import extractTranslationRenderProp from './translationRenderProp';
+import extractUseTranslationHook from './useTranslationHook';
+import extractWithTranslationHOC from './withTranslationHOC';
 
 export { ExtractionError };
 
