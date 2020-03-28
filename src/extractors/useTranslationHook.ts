@@ -36,8 +36,9 @@ export default function extractUseTranslationHook(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
   config: Config,
   commentHints: CommentHint[] = [],
+  skipCheck = false,
 ): ExtractedKey[] {
-  if (!isUseTranslationHook(path)) return [];
+  if (!skipCheck && !isUseTranslationHook(path)) return [];
 
   let ns: string | null;
   const nsCommentHint = getCommentHintForPath(path, 'NAMESPACE', commentHints);

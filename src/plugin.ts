@@ -108,6 +108,13 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
 
     handleExtraction(path, state, (collect) => {
       collect(
+        Extractors.extractCustomUseTranslationHook(
+          path,
+          extractState.config,
+          extractState.commentHints,
+        ),
+      );
+      collect(
         Extractors.extractUseTranslationHook(
           path,
           extractState.config,

@@ -1,3 +1,5 @@
+import { dirname, isAbsolute, relative, sep } from 'path';
+
 import * as BabelCore from '@babel/core';
 import * as BabelTypes from '@babel/types';
 
@@ -262,4 +264,37 @@ export function resolveIdentifier(
   if (!latestDeclarator.isExpression()) return null;
 
   return latestDeclarator;
+}
+
+/**
+ * Check whether a given node is a custom import.
+ *
+ * @param absoluteNodePaths: list of possible custom nodes, with their source
+ *   modules and import names.
+ * @param path: node path to check
+ * @param name: node name to check
+ * @returns true if the given node is a match.
+ */
+export function isCustomImportedNode(
+  absoluteNodePaths: readonly [string, string][],
+  path: BabelCore.NodePath,
+  name: BabelCore.NodePath,
+): boolean {
+  return absoluteNodePaths.some(([sourceModule, importName]): boolean => {
+    if (isAbsolute(sourceModule)) {
+      let relativeSourceModulePath = relative(
+        dirname(path.state.filename),
+        sourceModule,
+      );
+      if (!relativeSourceModulePath.startsWith('.')) {
+        relativeSourceModulePath = '.' + sep + relativeSourceModulePath;
+      }
+
+      // Absolute path to the source module, let's try a relative path first.
+      if (referencesImport(name, relativeSourceModulePath, importName)) {
+        return true;
+      }
+    }
+    return referencesImport(name, sourceModule, importName);
+  });
 }
