@@ -111,6 +111,51 @@ configOptions:
 
           <EnhancedTrans>Extracted key</EnhancedTrans>;
           ```
+  - name: customUseTranslationHooks
+    type: "[string, string][]"
+    description: |
+      Similarly to `customTransComponents`, this option allows you to declare your
+      own custom useTranslation hooks which can compose around react-i18next's
+      useTranslation hook. This option takes an array of source module paths and
+      import names.
+    defaultValue: "[]"
+    examples:
+      - name: Declare a local custom useTranslation hook
+        md: |
+          ```jsx
+          /*
+            {
+              "customUseTranslationHooks": [
+                ["./src/customComponents/i18n", "useMyTranslationHook"]
+              ]}
+          */
+
+          import {useMyTranslationHook} from "./customComponents/i18n";
+
+          function MyComponent() {
+            const t = useMyTranslationHook();
+            return <span>{t('extracted key')}</span>
+          }
+          ```
+
+      - name: Declare a local custom useTranslation hook using a namespace
+        md: |
+          ```jsx
+          /*
+            {
+              "customUseTranslationHooks": [
+                ["./src/customComponents/i18n", "useMyTranslationHook"]
+              ]}
+          */
+
+          import {useMyTranslationHook} from "./customComponents/i18n";
+
+          function MyComponentWithNamespace() {
+            const t = useMyTranslationHook('namespace');
+            return <span>{t('extracted key in a namespace')}</span>
+          }
+          ```
+
   - name: defaultContexts
     type: "string[]"
     description: Context values to use when detecting a translation with context.

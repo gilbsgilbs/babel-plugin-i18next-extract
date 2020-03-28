@@ -1,12 +1,14 @@
-import fs from 'fs-extra';
 import path from 'path';
+
+import fs from 'fs-extra';
 import { sync as rimraf } from 'rimraf';
 
+import { parseConfig } from '../../src/config';
 import exportTranslationKeys, {
   ExportError,
   createExporterCache,
 } from '../../src/exporters';
-import { parseConfig } from '../../src/config';
+
 import { createSimpleKey } from './helpers';
 
 describe('Test exporter works', () => {

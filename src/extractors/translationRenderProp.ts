@@ -1,15 +1,17 @@
-import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
-import extractTFunction from './tFunction';
-import { ExtractedKey } from '../keys';
+import * as BabelTypes from '@babel/types';
+
+import { CommentHint, getCommentHintForPath } from '../comments';
 import { Config } from '../config';
+import { ExtractedKey } from '../keys';
+
 import {
   getFirstOrNull,
   findJSXAttributeByName,
   evaluateIfConfident,
   referencesImport,
 } from './commons';
-import { CommentHint, getCommentHintForPath } from '../comments';
+import extractTFunction from './tFunction';
 
 /**
  * Check whether a given JSXElement is a Translation render prop.
@@ -63,7 +65,7 @@ export default function extractTranslationRenderProp(
   // We expect at least "<Translation>{(t) => …}</Translation>
   const expressionContainer = path
     .get('children')
-    .filter(p => p.isJSXExpressionContainer())[0];
+    .filter((p) => p.isJSXExpressionContainer())[0];
   if (!expressionContainer || !expressionContainer.isJSXExpressionContainer())
     return [];
   const expression = expressionContainer.get('expression');
@@ -88,7 +90,7 @@ export default function extractTranslationRenderProp(
           config,
           commentHints,
           true,
-        ).map(k => ({
+        ).map((k) => ({
           // Add namespace if it was not explicitely set in t() call.
           ...k,
           parsedOptions: {
@@ -100,7 +102,7 @@ export default function extractTranslationRenderProp(
     }
   }
 
-  return keys.map(k => ({
+  return keys.map((k) => ({
     ...k,
     sourceNodes: [path.node, ...k.sourceNodes],
     extractorName: extractTranslationRenderProp.name,

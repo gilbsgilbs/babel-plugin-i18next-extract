@@ -1,0 +1,16 @@
+{
+  "description": "test namespace extraction of custom useTranslation hooks",
+  "pluginOptions": {
+    "customUseTranslationHooks": [
+      ["./tests/__fixtures__/testCustomHook/i18n", "useMyTranslation"],
+      ["./tests/__fixtures__/testCustomHook/i18n", "useOtherTranslation"],
+      ["third-party-module", "useThirdPartyTranslation"]
+    ]
+  },
+  "expectValues": [
+    [{"key0": "", "key1": ""}, {"ns": "ns0"}],
+    [{"key in ns1": ""}, {"ns": "ns1"}],
+    [{"key in ns2": ""}, {"ns": "ns2"}],
+    [{"key in ns3": ""}, {"ns": "ns3"}]
+  ]
+}

@@ -1,6 +1,6 @@
 import * as BabelTypes from '@babel/types';
-
 import i18next from 'i18next';
+
 import { Config } from './config';
 
 interface I18NextParsedOptions {
@@ -105,7 +105,7 @@ export function computeDerivedKeys(
     const contexts = Array.isArray(parsedOptions.contexts)
       ? parsedOptions.contexts
       : config.defaultContexts;
-    keys = contexts.map(v => {
+    keys = contexts.map((v) => {
       if (v === '') return translationKey;
       return {
         ...translationKey,
@@ -137,7 +137,7 @@ export function computeDerivedKeys(
       extractedKey.parsedOptions.defaultValue = `{count, plural, ${icuPlurals}`;
     } else {
       if (numberOfPlurals === 1) {
-        keys = keys.map(k => ({
+        keys = keys.map((k) => ({
           ...k,
           cleanKey: k.cleanKey + config.pluralSeparator + '0',
           isDerivedKey: true,

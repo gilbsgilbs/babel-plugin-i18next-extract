@@ -1,16 +1,24 @@
-import typescript from 'rollup-plugin-typescript';
+import resolve from '@rollup/plugin-node-resolve';
+import babel from 'rollup-plugin-babel';
+
 import pkg from './package.json';
 
+const extensions = ['.js', '.ts'];
+
 export default {
-  input: 'src/index.ts',
+  input: {
+    index: 'src/index.ts',
+  },
   output: [
     {
-      file: pkg.main,
+      dir: 'lib/',
       format: 'cjs',
+      exports: 'named',
     },
     {
-      file: pkg.module,
+      dir: 'lib/es/',
       format: 'es',
+      exports: 'named',
     },
   ],
   external: [
@@ -20,8 +28,11 @@ export default {
     ...Object.keys(pkg.peerDependencies || {}),
   ],
   plugins: [
-    typescript({
-      typescript: require('typescript'),
+    resolve({ extensions }),
+    babel({
+      include: 'src/**/*',
+      exclude: 'node_modules/**',
+      extensions,
     }),
   ],
 };

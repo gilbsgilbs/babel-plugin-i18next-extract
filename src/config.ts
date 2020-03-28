@@ -24,10 +24,12 @@ export interface Config {
   jsonSpace: string | number;
   enableExperimentalIcu: boolean;
   customTransComponents: readonly [string, string][];
+  customUseTranslationHooks: readonly [string, string][];
 
   // private cache
   cache: {
     absoluteCustomTransComponents: readonly [string, string][];
+    absoluteCustomHooks: readonly [string, string][];
   };
 }
 
@@ -50,6 +52,10 @@ function coalesce<T>(v: T | undefined, defaultVal: T): T {
 export function parseConfig(opts: Partial<Config>): Config {
   const defaultLocales = ['en'];
   const customTransComponents = coalesce(opts.customTransComponents, []);
+  const customUseTranslationHooks = coalesce(
+    opts.customUseTranslationHooks,
+    [],
+  );
 
   return {
     locales: coalesce(opts.locales, defaultLocales),
@@ -91,8 +97,15 @@ export function parseConfig(opts: Partial<Config>): Config {
     jsonSpace: coalesce(opts.jsonSpace, 2),
     enableExperimentalIcu: coalesce(opts.enableExperimentalIcu, false),
     customTransComponents,
+    customUseTranslationHooks,
     cache: {
       absoluteCustomTransComponents: customTransComponents.map(
+        ([sourceModule, importName]) => [
+          resolveIfRelative(sourceModule),
+          importName,
+        ],
+      ),
+      absoluteCustomHooks: customUseTranslationHooks.map(
         ([sourceModule, importName]) => [
           resolveIfRelative(sourceModule),
           importName,
