@@ -90,8 +90,10 @@ rely on [default values](
 https://www.i18next.com/translation-function/essentials#passing-a-default-value) instead, it is
 still possible to make natural keys work with this plugin.  
 Note that [useI18nextDefaultValue
-](https://i18next-extract.netlify.com/#/configuration?id=usei18nextdefaultvalue) supersedes the [keyAsDefaultValue](https://i18next-extract.netlify.com/#/configuration?id=keyasdefaultvalue) option in the cases where you do specify a default. 
-Here is a simple configuration that may help you getting started with natural keys:
+](https://i18next-extract.netlify.com/#/configuration?id=usei18nextdefaultvalue) supersedes the
+[keyAsDefaultValue](https://i18next-extract.netlify.com/#/configuration?id=keyasdefaultvalue)
+option in the cases where you do specify a default. Here is a simple configuration that may help
+you getting started with natural keys:
 
 ```javascript
 {
