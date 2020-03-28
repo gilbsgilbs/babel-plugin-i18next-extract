@@ -1,6 +1,6 @@
-import { TranslationKey } from '../../src/keys';
+import { TranslationKey } from '../src/keys';
 
-export function createSimpleKey(
+export function createTranslationKey(
   key: string,
   keyPath: string[] = [],
 ): TranslationKey {

@@ -8,8 +8,7 @@ import exportTranslationKeys, {
   ExportError,
   createExporterCache,
 } from '../../src/exporters';
-
-import { createSimpleKey } from './helpers';
+import { createTranslationKey } from '../helpers';
 
 describe('Test exporter works', () => {
   const outputDir = path.join(__dirname, '.exporter.extracted');
@@ -19,7 +18,7 @@ describe('Test exporter works', () => {
   it('can export simple key', () => {
     const outputPath = path.join(outputDir, 'simple.json');
     const config = parseConfig({ outputPath });
-    const key = createSimpleKey('key0');
+    const key = createTranslationKey('key0');
     exportTranslationKeys([key], 'fr', config, createExporterCache());
     expect(fs.readJSONSync(outputPath)).toEqual({ key0: '' });
   });
@@ -29,7 +28,7 @@ describe('Test exporter works', () => {
     fs.writeJSONSync(outputPath, { key0: 'has value' });
 
     const config = parseConfig({ outputPath });
-    const key = createSimpleKey('key0');
+    const key = createTranslationKey('key0');
     exportTranslationKeys([key], 'fr', config, createExporterCache());
     expect(fs.readJSONSync(outputPath)).toEqual({ key0: 'has value' });
   });
@@ -37,7 +36,7 @@ describe('Test exporter works', () => {
   it('can export deep keys', () => {
     const outputPath = path.join(outputDir, 'deep.json');
     const config = parseConfig({ outputPath });
-    const key = createSimpleKey('key0', ['deep']);
+    const key = createTranslationKey('key0', ['deep']);
     exportTranslationKeys([key], 'fr', config, createExporterCache());
     expect(fs.readJSONSync(outputPath)).toEqual({ deep: { key0: '' } });
   });
@@ -47,7 +46,7 @@ describe('Test exporter works', () => {
     fs.writeJSONSync(outputPath, { deep: 'has value' });
 
     const config = parseConfig({ outputPath });
-    const key = createSimpleKey('key', ['deep']);
+    const key = createTranslationKey('key', ['deep']);
 
     let hasThrown = false;
     try {
@@ -69,7 +68,7 @@ describe('Test exporter works', () => {
     fs.writeJSONSync(outputPath, { oldKey: 'foo' });
 
     const config = parseConfig({ outputPath, discardOldKeys: true });
-    const key = createSimpleKey('newKey');
+    const key = createTranslationKey('newKey');
     exportTranslationKeys([key], 'fr', config, createExporterCache());
     expect(fs.readJSONSync(outputPath)).toEqual({ newKey: '' });
   });
@@ -79,8 +78,8 @@ describe('Test exporter works', () => {
     fs.writeJSONSync(outputPath, { oldKey: 'foo', newKey: 'with value' });
 
     const config = parseConfig({ outputPath, discardOldKeys: true });
-    const key0 = createSimpleKey('newKey');
-    const key1 = createSimpleKey('newKey2');
+    const key0 = createTranslationKey('newKey');
+    const key1 = createTranslationKey('newKey2');
     const cache = createExporterCache();
     exportTranslationKeys([key0], 'fr', config, cache);
     exportTranslationKeys([key1], 'fr', config, cache);

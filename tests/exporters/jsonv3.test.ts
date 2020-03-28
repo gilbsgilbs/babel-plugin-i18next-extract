@@ -1,8 +1,7 @@
 import { parseConfig } from '../../src/config';
 import { ConflictError } from '../../src/exporters';
 import jsonv3Exporter from '../../src/exporters/jsonv3';
-
-import { createSimpleKey } from './helpers';
+import { createTranslationKey } from '../helpers';
 
 describe('Test JSONv3 exporter', () => {
   const config = parseConfig({ jsonSpace: 0 });
@@ -148,7 +147,7 @@ describe('Test JSONv3 exporter', () => {
       jsonv3Exporter.addKey({
         config,
         file: { whitespacesBefore: '', whitespacesAfter: '', content: {} },
-        key: createSimpleKey('hello'),
+        key: createTranslationKey('hello'),
         value: 'world',
       }).content,
     ).toEqual({ hello: 'world' });
@@ -159,7 +158,7 @@ describe('Test JSONv3 exporter', () => {
       jsonv3Exporter.addKey({
         config,
         file: { whitespacesBefore: '', whitespacesAfter: '', content: {} },
-        key: createSimpleKey('new', ['hello', 'brave']),
+        key: createTranslationKey('new', ['hello', 'brave']),
         value: 'world',
       }).content,
     ).toEqual({ hello: { brave: { new: 'world' } } });
@@ -174,7 +173,7 @@ describe('Test JSONv3 exporter', () => {
           whitespacesAfter: '',
           content: { hello: { brave: 'world' } },
         },
-        key: createSimpleKey('new', ['hello', 'brave']),
+        key: createTranslationKey('new', ['hello', 'brave']),
         value: 'world',
       }),
     ).toThrow(ConflictError);
