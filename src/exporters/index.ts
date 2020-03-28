@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 
-import { TranslationKey } from '../keys';
 import { Config } from '../config';
+import { TranslationKey } from '../keys';
+
 import { ConflictError, Exporter, ExportError } from './commons';
 import jsonv3Exporter from './jsonv3';
 

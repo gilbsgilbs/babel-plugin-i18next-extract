@@ -1,11 +1,12 @@
-import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
+import * as BabelTypes from '@babel/types';
+
 import { getCommentHintForPath, CommentHint } from '../comments';
-import extractUseTranslationHook from './useTranslationHook';
-import { ExtractedKey } from '../keys';
 import { Config } from '../config';
+import { ExtractedKey } from '../keys';
 
 import { isCustomImportedNode } from './commons';
+import extractUseTranslationHook from './useTranslationHook';
 
 /**
  * Extract custom useTranslation hooks.

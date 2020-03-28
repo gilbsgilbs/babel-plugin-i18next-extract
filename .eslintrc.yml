@@ -11,6 +11,9 @@ extends:
   - 'eslint:recommended'
   - 'plugin:@typescript-eslint/recommended'
   - 'plugin:prettier/recommended'
+  - 'plugin:import/errors'
+  - 'plugin:import/warnings'
+  - 'plugin:import/typescript'
 parserOptions:
   ecmaVersion: 2018
   sourceType: module
@@ -27,6 +30,14 @@ rules:
   '@typescript-eslint/no-empty-interface':
     - error
     - allowSingleExtends: true
+  'import/named':
+    # eslint-plugin-import fails with typescript interfaces
+    - off
+  'import/order':
+    - error
+    - newlines-between: always
+      alphabetize:
+        order: asc
   'prettier/prettier':
     - error
     - singleQuote: true

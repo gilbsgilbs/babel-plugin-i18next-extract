@@ -1,6 +1,8 @@
 import { dirname, isAbsolute, relative, sep } from 'path';
+
 import * as BabelCore from '@babel/core';
 import * as BabelTypes from '@babel/types';
+
 import { CommentHint, getCommentHintForPath } from '../comments';
 import { ExtractedKey } from '../keys';
 
@@ -251,8 +253,8 @@ export function resolveIdentifier(
       ? [bindings.path.get('init')]
       : []),
     ...bindings.constantViolations
-      .filter(p => p.isAssignmentExpression())
-      .map(p => p.get('right')),
+      .filter((p) => p.isAssignmentExpression())
+      .map((p) => p.get('right')),
   ];
   if (declarationExpressions.length === 0) return null;
 

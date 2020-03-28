@@ -1,14 +1,16 @@
-import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
-import extractTFunction from './tFunction';
-import { ExtractedKey } from '../keys';
+import * as BabelTypes from '@babel/types';
+
+import { CommentHint, getCommentHintForPath } from '../comments';
 import { Config } from '../config';
+import { ExtractedKey } from '../keys';
+
 import {
   getFirstOrNull,
   evaluateIfConfident,
   referencesImport,
 } from './commons';
-import { CommentHint, getCommentHintForPath } from '../comments';
+import extractTFunction from './tFunction';
 
 /**
  * Check whether a given CallExpression path is a call to `useTranslation` hook.
@@ -70,7 +72,7 @@ export default function extractUseTranslationHook(
           config,
           commentHints,
           true,
-        ).map(k => ({
+        ).map((k) => ({
           // Add namespace if it was not explicitely set in t() call.
           ...k,
           parsedOptions: {
@@ -82,7 +84,7 @@ export default function extractUseTranslationHook(
     }
   }
 
-  return keys.map(k => ({
+  return keys.map((k) => ({
     ...k,
     sourceNodes: [path.node, ...k.sourceNodes],
     extractorName: extractUseTranslationHook.name,
