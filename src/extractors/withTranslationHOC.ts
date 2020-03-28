@@ -1,14 +1,16 @@
-import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
-import extractTFunction from './tFunction';
-import { ExtractedKey } from '../keys';
+import * as BabelTypes from '@babel/types';
+
+import { CommentHint, getCommentHintForPath } from '../comments';
 import { Config } from '../config';
+import { ExtractedKey } from '../keys';
+
 import {
   getFirstOrNull,
   evaluateIfConfident,
   referencesImport,
 } from './commons';
-import { CommentHint, getCommentHintForPath } from '../comments';
+import extractTFunction from './tFunction';
 
 /**
  * Check whether a given node is a withTranslation call expression.
@@ -35,7 +37,7 @@ function isWithTranslationHOCCallExpression(
 function findWithTranslationHOCCallExpressionInParents(
   path: BabelCore.NodePath<BabelTypes.Node>,
 ): BabelCore.NodePath<BabelTypes.CallExpression> | null {
-  const callExpr: BabelCore.NodePath = path.findParent(parentPath => {
+  const callExpr: BabelCore.NodePath = path.findParent((parentPath) => {
     if (!parentPath.isCallExpression()) return false;
     const callee = parentPath.get('callee');
     return isWithTranslationHOCCallExpression(callee);
@@ -199,6 +201,10 @@ function findTFunctionCallsFromPropsAssignment(
 ): BabelCore.NodePath<BabelTypes.CallExpression>[] {
   const tReferences = Array<BabelCore.NodePath>();
 
+  const body = propsId.parentPath.get('body');
+  if (Array.isArray(body)) return [];
+  const scope = body.scope;
+
   if (propsId.isObjectPattern()) {
     // got "function MyComponent({t, other, props})"
     // or "const {t, other, props} = this.props"
@@ -207,16 +213,13 @@ function findTFunctionCallsFromPropsAssignment(
       propsId,
     );
     if (tFunctionIdentifier === null) return [];
-    const tBinding =
-      tFunctionIdentifier.scope.bindings[tFunctionIdentifier.node.name];
-    if (!tBinding) return [];
+    const tBinding = scope.bindings[tFunctionIdentifier.node.name];
     tReferences.push(...tBinding.referencePaths);
   } else if (propsId.isIdentifier()) {
     // got "function MyComponent(props)"
     // or "const props = this.props"
     // we want to find references to props.t
-    const references =
-      propsId.scope.bindings[propsId.node.name].referencePaths;
+    const references = scope.bindings[propsId.node.name].referencePaths;
     for (const reference of references) {
       if (reference.parentPath.isMemberExpression()) {
         const prop = reference.parentPath.get('property');
@@ -360,7 +363,7 @@ export default function extractWithTranslationHOC(
   for (const tCall of tCalls) {
     keys = [
       ...keys,
-      ...extractTFunction(tCall, config, commentHints, true).map(k => ({
+      ...extractTFunction(tCall, config, commentHints, true).map((k) => ({
         // Add namespace if it was not explicitely set in t() call.
         ...k,
         parsedOptions: {
@@ -371,7 +374,7 @@ export default function extractWithTranslationHOC(
     ];
   }
 
-  return keys.map(k => ({
+  return keys.map((k) => ({
     ...k,
     sourceNodes: [path.node, ...k.sourceNodes],
     extractorName: extractWithTranslationHOC.name,

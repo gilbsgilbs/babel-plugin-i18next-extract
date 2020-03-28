@@ -1,9 +1,13 @@
 {
-  "description": "test simple extractions of the withTranslation HOC on function components",
+  "description": "test simple extractions of the withTranslation HOC with namespace set",
   "pluginOptions": {},
   "expectValues": [
     [{"key0": ""}, {"ns": "ns0"}],
     [{"key1": ""}, {"ns": "ns1"}],
-    [{"key2": ""}, {"ns": "ns2"}]
+    [{"key2": ""}, {"ns": "ns2"}],
+    [{"key3": ""}, {"ns": "ns3"}],
+    [{"key4": ""}, {"ns": "ns4"}],
+    [{"key5": ""}, {"ns": "ns5"}],
+    [{"key6": ""}, {"ns": "ns6"}]
   ]
 }

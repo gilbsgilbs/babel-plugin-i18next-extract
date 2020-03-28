@@ -1,5 +1,14 @@
-import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
+import * as BabelTypes from '@babel/types';
+
+import {
+  COMMENT_HINTS_KEYWORDS,
+  getCommentHintForPath,
+  CommentHint,
+} from '../comments';
+import { Config } from '../config';
+import { ExtractedKey } from '../keys';
+
 import {
   ExtractionError,
   getFirstOrNull,
@@ -7,13 +16,6 @@ import {
   findKeyInObjectExpression,
   parseI18NextOptionsFromCommentHints,
 } from './commons';
-import {
-  COMMENT_HINTS_KEYWORDS,
-  getCommentHintForPath,
-  CommentHint,
-} from '../comments';
-import { ExtractedKey } from '../keys';
-import { Config } from '../config';
 
 /**
  * Check whether a given CallExpression path is a global call to the `t`
