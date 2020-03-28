@@ -1,10 +1,12 @@
-import * as BabelTypes from '@babel/types';
 import * as BabelCore from '@babel/core';
+import * as BabelTypes from '@babel/types';
+
 import { getCommentHintForPath, CommentHint } from '../comments';
-import { ExtractedKey } from '../keys';
 import { Config } from '../config';
-import extractTFunction from './tFunction';
+import { ExtractedKey } from '../keys';
+
 import { referencesChildIdentifier } from './commons';
+import extractTFunction from './tFunction';
 
 /**
  * Check whether a given CallExpression path is a global call to `i18next.t`
@@ -39,7 +41,7 @@ export default function extractI18nextInstance(
 ): ExtractedKey[] {
   if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
   if (!isI18nextTCall(path, config)) return [];
-  return extractTFunction(path, config, commentHints, true).map(k => ({
+  return extractTFunction(path, config, commentHints, true).map((k) => ({
     ...k,
     sourceNodes: [path.node, ...k.sourceNodes],
     extractorName: extractI18nextInstance.name,

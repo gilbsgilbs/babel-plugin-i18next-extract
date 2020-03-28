@@ -1,7 +1,8 @@
 import { parseConfig } from '../../src/config';
-import jsonv3Exporter from '../../src/exporters/jsonv3';
-import { createSimpleKey } from './helpers';
 import { ConflictError } from '../../src/exporters';
+import jsonv3Exporter from '../../src/exporters/jsonv3';
+
+import { createSimpleKey } from './helpers';
 
 describe('Test JSONv3 exporter', () => {
   const config = parseConfig({ jsonSpace: 0 });
