@@ -26,6 +26,9 @@ interface TestData {
   // list of [expected, {ns: 'namespace', 'locale': 'fr'}]
   expectValues: [string, ExpectKeysOpts?][];
 
+  // if we expect an exception rather than a successful extraction
+  errorMessageRegexp: string | null;
+
   pluginOptions: Partial<Config>;
 }
 
@@ -93,6 +96,7 @@ function* genTestData(): IterableIterator<TestData> {
           ...testData.pluginOptions,
           outputPath,
         },
+        errorMessageRegexp: rawTestData.errorMessageRegexp || null,
       };
     }
   }
@@ -124,7 +128,21 @@ function readExtractedFile(outputPath: string, opts?: ExpectKeysOpts): any {
   return extracted;
 }
 
-function assertHasExpectedValues(testData: TestData): void {
+function assertHasExpectedValues(
+  testData: TestData,
+  errorMessage: string | null,
+): void {
+  if (testData.errorMessageRegexp !== null) {
+    if (errorMessage === null) {
+      expect(true, 'Expected an error, but got none.').toBe(false);
+    } else {
+      expect(
+        errorMessage.match(testData.errorMessageRegexp),
+        `Got error message "${errorMessage}" which doesn't match` +
+          ` expected regexp "${testData.errorMessageRegexp}".`,
+      ).toBeTruthy();
+    }
+  }
   for (const [expected, opts] of testData.expectValues) {
     const extracted = readExtractedFile(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -144,18 +162,26 @@ export function runChecks(): void {
       testData.description
     }`, () => {
       it(`should have all expected values`, () => {
+        let errorMessage: string | null = null;
+
         // Run extraction
         for (const jsFilePath of testData.inputFiles) {
-          const transformResult = BabelCore.transformFileSync(jsFilePath, {
-            plugins: [[plugin, testData.pluginOptions]],
-          });
+          let transformResult: BabelCore.BabelFileResult | null = null;
+          try {
+            transformResult = BabelCore.transformFileSync(jsFilePath, {
+              plugins: [[plugin, testData.pluginOptions]],
+            });
+          } catch (err) {
+            errorMessage = err.message;
+            break;
+          }
           expect(
             transformResult && transformResult.code,
             `Babel transformation failed.`,
           ).toBeTruthy();
         }
 
-        assertHasExpectedValues(testData);
+        assertHasExpectedValues(testData, errorMessage);
       });
     });
   }
