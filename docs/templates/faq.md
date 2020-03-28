@@ -88,8 +88,9 @@ npm run i18n-extract
 Some prefer using plain english strings as key. While it would probably be preferable to
 rely on [default values](
 https://www.i18next.com/translation-function/essentials#passing-a-default-value) instead, it is
-still possible to make natural keys work with this plugin. Here is a simple configuration that
-may help you getting started with natural keys:
+still possible to make natural keys work with this plugin.  
+Note that if you set `useI18nextDefaultValue`, that option will supersede the `keyAsDefaultValue` option in case a default value is provided.    
+Here is a simple configuration that may help you getting started with natural keys:
 
 ```javascript
 {
