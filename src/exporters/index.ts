@@ -123,7 +123,7 @@ export default function exportTranslationKeys(
   }
 
   for (const [filePath, keysForFilepath] of Object.entries(keysPerFilepath)) {
-    if (!(filePath in cache.originalTranslationFiles)) {
+    if (!(filePath in cache.originalTranslationFiles) || config.disableCache) {
       // Cache original translation file so that we don't loose it across babel
       // passes.
       cache.originalTranslationFiles[filePath] = loadTranslationFile(

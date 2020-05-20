@@ -20,6 +20,7 @@ export interface Config {
   useI18nextDefaultValueForDerivedKeys: boolean;
   keyAsDefaultValue: boolean | string[];
   keyAsDefaultValueForDerivedKeys: boolean;
+  disableCache: boolean;
   discardOldKeys: boolean;
   jsonSpace: string | number;
   enableExperimentalIcu: boolean;
@@ -96,6 +97,7 @@ export function parseConfig(opts: Partial<Config>): Config {
       opts.keyAsDefaultValueForDerivedKeys,
       true,
     ),
+    disableCache: coalesce(opts.disableCache, false),
     discardOldKeys: coalesce(opts.discardOldKeys, false),
     jsonSpace: coalesce(opts.jsonSpace, 2),
     enableExperimentalIcu: coalesce(opts.enableExperimentalIcu, false),
