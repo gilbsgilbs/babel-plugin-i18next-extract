@@ -53,15 +53,21 @@ function* genTestData(): IterableIterator<TestData> {
         withFileTypes: true,
       })
       .filter(
-        (testFile) => testFile.isFile() && testFile.name.endsWith('.json'),
+        (testFile) =>
+          testFile.isFile() &&
+          (testFile.name.endsWith('.json') ||
+            testFile.name.includes('config.js')),
       );
 
     for (const testFileEnt of testFilesEnt) {
       // testFile is a JSON file
       const testFile = path.join(testDir, testFileEnt.name);
-      const rawTestData = fs.readJSONSync(testFile, {
-        encoding: 'utf8',
-      });
+
+      const rawTestData = testFileEnt.name.includes('.config.js')
+        ? require(testFile)
+        : fs.readJSONSync(testFile, {
+            encoding: 'utf8',
+          });
       if (!Array.isArray(rawTestData.expectValues)) {
         rawTestData.expectValues = [[rawTestData.expectValues]];
       }
@@ -79,10 +85,14 @@ function* genTestData(): IterableIterator<TestData> {
         '.extracted',
         testFileEnt.name.replace(/\.json$/, ''),
       );
+
       const outputPath =
-        testData.pluginOptions && testData.pluginOptions.outputPath
-          ? path.join(extractionDir, testData.pluginOptions.outputPath)
-          : path.join(extractionDir, 'translations.{{ns}}.{{locale}}.json');
+        testData.pluginOptions &&
+        (typeof testData.pluginOptions.outputPath === 'function'
+          ? testData.pluginOptions.outputPath // returns a custom function
+          : typeof testData.pluginOptions.outputPath === 'string'
+          ? path.join(extractionDir, testData.pluginOptions.outputPath) // returns config value
+          : path.join(extractionDir, 'translations.{{ns}}.{{locale}}.json')); // returns default value
 
       rimraf(extractionDir);
 
@@ -103,13 +113,17 @@ function* genTestData(): IterableIterator<TestData> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function readExtractedFile(outputPath: string, opts?: ExpectKeysOpts): any {
+function readExtractedFile(
+  outputPath: ((locale: string, ns: string) => string) | string,
+  opts?: ExpectKeysOpts,
+): any {
   const ns = (opts && opts.ns) || 'translation';
   const locale = (opts && opts.locale) || 'en';
 
-  const realOutputPath = outputPath
-    .replace('{{ns}}', ns)
-    .replace('{{locale}}', locale);
+  const realOutputPath =
+    typeof outputPath === 'function'
+      ? outputPath(locale, ns)
+      : outputPath.replace('{{ns}}', ns).replace('{{locale}}', locale);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let extracted: any;
@@ -144,9 +158,17 @@ function assertHasExpectedValues(
     }
   }
   for (const [expected, opts] of testData.expectValues) {
+    const path =
+      typeof testData.pluginOptions.outputPath === 'function'
+        ? testData.pluginOptions.outputPath(
+            opts?.locale || 'en',
+            opts?.ns || 'translation',
+          )
+        : testData.pluginOptions.outputPath;
+
     const extracted = readExtractedFile(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      testData.pluginOptions.outputPath!,
+      path!,
       opts,
     );
     expect(extracted, `opts=${JSON.stringify(opts)}`).toEqual(expected);
