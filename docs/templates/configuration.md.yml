@@ -179,10 +179,15 @@ configOptions:
           t("key0", {context: myCtx});
           ```
   - name: outputPath
-    type: "string"
+    type: "string | (locale: string, namespace: string) => string"
     description: |
-      Path where translation keys should be extracted to. You can use `{{ns}}` and `{{locale}}`
+      You can pass a string or a function as outputPath :
+
+      - **string**: Path where translation keys should be extracted to. You can use `{{ns}}` and `{{locale}}`
       placeholders in the value to change the location depending on the namespace or the locale.
+      - **function**: A function to return custom output path according to the given locale and namespace.
+
+      ⚠️ **outputPath** as function is only available for javascript babel config.
     defaultValue: "extractedTranslations/{{locale}}/{{ns}}.json"
   - name: defaultValue
     type: "string|null"
