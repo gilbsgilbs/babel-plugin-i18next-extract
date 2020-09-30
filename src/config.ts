@@ -14,7 +14,7 @@ export interface Config {
   i18nextInstanceNames: string[];
   tFunctionNames: string[];
   defaultContexts: string[];
-  outputPath: string;
+  outputPath: ((locale: string, namespace: string) => string) | string;
   defaultValue: string | null;
   useI18nextDefaultValue: boolean | string[];
   useI18nextDefaultValueForDerivedKeys: boolean;
@@ -78,10 +78,13 @@ export function parseConfig(opts: Partial<Config>): Config {
     ]),
     tFunctionNames: coalesce(opts.tFunctionNames, ['t']),
     defaultContexts: coalesce(opts.defaultContexts, ['', 'male', 'female']),
-    outputPath: coalesce(
-      opts.outputPath,
-      './extractedTranslations/{{locale}}/{{ns}}.json',
-    ),
+    outputPath:
+      typeof opts.outputPath === 'function'
+        ? opts.outputPath
+        : coalesce(
+            opts.outputPath,
+            './extractedTranslations/{{locale}}/{{ns}}.json',
+          ),
     defaultValue: coalesce(opts.defaultValue, ''),
     useI18nextDefaultValue: coalesce(
       opts.useI18nextDefaultValue,

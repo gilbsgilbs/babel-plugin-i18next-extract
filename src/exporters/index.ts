@@ -116,9 +116,13 @@ export default function exportTranslationKeys(
 
   for (const key of keys) {
     // Figure out in which path each key should go.
-    const filePath = config.outputPath
-      .replace('{{locale}}', locale)
-      .replace('{{ns}}', key.ns);
+    const filePath =
+      typeof config.outputPath === 'function'
+        ? config.outputPath(locale, key.ns)
+        : config.outputPath
+            .replace('{{locale}}', locale)
+            .replace('{{ns}}', key.ns);
+
     keysPerFilepath[filePath] = [...(keysPerFilepath[filePath] || []), key];
   }
 
