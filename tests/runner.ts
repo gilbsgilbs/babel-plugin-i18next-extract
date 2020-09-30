@@ -56,7 +56,7 @@ function* genTestData(): IterableIterator<TestData> {
         (testFile) =>
           testFile.isFile() &&
           (testFile.name.endsWith('.json') ||
-            testFile.name.includes('config.js')),
+            testFile.name.includes('.config.js')),
       );
 
     for (const testFileEnt of testFilesEnt) {
@@ -86,13 +86,31 @@ function* genTestData(): IterableIterator<TestData> {
         testFileEnt.name.replace(/\.json$/, ''),
       );
 
-      const outputPath =
-        testData.pluginOptions &&
-        (typeof testData.pluginOptions.outputPath === 'function'
-          ? testData.pluginOptions.outputPath // returns a custom function
-          : typeof testData.pluginOptions.outputPath === 'string'
-          ? path.join(extractionDir, testData.pluginOptions.outputPath) // returns config value
-          : path.join(extractionDir, 'translations.{{ns}}.{{locale}}.json')); // returns default value
+      let outputPath;
+
+      if (testData.pluginOptions) {
+        if (typeof testData.pluginOptions.outputPath === 'function') {
+          // function from config
+          outputPath = testData.pluginOptions.outputPath;
+        }
+
+        if (
+          typeof testData.pluginOptions.outputPath === 'string' &&
+          !!testData.pluginOptions.outputPath
+        ) {
+          // value from config
+          outputPath = path.join(
+            extractionDir,
+            testData.pluginOptions.outputPath as string,
+          );
+        } else {
+          // no value provided from config
+          outputPath = path.join(
+            extractionDir,
+            'translations.{{ns}}.{{locale}}.json',
+          );
+        }
+      }
 
       rimraf(extractionDir);
 
