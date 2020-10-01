@@ -130,10 +130,10 @@ function* genTestData(): IterableIterator<TestData> {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function readExtractedFile(
   outputPath: ((locale: string, ns: string) => string) | string,
   opts?: ExpectKeysOpts,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
   const ns = (opts && opts.ns) || 'translation';
   const locale = (opts && opts.locale) || 'en';
