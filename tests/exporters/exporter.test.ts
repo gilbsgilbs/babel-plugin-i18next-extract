@@ -88,4 +88,39 @@ describe('Test exporter works', () => {
       newKey2: '',
     });
   });
+
+  it('reload translation file and merge with actual cache', () => {
+    const outputPath = path.join(outputDir, 'if_locale_file_changes.json');
+    fs.writeJSONSync(outputPath, { presentAtInit: 'foo' });
+
+    const config = parseConfig({ outputPath });
+    const cache = createExporterCache();
+
+    // view key
+    const key0 = createTranslationKey('presentAtInit');
+
+    // extract at init
+    exportTranslationKeys([key0], 'fr', config, cache);
+
+    expect(fs.readJSONSync(outputPath)).toEqual({
+      presentAtInit: 'foo',
+    });
+
+    // update the locale file directly
+    fs.writeJSONSync(outputPath, {
+      presentAtInit: 'foo updated directly in file after init',
+    });
+
+    // view key
+    const key1 = createTranslationKey('newKeyAfterInit');
+
+    // extract second time
+    exportTranslationKeys([key0, key1], 'fr', config, cache);
+
+    // the locale file should have disk changes + new view key (newKeyAfterInit)
+    expect(fs.readJSONSync(outputPath)).toEqual({
+      presentAtInit: 'foo updated directly in file after init',
+      newKeyAfterInit: '',
+    });
+  });
 });

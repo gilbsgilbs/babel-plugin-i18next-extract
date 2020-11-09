@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import deepmerge from 'deepmerge';
+
 import { Config } from '../config';
 import { TranslationKey } from '../keys';
 
@@ -127,15 +129,14 @@ export default function exportTranslationKeys(
   }
 
   for (const [filePath, keysForFilepath] of Object.entries(keysPerFilepath)) {
-    if (!(filePath in cache.originalTranslationFiles)) {
-      // Cache original translation file so that we don't loose it across babel
-      // passes.
-      cache.originalTranslationFiles[filePath] = loadTranslationFile(
-        exporter,
-        config,
-        filePath,
-      );
-    }
+    cache.originalTranslationFiles[filePath] = deepmerge(
+      cache.originalTranslationFiles[filePath] ?? {},
+      loadTranslationFile(exporter, config, filePath),
+      {
+        // Overwrites the existing array values completely rather than concatenating them
+        arrayMerge: (dest, source) => source,
+      },
+    );
 
     const originalTranslationFile = cache.originalTranslationFiles[filePath];
     let translationFile =
@@ -166,6 +167,7 @@ export default function exportTranslationKeys(
 
     // Finally do the export
     const directoryPath = path.dirname(filePath);
+
     fs.mkdirSync(directoryPath, { recursive: true });
     fs.writeFileSync(
       filePath,
