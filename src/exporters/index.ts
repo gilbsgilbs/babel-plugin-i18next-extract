@@ -132,6 +132,10 @@ export default function exportTranslationKeys(
     cache.originalTranslationFiles[filePath] = deepmerge(
       cache.originalTranslationFiles[filePath] ?? {},
       loadTranslationFile(exporter, config, filePath),
+      {
+        // Overwrites the existing array values completely rather than concatenating them
+        arrayMerge: (dest, source) => source,
+      },
     );
 
     const originalTranslationFile = cache.originalTranslationFiles[filePath];
