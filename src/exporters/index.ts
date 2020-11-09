@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import deepmerge from 'deepmerge';
+
 import { Config } from '../config';
 import { TranslationKey } from '../keys';
 
@@ -9,9 +11,6 @@ import jsonv3Exporter from './jsonv3';
 
 export { ConflictError, ExportError };
 
-function deepEqual(a: any, b: any): boolean {
-  return JSON.stringify(a) === JSON.stringify(b);
-}
 /**
  * An instance of exporter cache.
  *
@@ -100,26 +99,6 @@ function getDefaultValue(
 }
 
 /**
- * Return last modified date for the given file
- *
- * @param filePath
- *
- * @returns {Date|null}
- */
-function getFileLastModified(filePath: string): Date | null {
-  let mtime;
-
-  try {
-    const stats = fs.statSync(filePath);
-    mtime = stats.mtime;
-  } catch (e) {
-    mtime = null;
-  }
-
-  return mtime;
-}
-
-/**
  * Exports all given translation keys as JSON.
  *
  * @param keys: translation keys to export
@@ -150,26 +129,10 @@ export default function exportTranslationKeys(
   }
 
   for (const [filePath, keysForFilepath] of Object.entries(keysPerFilepath)) {
-    const inCache = filePath in cache.originalTranslationFiles;
-    // get the mtime of the file
-    const lastModified = getFileLastModified(filePath);
-    // check if we already have a cached version of that file
-    // if there is one we compare the actual mtime with the one in the cache.
-    const localeFileHasChanged =
-      inCache &&
-      !!lastModified &&
-      !!cache.originalTranslationFiles[filePath].lastModified &&
-      cache.originalTranslationFiles[filePath].lastModified.getTime() !==
-        lastModified.getTime();
-
-    if (!inCache || localeFileHasChanged) {
-      // Cache original translation file so that we don't loose it across babel
-      // passes.
-      cache.originalTranslationFiles[filePath] = {
-        lastModified: lastModified,
-        ...loadTranslationFile(exporter, config, filePath),
-      };
-    }
+    cache.originalTranslationFiles[filePath] = deepmerge(
+      cache.originalTranslationFiles[filePath] ?? {},
+      loadTranslationFile(exporter, config, filePath),
+    );
 
     const originalTranslationFile = cache.originalTranslationFiles[filePath];
     let translationFile =
@@ -198,18 +161,9 @@ export default function exportTranslationKeys(
 
     cache.currentTranslationFiles[filePath] = translationFile;
 
-    // if no previous value it means its first time we go over that file
-    // if there is compare it with the old one
-    if (
-      !!cache.originalTranslationFiles[filePath].lastModified &&
-      !!translationFile &&
-      !!originalTranslationFile &&
-      deepEqual(translationFile, originalTranslationFile)
-    ) {
-      return;
-    }
     // Finally do the export
     const directoryPath = path.dirname(filePath);
+
     fs.mkdirSync(directoryPath, { recursive: true });
     fs.writeFileSync(
       filePath,

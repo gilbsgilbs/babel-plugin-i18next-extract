@@ -89,7 +89,7 @@ describe('Test exporter works', () => {
     });
   });
 
-  it('can handle locale file update while processing (locale file disk change)', () => {
+  it('reload translation file and merge with actual cache', () => {
     const outputPath = path.join(outputDir, 'if_locale_file_changes.json');
     fs.writeJSONSync(outputPath, { presentAtInit: 'foo' });
 
@@ -121,31 +121,6 @@ describe('Test exporter works', () => {
     expect(fs.readJSONSync(outputPath)).toEqual({
       presentAtInit: 'foo updated directly in file after init',
       newKeyAfterInit: '',
-    });
-  });
-
-  it('should not update locale file cache when it does not change', () => {
-    const outputPath = path.join(outputDir, 'no_need_to_update_cache.json');
-    fs.writeJSONSync(outputPath, { presentAtInit: 'foo' });
-
-    const config = parseConfig({ outputPath });
-    const cache = createExporterCache();
-
-    // view key
-    const key0 = createTranslationKey('presentAtInit');
-
-    // extract at init
-    exportTranslationKeys([key0], 'fr', config, cache);
-    const { mtime } = fs.statSync(outputPath);
-
-    exportTranslationKeys([key0], 'fr', config, cache);
-
-    const { mtime: secondMtime } = fs.statSync(outputPath);
-
-    expect(mtime.getTime()).toEqual(secondMtime.getTime());
-
-    expect(fs.readJSONSync(outputPath)).toEqual({
-      presentAtInit: 'foo',
     });
   });
 });
