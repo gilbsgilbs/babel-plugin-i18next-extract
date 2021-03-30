@@ -137,7 +137,7 @@ export function computeDerivedKeys(
         )
         .join(' ');
 
-      extractedKey.parsedOptions.defaultValue = `{count, plural, ${icuPlurals}`;
+      extractedKey.parsedOptions.defaultValue = `{count, plural, ${icuPlurals}}`;
     } else {
       if (numberOfPlurals === 1) {
         keys = keys.map((k) => ({
