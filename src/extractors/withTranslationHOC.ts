@@ -69,9 +69,7 @@ function findWithTranslationHOCCallExpressionInCompose(
   const composeFunctionNames = ['compose', 'flow', 'flowRight'];
 
   let currentPath = path.parentPath;
-  let withTranslationCallExpr: BabelCore.NodePath<
-    BabelTypes.CallExpression
-  > | null = null;
+  let withTranslationCallExpr: BabelCore.NodePath<BabelTypes.CallExpression> | null = null;
 
   while (currentPath.isCallExpression()) {
     if (withTranslationCallExpr === null) {
