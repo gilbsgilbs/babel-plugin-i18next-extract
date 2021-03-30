@@ -7,7 +7,7 @@
   "expectValues": [
     [
       {
-        "foo": "{count, plural, one {The {count} item} other {The {count} item}"
+        "foo": "{count, plural, one {The {count} item} other {The {count} item}}"
       }
     ]
   ]
