@@ -25,11 +25,14 @@ export interface Config {
   enableExperimentalIcu: boolean;
   customTransComponents: readonly [string, string][];
   customUseTranslationHooks: readonly [string, string][];
+  translationKeys: string[] | null;
 
   // private cache
   cache: {
     absoluteCustomTransComponents: readonly [string, string][];
     absoluteCustomHooks: readonly [string, string][];
+    /** Translation keys list as a map for faster check */
+    translationKeysMap: { [key: string]: true } | null;
   };
 }
 
@@ -104,6 +107,7 @@ export function parseConfig(opts: Partial<Config>): Config {
     enableExperimentalIcu: coalesce(opts.enableExperimentalIcu, false),
     customTransComponents,
     customUseTranslationHooks,
+    translationKeys: coalesce(opts.translationKeys, null),
     cache: {
       absoluteCustomTransComponents: customTransComponents.map(
         ([sourceModule, importName]) => [
@@ -117,6 +121,12 @@ export function parseConfig(opts: Partial<Config>): Config {
           importName,
         ],
       ),
+      translationKeysMap: opts.translationKeys
+        ? opts.translationKeys.reduce(
+            (tKeyMap, tKey) => ({ ...tKeyMap, [tKey]: true }),
+            {},
+          )
+        : null,
     },
   };
 }

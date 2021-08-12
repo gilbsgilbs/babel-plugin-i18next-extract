@@ -200,6 +200,23 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
       );
     });
   },
+
+  ObjectExpression(path, state: VisitorState) {
+    const extractState = this.I18NextExtract;
+
+    // This check is costly, so ignore if translationKeys is not set in the config
+    if (!extractState.config.translationKeys) return;
+
+    handleExtraction(path, state, (collect) => {
+      collect(
+        Extractors.extractTranslationKey(
+          path,
+          extractState.config,
+          extractState.commentHints,
+        ),
+      );
+    });
+  },
 };
 
 export default function (
