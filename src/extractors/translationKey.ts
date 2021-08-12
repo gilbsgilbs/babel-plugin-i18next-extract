@@ -1,8 +1,6 @@
 /**
  * Extracts translations stored in a JSON object
- * Value of the extracted field is expected to represent arguments of t function
- *
- * Configuration: { }
+ * Value of the extracted field is expected to have the same structure as arguments of a t function call
  *
  * @example
  * const menuItems = [
