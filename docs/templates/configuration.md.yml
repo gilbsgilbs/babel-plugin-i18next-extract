@@ -335,3 +335,25 @@ configOptions:
       ☠️  *This feature is incomplete and might change or move into an third-party module in the
       future. Stay tuned.* ☠️
     defaultValue: "false"
+  - name: "translationKeys"
+    type: "string[]"
+    description: |
+      Enable extraction from object literals, based on the field name.
+      Useful when using translation function or component within a loop or dynamically.
+
+      Please define the translationKeys mindfully to avoid false positives.
+      Good examples: "i18Token", "i18nKey", "translationKey", "tKey"
+      Bad examples: "label", "token" (too generic, you might use those names in other contexts)
+
+    md: |
+      ```js
+      /*
+      { 
+        translationKeys: ["i18nToken"]
+      }
+      */
+
+      // Extracts "home": { "menu" }, "profile"
+      const menuItems = [{i18nToken: "home.menu", tabIndex: 0}, { i18nToken: "profile"}]
+      ```
+    defaultValue: null
