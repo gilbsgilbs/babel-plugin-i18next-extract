@@ -13,7 +13,7 @@ I'd be more than happy to merge it.
 
 If you've never contributed to a babel plugin before, the [Babel Plugin Handbook](
 https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md) is
-the place to start. Unfortuntely, the plugin API is not really well documented at the moment, so
+the place to start. Unfortunately, the plugin API is not really well documented at the moment, so
 you'll probably have to play around, dig into Babel source code and StackOverflow a bit. [
 AST Explorer](https://astexplorer.net/) might also be of help.
 
