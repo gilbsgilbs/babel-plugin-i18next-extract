@@ -71,18 +71,16 @@ function parseTransComponentOptions(
 
   const nsAttr = findJSXAttributeByName(path, 'ns');
   if (nsAttr) {
-    let value: BabelCore.NodePath<BabelTypes.Node | null> = nsAttr.get(
-      'value',
-    );
+    let value: BabelCore.NodePath<BabelTypes.Node | null | undefined> =
+      nsAttr.get('value');
     if (value.isJSXExpressionContainer()) value = value.get('expression');
     res.ns = getFirstOrNull(evaluateIfConfident(value));
   }
 
   const defaultsAttr = findJSXAttributeByName(path, 'defaults');
   if (defaultsAttr) {
-    let value: BabelCore.NodePath<BabelTypes.Node | null> = defaultsAttr.get(
-      'value',
-    );
+    let value: BabelCore.NodePath<BabelTypes.Node | null | undefined> =
+      defaultsAttr.get('value');
     if (value.isJSXExpressionContainer()) value = value.get('expression');
     res.defaultValue = evaluateIfConfident(value);
   }
@@ -353,9 +351,8 @@ export default function extractTransComponent(
   if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
   if (!skipCheck && !isTransComponent(path)) return [];
 
-  const keyEvaluationFromAttribute = parseTransComponentKeyFromAttributes(
-    path,
-  );
+  const keyEvaluationFromAttribute =
+    parseTransComponentKeyFromAttributes(path);
   const keyEvaluationFromChildren = parseTransComponentKeyFromChildren(
     path,
     config,

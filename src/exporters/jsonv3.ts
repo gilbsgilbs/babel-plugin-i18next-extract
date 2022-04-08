@@ -113,6 +113,7 @@ const jsonv3Exporter: Exporter<JsonV3File, JsonV3Value> = {
   },
   addKey: (params) => {
     const { key, file, value } = params;
+
     return {
       ...file,
       content: recursiveAddKey(file.content, key.keyPath, key.cleanKey, value),

@@ -1,5 +1,5 @@
-import babel from '@rollup/plugin-babel';
-import resolve from '@rollup/plugin-node-resolve';
+import { babel } from '@rollup/plugin-babel';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 import pkg from './package.json';
 
@@ -28,7 +28,7 @@ export default {
     ...Object.keys(pkg.peerDependencies || {}),
   ],
   plugins: [
-    resolve({ extensions }),
+    nodeResolve({ extensions }),
     babel({
       include: 'src/**/*',
       exclude: 'node_modules/**',

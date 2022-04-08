@@ -70,7 +70,7 @@ export default function extractGetFixedTFunction(
   let keys = Array<ExtractedKey>();
   for (const reference of tBinding.referencePaths) {
     if (
-      reference.parentPath.isCallExpression() &&
+      reference.parentPath?.isCallExpression() &&
       reference.parentPath.get('callee') === reference
     ) {
       keys = [

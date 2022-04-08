@@ -1,7 +1,10 @@
-import i18next from 'i18next';
+import { init as i18nextInit } from 'i18next';
 
 import plugin from './plugin';
 
-i18next.init();
+i18nextInit({
+  // FIXME https://github.com/gilbsgilbs/babel-plugin-i18next-extract/issues/203
+  compatibilityJSON: 'v3',
+});
 
 export default plugin;
