@@ -1,0 +1,58 @@
+---
+name: CI
+
+on: [push, pull_request]
+
+env:
+  MAIN_NODE_VERSION: "16"
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    name: Run static checks
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.MAIN_NODE_VERSION }}
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn run types
+  tests:
+    needs: [static-checks]
+    runs-on: ubuntu-latest
+    name: Run tests
+    strategy:
+      matrix:
+        node: [ '12', '14', '16', '17' ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn install
+      - name: Run tests
+        run: yarn run test --coverage
+      - name: Publish code coverage
+        if: "${{ env.CC_TEST_REPORTER_ID != '' }}"
+        uses: paambaati/codeclimate-action@v3.0.0
+  build:
+    needs: [tests]
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.MAIN_NODE_VERSION }}
+      - run: yarn install
+      - run: yarn run build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: babel-plugin-i18next-extract
+          path: lib/
