@@ -249,7 +249,7 @@ export default function (
         // Program node doesn't call the visitor for Program node.
         if (BabelTypes.isFile(path.container)) {
           this.I18NextExtract.commentHints = parseCommentHints(
-            path.container.comments,
+            path.container.comments || [],
           );
         }
 

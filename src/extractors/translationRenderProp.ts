@@ -54,9 +54,8 @@ export default function extractTranslationRenderProp(
     // Try to parse ns property
     const nsAttr = findJSXAttributeByName(path, 'ns');
     if (nsAttr) {
-      let value: BabelCore.NodePath<BabelTypes.Node | null> = nsAttr.get(
-        'value',
-      );
+      let value: BabelCore.NodePath<BabelTypes.Node | null | undefined> =
+        nsAttr.get('value');
       if (value.isJSXExpressionContainer()) value = value.get('expression');
       ns = getFirstOrNull(evaluateIfConfident(value));
     }
@@ -80,7 +79,7 @@ export default function extractTranslationRenderProp(
   let keys = Array<ExtractedKey>();
   for (const reference of tBinding.referencePaths) {
     if (
-      reference.parentPath.isCallExpression() &&
+      reference.parentPath?.isCallExpression() &&
       reference.parentPath.get('callee') === reference
     ) {
       keys = [

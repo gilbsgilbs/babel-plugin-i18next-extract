@@ -148,7 +148,12 @@ function readExtractedFile(
   try {
     extracted = fs.readJSONSync(realOutputPath, { encoding: 'utf8' });
   } catch (err) {
-    if (err.code === 'ENOENT') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (
+      err !== null &&
+      typeof err == 'object' &&
+      (err as NodeJS.ErrnoException).code === 'ENOENT'
+    ) {
       expect(
         true,
         `Couldn't find a JSON file to read at ${realOutputPath}. This probably means the ` +
@@ -212,12 +217,16 @@ export function runChecks(): void {
               plugins: [[plugin, testData.pluginOptions]],
             });
           } catch (err) {
-            errorMessage = err.message;
+            if (err instanceof Error) {
+              errorMessage = err.message;
+            } else {
+              errorMessage = `${err}`;
+            }
             break;
           }
           expect(
             transformResult && transformResult.code,
-            `Babel transformation failed.`,
+            'Babel transformation failed.',
           ).toBeTruthy();
         }
 

@@ -50,7 +50,12 @@ function loadTranslationFile<F>(
   try {
     content = fs.readFileSync(filePath, { encoding: 'utf8' });
   } catch (err) {
-    if (err.code === 'ENOENT') return exporter.init({ config });
+    if (
+      err !== null &&
+      typeof err == 'object' &&
+      (err as NodeJS.ErrnoException).code === 'ENOENT'
+    )
+      return exporter.init({ config });
     throw err;
   }
 
