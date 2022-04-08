@@ -49,7 +49,7 @@ for (const templatePath of templatePaths) {
 
   let ctx = {};
   try {
-    ctx = yaml.safeLoad(fs.readFileSync(filePath + '.yml'));
+    ctx = yaml.load(fs.readFileSync(filePath + '.yml'));
   } catch (err) {
     if (err.code !== 'ENOENT') {
       throw err;
