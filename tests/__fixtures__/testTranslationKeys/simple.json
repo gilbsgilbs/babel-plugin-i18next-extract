@@ -1,0 +1,13 @@
+{
+  "description": "test simple extractions of tokens from an object",
+  "pluginOptions": {
+    "translationKeys": ["i18nToken", "i18nKey"]
+  },
+  "expectValues": {
+    "homeKey": "",
+    "profile": {
+      "menu": ""
+    },
+    "logoutKey": ""
+  }
+}
