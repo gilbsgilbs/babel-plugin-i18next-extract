@@ -9,6 +9,7 @@ export interface Config {
   keySeparator: string | null;
   nsSeparator: string | null;
   transKeepBasicHtmlNodesFor: string[];
+  compatibilityJSON: 'v3' | 'v4';
 
   // plugin-specific options
   i18nextInstanceNames: string[];
@@ -71,6 +72,8 @@ export function parseConfig(opts: Partial<Config>): Config {
       'i',
       'p',
     ]),
+    // FIXME we need to default to v4 in the next major release.
+    compatibilityJSON: coalesce(opts.compatibilityJSON, 'v3'),
 
     i18nextInstanceNames: coalesce(opts.i18nextInstanceNames, [
       'i18next',

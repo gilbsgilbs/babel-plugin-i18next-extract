@@ -1,0 +1,26 @@
+{
+  "description": "plural tests in different languages",
+  "comment": "ms has 1 plural, ca has 2 plurals, fr has 3 plurals (in JSONv4+), ar has 6 plurals",
+  "pluginOptions": {
+    "locales": ["ca", "fr", "ar", "ms"],
+    "compatibilityJSON": "v4"
+  },
+  "expectValues": [
+    [
+      {"myKey_one": "", "myKey_many": "", "myKey_other": ""},
+      {"locale": "fr"}
+    ],
+    [
+      {"myKey_one": "", "myKey_other": ""},
+      {"locale": "ca"}
+    ],
+    [
+      {"myKey_zero": "", "myKey_one": "", "myKey_two": "", "myKey_few": "", "myKey_many": "", "myKey_other": ""},
+      {"locale": "ar"}
+    ],
+    [
+      {"myKey_other": ""},
+      {"locale": "ms"}
+    ]
+  ]
+}

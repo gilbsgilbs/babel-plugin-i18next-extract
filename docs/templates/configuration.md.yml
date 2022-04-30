@@ -42,6 +42,13 @@ configOptions:
       See [react-i18next Trans Component](
       https://react.i18next.com/latest/trans-component#additional-options-on-i-18-next-init).
     defaultValue: "['br', 'strong', 'i', 'p']"
+  - name: compatibilityJSON
+    type: '"v3" | "v4"'
+    description: |
+      Compatibility mode of the output JSON file. This option only changes the way plurals are exported.
+
+      See [JSONv* format documentation](https://www.i18next.com/misc/json-format#i18next-json-v4) and [why this option exists](https://www.i18next.com/misc/migration-guide#json-format-v4-pluralization).
+    defaultValue: '"v3"'
   - name: i18nextInstanceNames
     type: "string[]"
     description: |

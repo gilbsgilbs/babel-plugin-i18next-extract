@@ -112,8 +112,8 @@ informed that you're working on it.
 - `exporters/`: contains code related to exporting extracted translations to files.
     - `commons.ts`: Types and exceptions definitions for extractors.
     - `index.ts`: Entrypoint for exporters. Calls and uses the proper extractor implementation
-      (only JSONv3 at the moment).
-    - `jsonv3.ts`: [JSONv3](https://www.i18next.com/misc/json-format#i-18-next-json-v3) extractor
+      (only JSONv3 and JSONv4 at the moment).
+    - `json.ts`: [JSONv4](https://www.i18next.com/misc/json-format#i18next-json-v4) extractor
       implementation.
 - `comments.ts` parses the comment hints.
 - `config.ts` parses babel configuration options.

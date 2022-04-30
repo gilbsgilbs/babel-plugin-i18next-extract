@@ -7,7 +7,7 @@ import { Config } from '../config';
 import { TranslationKey } from '../keys';
 
 import { ConflictError, Exporter, ExportError } from './commons';
-import jsonv3Exporter from './jsonv3';
+import jsonExporter from './json';
 
 export { ConflictError, ExportError };
 
@@ -119,7 +119,7 @@ export default function exportTranslationKeys(
 ): void {
   const keysPerFilepath: { [path: string]: TranslationKey[] } = {};
 
-  const exporter = jsonv3Exporter;
+  const exporter = jsonExporter;
 
   for (const key of keys) {
     // Figure out in which path each key should go.
