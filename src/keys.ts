@@ -135,11 +135,29 @@ export function computeDerivedKeys(
     let pluralCategories: string[];
 
     // See https://www.i18next.com/translation-function/plurals#how-to-find-the-correct-plural-suffix
-    if (config.compatibilityJSON === 'v3') {
-      const pluralRule = i18n.services.pluralResolver.getRule(locale);
-      if (pluralRule === undefined) {
+
+    // - i18next v21+ w/ JSONv4+: Intl.PluralRules is *always* returned even
+    //   if the locale is unknown.
+    // - JSONv3- (independently of i18next version): some custom untyped object
+    //   is returned, or undefined if the local is unknown.
+    const pluralRule:
+      | Intl.PluralRules
+      | { numbers: Array<number> }
+      | undefined = i18n.services.pluralResolver.getRule(
+      locale,
+      // TODO: a comment hint should allow to override cardinality/ordinality.
+      // It defaults to cardinal, but this is not correct.
+      { ordinal: false },
+    );
+    if (pluralRule === undefined) {
+      throw unknownLocaleError;
+    } else if (pluralRule instanceof Intl.PluralRules) {
+      const pluralRulesOptions = pluralRule.resolvedOptions();
+      if (pluralRulesOptions.locale !== locale) {
         throw unknownLocaleError;
       }
+      pluralCategories = pluralRulesOptions.pluralCategories;
+    } else {
       const pluralsCount = pluralRule.numbers.length;
       if (pluralsCount === 2) {
         pluralCategories = ['', 'plural'];
@@ -148,19 +166,6 @@ export function computeDerivedKeys(
           .fill(null)
           .map((_, idx) => idx.toString());
       }
-    } else {
-      const pluralRule: Intl.PluralRules =
-        i18n.services.pluralResolver.getRule(
-          locale,
-          // TODO: a comment hint should allow to override cardinality/ordinality.
-          // We default to cardinal for backwards-compatibility, but this is not correct.
-          { ordinal: false },
-        );
-      const pluralRulesOptions = pluralRule.resolvedOptions();
-      if (pluralRulesOptions.locale !== locale) {
-        throw unknownLocaleError;
-      }
-      pluralCategories = pluralRule.resolvedOptions().pluralCategories;
     }
 
     if (config.enableExperimentalIcu) {
