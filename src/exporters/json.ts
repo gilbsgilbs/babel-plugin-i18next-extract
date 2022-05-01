@@ -3,49 +3,49 @@ import stringify from 'json-stable-stringify';
 import { Exporter, ConflictError } from './commons';
 
 /**
- * JSONv3 values can be any valid value for JSON file.
+ * JSONv* values can be any valid value for JSON file.
  *
  * See i18next's "returnObjects" option.
  */
-type JsonV3Value =
+type JsonVxValue =
   | string
   | number
   | null
-  | JsonV3Value[]
-  | { [k: string]: JsonV3Value };
+  | JsonVxValue[]
+  | { [k: string]: JsonVxValue };
 
 /**
- * Content of a JSON v3 file.
+ * Content of a JSONv* file.
  */
-interface JsonV3File {
+interface JsonVxFile {
   whitespacesBefore: string;
   whitespacesAfter: string;
-  content: { [k: string]: JsonV3Value };
+  content: { [k: string]: JsonVxValue };
 }
 
 /**
- * Check whether a JsonV3Value is a plain object.
+ * Check whether a JsonVxValue is a plain object.
  */
-function jsonV3ValueIsObject(
-  val: JsonV3Value,
-): val is { [k: string]: JsonV3Value } {
+function jsonVxValueIsObject(
+  val: JsonVxValue,
+): val is { [k: string]: JsonVxValue } {
   return typeof val === 'object' && val !== null && !Array.isArray(val);
 }
 
 /**
- * Add a key recursively to a JSONv3 file.
+ * Add a key recursively to a JSONv4 file.
  *
- * @param fileContent JSONv3 file content
+ * @param fileContent JSONv* file content
  * @param keyPath keyPath of the key to add
  * @param cleanKey key without path
  * @param value Value to set for the key.
  */
 function recursiveAddKey(
-  fileContent: JsonV3File['content'],
+  fileContent: JsonVxFile['content'],
   keyPath: string[],
   cleanKey: string,
-  value: JsonV3Value,
-): JsonV3File['content'] {
+  value: JsonVxValue,
+): JsonVxFile['content'] {
   if (keyPath.length === 0) {
     return {
       ...fileContent,
@@ -57,7 +57,7 @@ function recursiveAddKey(
   let current = fileContent[currentKeyPath];
   if (current === undefined) {
     current = {};
-  } else if (!jsonV3ValueIsObject(current)) {
+  } else if (!jsonVxValueIsObject(current)) {
     throw new ConflictError();
   }
 
@@ -72,7 +72,7 @@ function recursiveAddKey(
   };
 }
 
-const jsonv3Exporter: Exporter<JsonV3File, JsonV3Value> = {
+const exporter: Exporter<JsonVxFile, JsonVxValue> = {
   init: () => {
     return {
       whitespacesBefore: '',
@@ -104,7 +104,7 @@ const jsonv3Exporter: Exporter<JsonV3File, JsonV3Value> = {
       const val = current[p];
       if (val === undefined) {
         return undefined;
-      } else if (!jsonV3ValueIsObject(val)) {
+      } else if (!jsonVxValueIsObject(val)) {
         throw new ConflictError();
       }
       current = val;
@@ -121,4 +121,4 @@ const jsonv3Exporter: Exporter<JsonV3File, JsonV3Value> = {
   },
 };
 
-export default jsonv3Exporter;
+export default exporter;

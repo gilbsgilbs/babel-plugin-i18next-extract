@@ -1,13 +1,13 @@
 import { parseConfig } from '../../src/config';
 import { ConflictError } from '../../src/exporters';
-import jsonv3Exporter from '../../src/exporters/jsonv3';
+import exporter from '../../src/exporters/json';
 import { createTranslationKey } from '../helpers';
 
-describe('Test JSONv3 exporter', () => {
+describe('Test JSON exporter', () => {
   const config = parseConfig({ jsonSpace: 0 });
 
   it('can init', () => {
-    expect(jsonv3Exporter.init({ config })).toEqual({
+    expect(exporter.init({ config })).toEqual({
       whitespacesBefore: '',
       whitespacesAfter: '\n',
       content: {},
@@ -16,7 +16,7 @@ describe('Test JSONv3 exporter', () => {
 
   it('can parse', () => {
     expect(
-      jsonv3Exporter.parse({
+      exporter.parse({
         config,
         content: '\n\n\t\r\n  {"hello": "world"}\n\t  \r\n',
       }),
@@ -29,7 +29,7 @@ describe('Test JSONv3 exporter', () => {
 
   it('can stringify', () => {
     expect(
-      jsonv3Exporter.stringify({
+      exporter.stringify({
         config,
         file: {
           whitespacesBefore: '\n\n\t\r\n  ',
@@ -43,7 +43,7 @@ describe('Test JSONv3 exporter', () => {
   it('can stringify with custom spacing', () => {
     const config = parseConfig({ jsonSpace: 2 });
     expect(
-      jsonv3Exporter.stringify({
+      exporter.stringify({
         config,
         file: {
           whitespacesBefore: '',
@@ -56,7 +56,7 @@ describe('Test JSONv3 exporter', () => {
 
   it('can get simple key', () => {
     expect(
-      jsonv3Exporter.getKey({
+      exporter.getKey({
         config,
         keyPath: [],
         cleanKey: 'hello',
@@ -71,7 +71,7 @@ describe('Test JSONv3 exporter', () => {
 
   it('can get nested keys', () => {
     expect(
-      jsonv3Exporter.getKey({
+      exporter.getKey({
         config,
         keyPath: ['hello'],
         cleanKey: 'new',
@@ -86,7 +86,7 @@ describe('Test JSONv3 exporter', () => {
 
   it('can get undefined key', () => {
     expect(
-      jsonv3Exporter.getKey({
+      exporter.getKey({
         config,
         keyPath: ['what'],
         cleanKey: 'new',
@@ -101,7 +101,7 @@ describe('Test JSONv3 exporter', () => {
 
   it('throws ConflictError when path contains non JSON object', () => {
     expect(() =>
-      jsonv3Exporter.getKey({
+      exporter.getKey({
         config,
         keyPath: ['hello'],
         cleanKey: 'world',
@@ -114,7 +114,7 @@ describe('Test JSONv3 exporter', () => {
     ).toThrow(ConflictError);
 
     expect(() =>
-      jsonv3Exporter.getKey({
+      exporter.getKey({
         config,
         keyPath: ['hello'],
         cleanKey: 'world',
@@ -129,7 +129,7 @@ describe('Test JSONv3 exporter', () => {
 
   it('cannot get conflicting key', () => {
     expect(() =>
-      jsonv3Exporter.getKey({
+      exporter.getKey({
         config,
         keyPath: ['hello'],
         cleanKey: 'world',
@@ -144,7 +144,7 @@ describe('Test JSONv3 exporter', () => {
 
   it('can add key', () => {
     expect(
-      jsonv3Exporter.addKey({
+      exporter.addKey({
         config,
         file: { whitespacesBefore: '', whitespacesAfter: '', content: {} },
         key: createTranslationKey('hello'),
@@ -155,7 +155,7 @@ describe('Test JSONv3 exporter', () => {
 
   it('can add deep key', () => {
     expect(
-      jsonv3Exporter.addKey({
+      exporter.addKey({
         config,
         file: { whitespacesBefore: '', whitespacesAfter: '', content: {} },
         key: createTranslationKey('new', ['hello', 'brave']),
@@ -166,7 +166,7 @@ describe('Test JSONv3 exporter', () => {
 
   it('cannot add key in case of conflict', () => {
     expect(() =>
-      jsonv3Exporter.addKey({
+      exporter.addKey({
         config,
         file: {
           whitespacesBefore: '',

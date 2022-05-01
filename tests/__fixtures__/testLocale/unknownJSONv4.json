@@ -1,7 +1,8 @@
 {
   "description": "test unknown locale",
   "pluginOptions": {
-    "locales": ["wtf"]
+    "locales": ["wtf"],
+    "compatibilityJSON": "v4"
   },
   "expectValues": [],
   "errorMessageRegexp": "Unknown locale 'wtf'\\.$"

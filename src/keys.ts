@@ -1,5 +1,5 @@
 import * as BabelTypes from '@babel/types';
-import i18next from 'i18next';
+import * as i18next from 'i18next';
 
 import { Config } from './config';
 
@@ -84,6 +84,13 @@ function parseExtractedKey(key: ExtractedKey, config: Config): TranslationKey {
  *   ({'bar', {contexts: ['male', 'female'], hasCount: true}}, 'en')
  *     => ['foo_male', 'foo_male_plural', 'foo_female', 'foo_female_plural']
  *
+ * FIXME: some of the work of this function should be delegated to the exporter.
+ * This function should just put derivation metadata (each plural for the current
+ * locale and each context) into an attribute of the key. The exporter should then
+ * produce the actual value of the key using the metadata from the TranslationKey.
+ * This would remove the need to specify JSONvX-specific code into this
+ * function, but it will be easier to do when we drop support for JSONv3.
+ *
  * @param extractedKey key that was extracted with an extractor.
  * @param locale locale code
  * @returns All derived keys that could be found from TranslationKey for
@@ -116,19 +123,57 @@ export function computeDerivedKeys(
   }
 
   if (parsedOptions.hasCount) {
+    const i18n = i18next.createInstance({
+      pluralSeparator: config.pluralSeparator,
+      // i18next doesn't allow passing "v4" as it's not "compat" mode.
+      compatibilityJSON: config.compatibilityJSON === 'v3' ? 'v3' : undefined,
+    });
+    // We need to init the i18n instance to have all the services initialized.
+    i18n.init();
+
+    const unknownLocaleError = new Error(`Unknown locale '${locale}'.`);
+    let pluralCategories: string[];
+
     // See https://www.i18next.com/translation-function/plurals#how-to-find-the-correct-plural-suffix
-    const pluralRule = i18next.services.pluralResolver.getRule(locale);
+
+    // - i18next v21+ w/ JSONv4+: Intl.PluralRules is *always* returned even
+    //   if the locale is unknown.
+    // - JSONv3- (independently of i18next version): some custom untyped object
+    //   is returned, or undefined if the local is unknown.
+    const pluralRule:
+      | Intl.PluralRules
+      | { numbers: Array<number> }
+      | undefined = i18n.services.pluralResolver.getRule(
+      locale,
+      // TODO: a comment hint should allow to override cardinality/ordinality.
+      // It defaults to cardinal, but this is not correct.
+      { ordinal: false },
+    );
     if (pluralRule === undefined) {
-      throw new Error(`Locale '${locale}' does not exist.`);
+      throw unknownLocaleError;
+    } else if (pluralRule instanceof Intl.PluralRules) {
+      const pluralRulesOptions = pluralRule.resolvedOptions();
+      if (pluralRulesOptions.locale !== locale) {
+        throw unknownLocaleError;
+      }
+      pluralCategories = pluralRulesOptions.pluralCategories;
+    } else {
+      const pluralsCount = pluralRule.numbers.length;
+      if (pluralsCount === 2) {
+        pluralCategories = ['', 'plural'];
+      } else {
+        pluralCategories = Array(pluralsCount)
+          .fill(null)
+          .map((_, idx) => idx.toString());
+      }
     }
-    const numberOfPlurals = pluralRule.numbers.length;
 
     if (config.enableExperimentalIcu) {
-      const pluralNumbersAsText = Array.from<string>(
-        new Set(pluralRule.numbers.map(pluralNumberToText)),
-      );
+      if (config.compatibilityJSON === 'v3') {
+        throw new Error('ICU format is only supported with JSONv4.');
+      }
 
-      const icuPlurals = pluralNumbersAsText
+      const icuPlurals = pluralCategories
         .map(
           (numAsText: string) =>
             `${numAsText} {${icuPluralValue(
@@ -139,59 +184,32 @@ export function computeDerivedKeys(
 
       extractedKey.parsedOptions.defaultValue = `{count, plural, ${icuPlurals}}`;
     } else {
-      if (numberOfPlurals === 1) {
-        keys = keys.map((k) => ({
-          ...k,
-          cleanKey: k.cleanKey + config.pluralSeparator + '0',
-          isDerivedKey: true,
-        }));
-      } else if (numberOfPlurals === 2) {
-        keys = keys.reduce(
-          (accumulator, k) => [
-            ...accumulator,
-            k,
-            {
-              ...k,
-              cleanKey: k.cleanKey + config.pluralSeparator + 'plural',
-              isDerivedKey: true,
-            },
-          ],
-          Array<TranslationKey>(),
-        );
-      } else {
-        keys = keys.reduce(
-          (accumulator, k) => [
-            ...accumulator,
-            ...Array(numberOfPlurals)
-              .fill(null)
-              .map((_, idx) => ({
-                ...k,
-                cleanKey: k.cleanKey + config.pluralSeparator + idx,
-                isDerivedKey: true,
-              })),
-          ],
-          Array<TranslationKey>(),
-        );
-      }
+      const pluralSuffixes = pluralCategories.map((cat) =>
+        cat.length === 0 ? '' : config.pluralSeparator + cat,
+      );
+      keys = keys.reduce(
+        (accumulator, k) => [
+          ...accumulator,
+          ...pluralSuffixes.map((suffix) => ({
+            ...k,
+            cleanKey: k.cleanKey + suffix,
+            // Let's not consider singular a derived key. This is useful if one
+            // want to use default values for singular.
+            isDerivedKey:
+              k.isDerivedKey ||
+              !['', `${config.pluralSeparator}_one`].includes(suffix),
+          })),
+        ],
+        Array<TranslationKey>(),
+      );
     }
   }
 
   return keys;
 }
 
-function pluralNumberToText(number: number): string {
-  switch (number) {
-    case 0:
-      return 'zero';
-    case 1:
-      return 'one';
-    default:
-      return 'other';
-  }
-}
-
 function icuPluralValue(defaultValue: string | null): string {
-  const oldVal = defaultValue || '';
+  const oldVal = defaultValue ?? '';
   const withIcuSingleCurlyBrace = oldVal
     .replace(/{{/g, '{')
     .replace(/}}/g, '}');

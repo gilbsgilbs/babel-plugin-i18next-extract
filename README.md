@@ -19,7 +19,7 @@ traverse your Javascript/Typescript code in order to find i18next translation ke
 
 ## Features
 
-- ✅ Keys extraction in [JSON v3 format](https://www.i18next.com/misc/json-format).
+- ✅ Keys extraction in [JSONv4 format](https://www.i18next.com/misc/json-format).
 - ✅ Detection of `i18next.t()` function calls.
 - ✅ Full [react-i18next](https://react.i18next.com/) support.
 - ✅ Plurals support.
