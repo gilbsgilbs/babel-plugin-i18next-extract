@@ -337,7 +337,7 @@ configOptions:
     type: "boolean"
     description: |
       Enable experimental support for [ICU message syntax](
-      http://userguide.icu-project.org/formatparse/messages). Only plurals are supported for now.
+      http://userguide.icu-project.org/formatparse/messages). Only plurals and JSONv4 are supported for now.
 
       ☠️  *This feature is incomplete and might change or move into an third-party module in the
       future. Stay tuned.* ☠️
