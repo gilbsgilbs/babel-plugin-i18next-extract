@@ -1,3 +1,5 @@
+import * as nodePath from 'path';
+
 import * as BabelCore from '@babel/core';
 import * as BabelTypes from '@babel/types';
 
@@ -245,6 +247,17 @@ export default function (
 
     visitor: {
       Program(path, state: VisitorState) {
+        for (const exclude of this.I18NextExtract.config.excludes) {
+          const excludeRegexp = new RegExp(exclude);
+          const opts = state.file.opts;
+          const relativePath = nodePath.relative(opts.root, opts.filename);
+          const toPosix = (p: string): string =>
+            p.split(nodePath.sep).join(nodePath.posix.sep);
+          if (excludeRegexp.test(toPosix(relativePath))) {
+            return;
+          }
+        }
+
         // FIXME can't put this in Visitor because `path.traverse()` on a
         // Program node doesn't call the visitor for Program node.
         if (BabelTypes.isFile(path.container)) {

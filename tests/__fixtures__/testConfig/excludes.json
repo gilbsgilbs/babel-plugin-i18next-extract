@@ -1,0 +1,10 @@
+{
+  "description": "test paths are excluded according to regex",
+  "inputFiles": ["excludesMe.js", "excludesNotExcluded.js"],
+  "pluginOptions": {
+    "excludes": [".*excludesMe\\.js$"]
+  },
+  "expectValues": {
+    "should appear": ""
+  }
+}
