@@ -26,6 +26,7 @@ export interface Config {
   enableExperimentalIcu: boolean;
   customTransComponents: readonly [string, string][];
   customUseTranslationHooks: readonly [string, string][];
+  excludes: readonly string[];
 
   // private cache
   cache: {
@@ -107,6 +108,7 @@ export function parseConfig(opts: Partial<Config>): Config {
     enableExperimentalIcu: coalesce(opts.enableExperimentalIcu, false),
     customTransComponents,
     customUseTranslationHooks,
+    excludes: coalesce(opts.excludes, ['^(../)*node_modules/']),
     cache: {
       absoluteCustomTransComponents: customTransComponents.map(
         ([sourceModule, importName]) => [

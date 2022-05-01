@@ -342,3 +342,10 @@ configOptions:
       ☠️  *This feature is incomplete and might change or move into an third-party module in the
       future. Stay tuned.* ☠️
     defaultValue: "false"
+  - name: excludes
+    type: "string[]"
+    description: |
+      List of regular expressions matching paths that shouldn't be extracted.
+
+      Paths are relative to the babel config root and are expressed as POSIX paths (even on Windows).
+    defaultValue: '["^(../)*node_modules/"]'
