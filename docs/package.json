@@ -5,9 +5,9 @@
   },
   "devDependencies": {
     "fs-extra": "^10.0.1",
-    "http-server": "^14.1.0",
+    "http-server": "^14.1.1",
     "js-yaml": "^4.1.0",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.19",
     "nunjucks": "^3.2.1"
   }
 }
