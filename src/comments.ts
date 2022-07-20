@@ -104,6 +104,8 @@ function computeCommentHintsIntervals(
   const result = Array<CommentHint>();
 
   for (const commentHint of commentHints) {
+    if (!commentHint.comment.loc) continue;
+
     if (commentHint.scope === 'LINE') {
       result.push({
         startLine: commentHint.comment.loc.start.line,
