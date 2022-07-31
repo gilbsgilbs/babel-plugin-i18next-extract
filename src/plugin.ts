@@ -204,14 +204,14 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
   },
 };
 
+// This is a cache for the exporter to keep track of the translation files.
+// It must remain global and persist across transpiled files.
+const exporterCache = createExporterCache();
+
 export default function (
   api: BabelCore.ConfigAPI,
 ): BabelCore.PluginObj<VisitorState> {
   api.assertVersion(7);
-
-  // This is a cache for the exporter to keep track of the translation files.
-  // It must remain global and persist across transpiled files.
-  const exporterCache = createExporterCache();
 
   return {
     pre() {
