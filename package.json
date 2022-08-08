@@ -33,7 +33,7 @@
   ],
   "dependencies": {
     "@babel/core": "^7.18.9",
-    "@babel/types": "7.18.9",
+    "@babel/types": "7.18.10",
     "deepmerge": "^4.2.2",
     "i18next": "^21.8.14",
     "json-stable-stringify": "^1.0.1"
