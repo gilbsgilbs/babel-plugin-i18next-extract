@@ -6,10 +6,7 @@ import * as BabelTypes from '@babel/types';
 import { parseCommentHints, CommentHint } from './comments';
 import { Config, parseConfig } from './config';
 import { PLUGIN_NAME } from './constants';
-import exportTranslationKeys, {
-  ExporterCache,
-  createExporterCache,
-} from './exporters';
+import exportTranslationKeys, { createExporterCache } from './exporters';
 import Extractors, {
   EXTRACTORS_PRIORITIES,
   ExtractionError,
@@ -17,9 +14,7 @@ import Extractors, {
 import extractWithTranslationHOC from './extractors/withTranslationHOC';
 import { computeDerivedKeys, ExtractedKey, TranslationKey } from './keys';
 
-export interface VisitorState {
-  // Options inherited from Babel.
-  file: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+export interface VisitorState extends BabelCore.PluginPass {
   opts: Partial<Config>;
 
   // This app state.
@@ -30,7 +25,6 @@ interface I18NextExtractState {
   extractedKeys: ExtractedKey[];
   commentHints: CommentHint[];
   config: Config;
-  exporterCache: ExporterCache;
 }
 
 /**
@@ -206,7 +200,8 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
 
 // This is a cache for the exporter to keep track of the translation files.
 // It must remain global and persist across transpiled files.
-const exporterCache = createExporterCache();
+// Maybe it could be split per package.json at some point.
+const _exporterCache = createExporterCache();
 
 export default function (
   api: BabelCore.ConfigAPI,
@@ -219,7 +214,6 @@ export default function (
         config: parseConfig(this.opts),
         extractedKeys: [],
         commentHints: [],
-        exporterCache,
       };
     },
 
@@ -240,20 +234,25 @@ export default function (
           derivedKeys,
           locale,
           extractState.config,
-          extractState.exporterCache,
+          _exporterCache,
         );
       }
     },
 
     visitor: {
       Program(path, state: VisitorState) {
-        for (const exclude of this.I18NextExtract.config.excludes) {
-          const excludeRegexp = new RegExp(exclude);
-          const opts = state.file.opts;
+        const toPosixPath = (p: string): string =>
+          p.split(nodePath.sep).join(nodePath.posix.sep);
+        const opts = state.file.opts;
+
+        // Check if the current file is excluded.
+        if (opts.root && opts.filename) {
           const relativePath = nodePath.relative(opts.root, opts.filename);
-          const toPosix = (p: string): string =>
-            p.split(nodePath.sep).join(nodePath.posix.sep);
-          if (excludeRegexp.test(toPosix(relativePath))) {
+          if (
+            this.I18NextExtract.config.excludes.some((exclude) =>
+              RegExp(exclude).test(toPosixPath(relativePath)),
+            )
+          ) {
             return;
           }
         }
