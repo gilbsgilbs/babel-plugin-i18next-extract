@@ -17,6 +17,8 @@ extends:
 parserOptions:
   ecmaVersion: 2018
   sourceType: module
+settings:
+  'import/external-module-folders': ['node_modules', '.yarn']
 rules:
   '@typescript-eslint/indent':
     - off
