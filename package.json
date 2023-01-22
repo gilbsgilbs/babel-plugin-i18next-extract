@@ -88,5 +88,6 @@
     "setupFilesAfterEnv": [
       "@alex_neo/jest-expect-message"
     ]
-  }
+  },
+  "packageManager": "yarn@3.3.1"
 }
