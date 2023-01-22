@@ -42,7 +42,7 @@ jobs:
         run: yarn run test --coverage
       - name: Publish code coverage
         if: "${{ env.CC_TEST_REPORTER_ID != '' }}"
-        uses: paambaati/codeclimate-action@v3.0.0
+        uses: paambaati/codeclimate-action@v3.2.0
   build:
     needs: [tests]
     runs-on: ubuntu-latest
