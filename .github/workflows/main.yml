@@ -27,7 +27,7 @@ jobs:
     name: Run tests
     strategy:
       matrix:
-        node: ["14", "16", "18"]
+        node: ["14", "16", "18", "19"]
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
