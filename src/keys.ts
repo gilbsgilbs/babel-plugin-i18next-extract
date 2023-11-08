@@ -153,7 +153,14 @@ export function computeDerivedKeys(
       throw unknownLocaleError;
     } else if (pluralRule instanceof Intl.PluralRules) {
       const pluralRulesOptions = pluralRule.resolvedOptions();
-      if (pluralRulesOptions.locale !== locale) {
+      // Node only returns the language part of the BCP 47 tag when resolving
+      // plural rules. We still need to check if the locale was properly
+      // resolved, but runtimes silently fallback to the user's locale when
+      // specifying a locale they don't know. Also, there doesn't seem to be a
+      // way to tell if a given locale is supported by the runtime or not. So
+      // as a workaround, we ensure that at least the language part of the
+      // resolved locale is consistent with the locale we want.
+      if (!locale.startsWith(pluralRulesOptions.locale)) {
         throw unknownLocaleError;
       }
       pluralCategories = pluralRulesOptions.pluralCategories;

@@ -2,7 +2,7 @@
   "description": "plural tests in different languages",
   "comment": "ms has 1 plural, ak has 2 plurals, ar has 6 plurals",
   "pluginOptions": {
-    "locales": ["ak", "ar", "ms"],
+    "locales": ["ak", "ar", "ms", "zh-TW"],
     "compatibilityJSON": "v4"
   },
   "expectValues": [
@@ -17,6 +17,10 @@
     [
       {"myKey_other": ""},
       {"locale": "ms"}
+    ],
+    [
+      {"myKey_other": ""},
+      {"locale": "zh-TW"}
     ]
   ]
 }
