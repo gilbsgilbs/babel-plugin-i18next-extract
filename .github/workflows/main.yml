@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Run static checks
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.MAIN_NODE_VERSION }}
           cache: 'yarn'
@@ -29,9 +29,9 @@ jobs:
       matrix:
         node: ["18", "20", "21"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
           cache: 'yarn'
@@ -42,15 +42,15 @@ jobs:
         run: yarn run test --coverage
       - name: Publish code coverage
         if: "${{ env.CC_TEST_REPORTER_ID != '' }}"
-        uses: paambaati/codeclimate-action@v3.2.0
+        uses: paambaati/codeclimate-action@v5.0.0
   build:
     needs: [tests]
     runs-on: ubuntu-latest
     name: Build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.MAIN_NODE_VERSION }}
       - run: corepack enable
