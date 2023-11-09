@@ -259,10 +259,16 @@ export default function (
 
         // FIXME can't put this in Visitor because `path.traverse()` on a
         // Program node doesn't call the visitor for Program node.
-        if (BabelTypes.isFile(path.container)) {
-          this.I18NextExtract.commentHints = parseCommentHints(
-            path.container.comments || [],
-          );
+        const containerNodes = Array.isArray(path.container)
+          ? path.container
+          : [path.container];
+        for (const containerNode of containerNodes) {
+          if (BabelTypes.isFile(containerNode)) {
+            this.I18NextExtract.commentHints = [
+              ...this.I18NextExtract.commentHints,
+              ...parseCommentHints(containerNode.comments || []),
+            ];
+          }
         }
 
         path.traverse(Visitor, state);
