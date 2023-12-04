@@ -59,6 +59,15 @@ export default function extractUseTranslationHook(
   const tBinding = id.scope.bindings['t'];
   if (!tBinding) return [];
 
+  let keyPrefix: string | undefined;
+
+  const optionsArgument = path.get('arguments')[1];
+  const options = getFirstOrNull(evaluateIfConfident(optionsArgument))
+
+  if (options) {
+    keyPrefix = options.keyPrefix || keyPrefix
+  }
+
   let keys = Array<ExtractedKey>();
   for (const reference of tBinding.referencePaths) {
     if (
@@ -86,6 +95,7 @@ export default function extractUseTranslationHook(
 
   return keys.map((k) => ({
     ...k,
+    keyPrefix: keyPrefix,
     sourceNodes: [path.node, ...k.sourceNodes],
     extractorName: extractUseTranslationHook.name,
   }));

@@ -1,0 +1,10 @@
+{
+  "description": "test keyPrefix extraction of useTranslation hook",
+  "pluginOptions": {},
+  "expectValues": [
+    [{ "deep0": {"key0": "", "key1": ""}}, {"ns": "ns0"}],
+    [{ "deep1": {"deep2": {"key2": "", "key3": ""}}}, {"ns": "ns1"}],
+    [{ "deep3": {"deep4": {"key4": { "key5": "", "key6": "" }}}}, {"ns": "ns2"}],
+    [{ "deep5": {"deep6": {"key7": { "key8": "" }, "key9": {"key10": ""}}}}, {"ns": "ns3"}]
+  ]
+}

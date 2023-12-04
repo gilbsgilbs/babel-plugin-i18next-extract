@@ -1,0 +1,9 @@
+{
+  "description": "test keyPrefix usage of getFixedT TFunction",
+  "pluginOptions": {},
+  "expectValues": [
+    [{"deep0":  { "key0": "" }}, {"ns": "ns0"}],
+    [{"deep1":  { "deep2": { "key1": "" }}}, {"ns": "ns1"}],
+    [{"deep3":  { "deep4": { "key2": { "key3": "" } }}}, {"ns": "ns2"}]
+  ]
+}
