@@ -90,6 +90,7 @@ export default function extractGetFixedTFunction(
           ...k,
           parsedOptions: {
             ...k.parsedOptions,
+            keyPrefix: k.parsedOptions.keyPrefix || keyPrefix,
             ns: k.parsedOptions.ns || ns,
           },
         })),
@@ -99,7 +100,6 @@ export default function extractGetFixedTFunction(
 
   return keys.map((k) => ({
     ...k,
-    keyPrefix: keyPrefix || undefined,
     sourceNodes: [path.node, ...k.sourceNodes],
     extractorName: extractGetFixedTFunction.name,
   }));

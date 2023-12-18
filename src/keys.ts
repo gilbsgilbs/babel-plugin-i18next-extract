@@ -10,6 +10,7 @@ interface I18NextParsedOptions {
   contexts: string[] | boolean;
   hasCount: boolean;
   ns: string | null;
+  keyPrefix: string | null;
   defaultValue: string | null;
 }
 
@@ -18,7 +19,6 @@ interface I18NextParsedOptions {
  */
 export interface ExtractedKey {
   key: string;
-  keyPrefix?: string;
   parsedOptions: I18NextParsedOptions;
 
   // Nodes (not node paths) from which the key was extracted.
@@ -50,30 +50,26 @@ export interface TranslationKey extends ExtractedKey {
 function parseExtractedKey(key: ExtractedKey, config: Config): TranslationKey {
   let cleanKey = key.key;
 
+  const keyPrefix = key.parsedOptions.keyPrefix;
+  if (keyPrefix) {
+    // Imitate behavior of i18next and just connect prefix with key before any other action
+    const keySeparator = config.keySeparator || '.';
+    cleanKey = `${keyPrefix}${keySeparator}${cleanKey}`;
+  }
+
   let ns: string = key.parsedOptions.ns || config.defaultNS;
   if (config.nsSeparator) {
     const nsSeparatorPos = cleanKey.indexOf(config.nsSeparator);
 
     if (nsSeparatorPos !== -1) {
-      if (key.keyPrefix) {
-        throw new Error(
-          `Do not use the keyPrefix option if you want to use keys with prefixed namespace notation.
-          key: ${cleanKey}
-          keyPrefix: ${key.keyPrefix}`,
-        )
-      }
-
       ns = cleanKey.slice(0, nsSeparatorPos);
       cleanKey = cleanKey.slice(nsSeparatorPos + 1);
     }
   }
 
   let keyPath = Array<string>();
-  if (config.keySeparator) {
-    if (key.keyPrefix) {
-      keyPath = key.keyPrefix.split(config.keySeparator);
-    }
 
+  if (config.keySeparator) {
     const fullPath = cleanKey.split(config.keySeparator);
     keyPath = [...keyPath, ...fullPath.slice(0, fullPath.length - 1)];
     cleanKey = fullPath[fullPath.length - 1];

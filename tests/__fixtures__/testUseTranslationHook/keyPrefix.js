@@ -19,3 +19,8 @@ export function MyComponent4() {
   const [t] = useTranslation('ns3', { keyPrefix: 'deep5.deep6' });
   return <p>{t('key7.key8')}{t('key9.key10')}</p>
 }
+
+export function MyComponent5() {
+  const [t] = useTranslation('ns4', { keyPrefix: 'deep7.deep8' });
+  return <p>{t('ns5:key11')}</p>
+}
