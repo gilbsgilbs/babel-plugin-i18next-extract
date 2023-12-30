@@ -62,10 +62,10 @@ export default function extractUseTranslationHook(
   let keyPrefix: string | null = null;
 
   const optionsArgument = path.get('arguments')[1];
-  const options = getFirstOrNull(evaluateIfConfident(optionsArgument))
+  const options = getFirstOrNull(evaluateIfConfident(optionsArgument));
 
   if (options) {
-    keyPrefix = options.keyPrefix || keyPrefix
+    keyPrefix = options.keyPrefix || keyPrefix;
   }
 
   let keys = Array<ExtractedKey>();

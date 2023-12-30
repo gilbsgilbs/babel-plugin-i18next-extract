@@ -70,7 +70,7 @@ export default function extractGetFixedTFunction(
   const keyPrefixArgument = path.get('arguments')[2];
   const keyPrefix: string | null = getFirstOrNull(
     evaluateIfConfident(keyPrefixArgument),
-  )
+  );
 
   let keys = Array<ExtractedKey>();
   for (const reference of tBinding.referencePaths) {
