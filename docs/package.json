@@ -10,5 +10,5 @@
     "nodemon": "^3.0.1",
     "nunjucks": "^3.2.4"
   },
-  "packageManager": "yarn@4.0.1"
+  "packageManager": "yarn@4.0.2"
 }
