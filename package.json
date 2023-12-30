@@ -33,7 +33,7 @@
   ],
   "dependencies": {
     "@babel/core": "^7.23.3",
-    "@babel/types": "7.23.3",
+    "@babel/types": "7.23.6",
     "deepmerge": "^4.3.1",
     "i18next": "^23.6.0",
     "json-stable-stringify": "^1.0.2"
@@ -88,5 +88,5 @@
       "jest-expect-message"
     ]
   },
-  "packageManager": "yarn@4.0.1"
+  "packageManager": "yarn@4.0.2"
 }
