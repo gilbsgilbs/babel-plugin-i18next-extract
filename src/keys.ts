@@ -10,6 +10,7 @@ interface I18NextParsedOptions {
   contexts: string[] | boolean;
   hasCount: boolean;
   ns: string | null;
+  keyPrefix: string | null;
   defaultValue: string | null;
 }
 
@@ -49,6 +50,13 @@ export interface TranslationKey extends ExtractedKey {
 function parseExtractedKey(key: ExtractedKey, config: Config): TranslationKey {
   let cleanKey = key.key;
 
+  const keyPrefix = key.parsedOptions.keyPrefix;
+  if (keyPrefix) {
+    // Imitate behavior of i18next and just connect prefix with key before any other action
+    const keySeparator = config.keySeparator || '.';
+    cleanKey = `${keyPrefix}${keySeparator}${cleanKey}`;
+  }
+
   let ns: string = key.parsedOptions.ns || config.defaultNS;
   if (config.nsSeparator) {
     const nsSeparatorPos = cleanKey.indexOf(config.nsSeparator);
@@ -60,9 +68,10 @@ function parseExtractedKey(key: ExtractedKey, config: Config): TranslationKey {
   }
 
   let keyPath = Array<string>();
+
   if (config.keySeparator) {
     const fullPath = cleanKey.split(config.keySeparator);
-    keyPath = fullPath.slice(0, fullPath.length - 1);
+    keyPath = [...keyPath, ...fullPath.slice(0, fullPath.length - 1)];
     cleanKey = fullPath[fullPath.length - 1];
   }
 

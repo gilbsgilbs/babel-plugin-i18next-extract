@@ -13,6 +13,7 @@ export function createTranslationKey(
     parsedOptions: {
       contexts: false,
       hasCount: false,
+      keyPrefix: null,
       ns: null,
       defaultValue: null,
     },

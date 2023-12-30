@@ -67,6 +67,11 @@ export default function extractGetFixedTFunction(
   const tBinding = id.scope.bindings[id.node.name];
   if (!tBinding) return [];
 
+  const keyPrefixArgument = path.get('arguments')[2];
+  const keyPrefix: string | null = getFirstOrNull(
+    evaluateIfConfident(keyPrefixArgument),
+  );
+
   let keys = Array<ExtractedKey>();
   for (const reference of tBinding.referencePaths) {
     if (
@@ -85,6 +90,7 @@ export default function extractGetFixedTFunction(
           ...k,
           parsedOptions: {
             ...k.parsedOptions,
+            keyPrefix: k.parsedOptions.keyPrefix || keyPrefix,
             ns: k.parsedOptions.ns || ns,
           },
         })),

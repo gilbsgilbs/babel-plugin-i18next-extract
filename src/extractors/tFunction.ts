@@ -50,6 +50,7 @@ function parseTCallOptions(
     contexts: false,
     hasCount: false,
     ns: null,
+    keyPrefix: null,
     defaultValue: null,
   };
 
@@ -75,6 +76,12 @@ function parseTCallOptions(
     if (defaultValueNode !== null && defaultValueNode.isObjectProperty()) {
       const defaultValueNodeValue = defaultValueNode.get('value');
       res.defaultValue = evaluateIfConfident(defaultValueNodeValue);
+    }
+
+    const keyPrefixNode = findKeyInObjectExpression(path, 'keyPrefix');
+    if (keyPrefixNode !== null && keyPrefixNode.isObjectProperty()) {
+      const keyPrefixNodeValue = keyPrefixNode.get('value');
+      res.keyPrefix = evaluateIfConfident(keyPrefixNodeValue);
     }
   }
 

@@ -50,6 +50,7 @@ function parseTransComponentOptions(
   const res: ExtractedKey['parsedOptions'] = {
     contexts: false,
     hasCount: false,
+    keyPrefix: null,
     ns: null,
     defaultValue: null,
   };

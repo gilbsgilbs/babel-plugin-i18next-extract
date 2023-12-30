@@ -18,12 +18,17 @@ const MyComponent2 = () => {
   return <p>{t('key2')}</p>
 }
 
-export function MyComponent3() {
+const MyComponent3 = () => {
+  const { t, i18n } = useTranslation();
+  return <p>{t('key3.key4')}</p>
+}
+
+export function MyComponent4() {
   const {i18n} = useTranslation();
   return <p>Shouldn't crash</p>
 }
 
-export function MyComponent4() {
+export function MyComponent5() {
   const { t } = ReactI18Next.useTranslation();
   t('from wildcard import');
 }
