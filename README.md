@@ -26,18 +26,18 @@ traverse your Javascript/Typescript code in order to find i18next translation ke
 - ✅ Contexts support.
 - ✅ Namespace detection.
 - ✅ Disable extraction on a specific file sections or lines using [comment hints](
-  https://i18next-extract.netlify.com/#/comment-hints?id=disable-extraction-on-a-specific-line-or-code-section).
+  https://i18next-extract.netlify.app/#/comment-hints?id=disable-extraction-on-a-specific-line-or-code-section).
 - ✅ Overwrite namespaces, plurals and contexts on-the-fly using [comment hints](
-  https://i18next-extract.netlify.com/#/comment-hints?id=explicitly-specify-contexts-for-a-key).
-- [… and more?](https://i18next-extract.netlify.com/#/contributing)
+  https://i18next-extract.netlify.app/#/comment-hints?id=explicitly-specify-contexts-for-a-key).
+- [… and more?](https://i18next-extract.netlify.app/#/contributing)
 
 <!-- {% if false %} -->
 <!-- Don't render this in actual documentation -->
 
 ## Documentation
 
-You can check out the full documentation at [i18next-extract.netlify.com](
-https://i18next-extract.netlify.com).
+You can check out the full documentation at [i18next-extract.netlify.app](
+https://i18next-extract.netlify.app).
 
 <!-- {% endif %} -->
 
@@ -81,7 +81,7 @@ You may want to specify additional configuration options:
 ```
 
 > For an exhaustive list of configuration options, check out the [Configuration](
-https://i18next-extract.netlify.com/#/configuration) page.
+https://i18next-extract.netlify.app/#/configuration) page.
 
 Once the plugin is setup, you can build your app normally or run Babel through [Babel CLI](
 https://babeljs.io/docs/en/babel-cli):
