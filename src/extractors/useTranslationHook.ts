@@ -56,7 +56,11 @@ export default function extractUseTranslationHook(
 
   const id = parentPath.get('id');
 
-  const tBinding = id.scope.bindings['t'];
+  const tBindingKey =
+    config.tFunctionNames.find((name) => id.scope.bindings[name]) || 't';
+  if (!tBindingKey) return [];
+
+  const tBinding = id.scope.bindings[tBindingKey];
   if (!tBinding) return [];
 
   let keyPrefix: string | null = null;

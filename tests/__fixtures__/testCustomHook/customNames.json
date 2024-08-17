@@ -1,0 +1,17 @@
+{
+  "description": "test custom useTranslation hooks giving custom instance name to t function",
+  "pluginOptions": {
+    "customUseTranslationHooks": [
+      ["./tests/__fixtures__/testCustomHook/i18n", "useMyTranslation"],
+      ["./tests/__fixtures__/testCustomHook/i18n", "useOtherTranslation"],
+      ["third-party-module", "useThirdPartyTranslation"]
+    ],
+    "tFunctionNames": ["_", "iceT", "myT", "translate"]
+  },
+  "expectValues": [
+    [{ "key0": "", "key1": "" }, { "ns": "ns0" }],
+    [{ "key in ns1": "" }, { "ns": "ns1" }],
+    [{ "key in ns2": "" }, { "ns": "ns2" }],
+    [{ "key in ns3": "" }, { "ns": "ns3" }]
+  ]
+}
