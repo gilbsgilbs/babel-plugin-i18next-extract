@@ -4,12 +4,12 @@
   "expectValues": [
     [
       {
-        "with context, purals and secret-ns": "",
-        "with context, purals and secret-ns_plural": "",
-        "with context, purals and secret-ns_male": "",
-        "with context, purals and secret-ns_male_plural": "",
-        "with context, purals and secret-ns_female": "",
-        "with context, purals and secret-ns_female_plural": ""
+        "with context, purals and secret-ns_one": "",
+        "with context, purals and secret-ns_other": "",
+        "with context, purals and secret-ns_male_one": "",
+        "with context, purals and secret-ns_male_other": "",
+        "with context, purals and secret-ns_female_one": "",
+        "with context, purals and secret-ns_female_other": ""
       },
       {"ns": "secret-ns"}
     ]

@@ -1,16 +1,16 @@
-import * as BabelCore from '@babel/core';
-import * as BabelTypes from '@babel/types';
+import * as BabelCore from "@babel/core";
+import * as BabelTypes from "@babel/types";
 
-import { CommentHint, getCommentHintForPath } from '../comments';
-import { Config } from '../config';
-import { ExtractedKey } from '../keys';
+import { CommentHint, getCommentHintForPath } from "../comments";
+import { Config } from "../config";
+import { ExtractedKey } from "../keys";
 
 import {
   getFirstOrNull,
   evaluateIfConfident,
   referencesImport,
-} from './commons';
-import extractTFunction from './tFunction';
+} from "./commons";
+import extractTFunction from "./tFunction";
 
 /**
  * Check whether a given node is a withTranslation call expression.
@@ -23,7 +23,7 @@ function isWithTranslationHOCCallExpression(
 ): path is BabelCore.NodePath<BabelTypes.CallExpression> {
   return (
     path.isCallExpression() &&
-    referencesImport(path.get('callee'), 'react-i18next', 'withTranslation')
+    referencesImport(path.get("callee"), "react-i18next", "withTranslation")
   );
 }
 
@@ -39,7 +39,7 @@ function findWithTranslationHOCCallExpressionInParents(
 ): BabelCore.NodePath<BabelTypes.CallExpression> | null {
   const callExpr = path.findParent((parentPath) => {
     if (!parentPath.isCallExpression()) return false;
-    const callee = parentPath.get('callee');
+    const callee = parentPath.get("callee");
     return isWithTranslationHOCCallExpression(callee);
   });
 
@@ -47,7 +47,7 @@ function findWithTranslationHOCCallExpressionInParents(
     return null;
   }
 
-  const callee = callExpr.get('callee');
+  const callee = callExpr.get("callee");
   if (Array.isArray(callee) || !callee.isCallExpression()) return null;
 
   return callee;
@@ -66,7 +66,7 @@ function findWithTranslationHOCCallExpressionInParents(
 function findWithTranslationHOCCallExpressionInCompose(
   path: BabelCore.NodePath<BabelTypes.Node>,
 ): BabelCore.NodePath<BabelTypes.CallExpression> | null {
-  const composeFunctionNames = ['compose', 'flow', 'flowRight'];
+  const composeFunctionNames = ["compose", "flow", "flowRight"];
 
   let currentPath = path.parentPath;
   let withTranslationCallExpr: BabelCore.NodePath<BabelTypes.CallExpression> | null =
@@ -74,7 +74,7 @@ function findWithTranslationHOCCallExpressionInCompose(
 
   while (currentPath?.isCallExpression()) {
     if (withTranslationCallExpr === null) {
-      const args: BabelCore.NodePath[] = currentPath.get('arguments');
+      const args: BabelCore.NodePath[] = currentPath.get("arguments");
       withTranslationCallExpr =
         args.find(isWithTranslationHOCCallExpression) || null;
     }
@@ -83,11 +83,11 @@ function findWithTranslationHOCCallExpressionInCompose(
       | BabelTypes.V8IntrinsicIdentifier
       | BabelTypes.Expression
       | BabelTypes.PrivateName
-    > = currentPath.get('callee');
+    > = currentPath.get("callee");
     if (callee.isMemberExpression()) {
       // If we have a member expression, we take the right operand
       // e.g. _.compose
-      const result = callee.get('property');
+      const result = callee.get("property");
       if (!Array.isArray(result)) {
         callee = result;
       }
@@ -113,7 +113,7 @@ function findWithTranslationHOCCallExpressionInCompose(
 function findWithTranslationHOCCallExpression(
   path: BabelCore.NodePath<BabelTypes.Function | BabelTypes.ClassDeclaration>,
 ): BabelCore.NodePath<BabelTypes.CallExpression> | null {
-  let functionIdentifier = path.get('id');
+  let functionIdentifier = path.get("id");
 
   if (
     !Array.isArray(functionIdentifier) &&
@@ -122,14 +122,13 @@ function findWithTranslationHOCCallExpression(
   ) {
     // It doesn't look like "function MyComponent(…)"
     // but could be "const MyComponent = (…) => …" or "const MyComponent = function(…) { … }"
-    functionIdentifier = path.parentPath.get('id');
+    functionIdentifier = path.parentPath.get("id");
   }
 
   if (Array.isArray(functionIdentifier) || !functionIdentifier.isIdentifier())
     return null;
 
-  const bindings =
-    path.parentPath.scope.bindings[functionIdentifier.node.name];
+  const bindings = path.parentPath.scope.bindings[functionIdentifier.node.name];
 
   // Likely an anonymous function not in a normal scope.
   // e.g. "['foo', function myFunction() { return 'foo'; }]"
@@ -159,12 +158,12 @@ function findWithTranslationHOCCallExpression(
 function findTFunctionIdentifierInObjectPattern(
   path: BabelCore.NodePath<BabelTypes.ObjectPattern>,
 ): BabelCore.NodePath<BabelTypes.Identifier> | null {
-  const props = path.get('properties');
+  const props = path.get("properties");
 
   for (const prop of props) {
     if (prop.isObjectProperty()) {
-      const key = prop.get('key');
-      if (!Array.isArray(key) && key.isIdentifier() && key.node.name === 't') {
+      const key = prop.get("key");
+      if (!Array.isArray(key) && key.isIdentifier() && key.node.name === "t") {
         return key;
       }
     }
@@ -184,7 +183,7 @@ function isCallee(path: BabelCore.NodePath): path is BabelCore.NodePath & {
 } {
   return !!(
     path.parentPath?.isCallExpression() &&
-    path === path.parentPath.get('callee')
+    path === path.parentPath.get("callee")
   );
 }
 
@@ -202,7 +201,7 @@ function findTFunctionCallsFromPropsAssignment(
 ): BabelCore.NodePath<BabelTypes.CallExpression>[] {
   const tReferences = Array<BabelCore.NodePath>();
 
-  const body = propsId.parentPath?.get('body');
+  const body = propsId.parentPath?.get("body");
   if (body === undefined || Array.isArray(body)) return [];
   const scope = body.scope;
 
@@ -210,8 +209,7 @@ function findTFunctionCallsFromPropsAssignment(
     // got "function MyComponent({t, other, props})"
     // or "const {t, other, props} = this.props"
     // we want to find references to "t"
-    const tFunctionIdentifier =
-      findTFunctionIdentifierInObjectPattern(propsId);
+    const tFunctionIdentifier = findTFunctionIdentifierInObjectPattern(propsId);
     if (tFunctionIdentifier === null) return [];
     const tBinding = scope.bindings[tFunctionIdentifier.node.name];
     tReferences.push(...tBinding.referencePaths);
@@ -222,11 +220,11 @@ function findTFunctionCallsFromPropsAssignment(
     const references = scope.bindings[propsId.node.name].referencePaths;
     for (const reference of references) {
       if (reference.parentPath?.isMemberExpression()) {
-        const prop = reference.parentPath.get('property');
+        const prop = reference.parentPath.get("property");
         if (
           !Array.isArray(prop) &&
           prop.isIdentifier() &&
-          prop.node.name === 't'
+          prop.node.name === "t"
         ) {
           tReferences.push(reference.parentPath);
         }
@@ -259,18 +257,18 @@ function findTFunctionCallsInClassComponent(
     ThisExpression(path) {
       if (!path.parentPath.isMemberExpression()) return;
 
-      const propProperty = path.parentPath.get('property');
+      const propProperty = path.parentPath.get("property");
       if (Array.isArray(propProperty) || !propProperty.isIdentifier()) return;
-      if (propProperty.node.name !== 'props') return;
+      if (propProperty.node.name !== "props") return;
 
       // Ok, this is interesting, we have something with "this.props"
 
       if (path.parentPath.parentPath.isMemberExpression()) {
         // We have something in the form "this.props.xxxx".
 
-        const tIdentifier = path.parentPath.parentPath.get('property');
+        const tIdentifier = path.parentPath.parentPath.get("property");
         if (Array.isArray(tIdentifier) || !tIdentifier.isIdentifier()) return;
-        if (tIdentifier.node.name !== 't') return;
+        if (tIdentifier.node.name !== "t") return;
 
         // We have something in the form "this.props.t". Let's see if it's an
         // actual function call or an assignment.
@@ -281,7 +279,7 @@ function findTFunctionCallsInClassComponent(
         } else if (tExpression.parentPath.isVariableDeclarator()) {
           // Hard case. const t = this.props.t;
           // Let's loop through all references to t.
-          const id = tExpression.parentPath.get('id');
+          const id = tExpression.parentPath.get("id");
           if (!id.isIdentifier()) return;
           for (const reference of id.scope.bindings[id.node.name]
             .referencePaths) {
@@ -293,7 +291,7 @@ function findTFunctionCallsInClassComponent(
       } else if (path.parentPath.parentPath.isVariableDeclarator()) {
         // We have something in the form "const props = this.props"
         // Or "const {t} = this.props"
-        const id = path.parentPath.parentPath.get('id');
+        const id = path.parentPath.parentPath.get("id");
         result.push(...findTFunctionCallsFromPropsAssignment(id));
       }
     },
@@ -310,7 +308,7 @@ function findTFunctionCallsInClassComponent(
 function findTFunctionCallsInFunctionComponent(
   path: BabelCore.NodePath<BabelTypes.Function>,
 ): BabelCore.NodePath<BabelTypes.CallExpression>[] {
-  const propsParam = path.get('params')[0];
+  const propsParam = path.get("params")[0];
   if (propsParam === undefined) return [];
   return findTFunctionCallsFromPropsAssignment(propsParam);
 }
@@ -348,7 +346,7 @@ export default function extractWithTranslationHOC(
   let ns: string | null;
   const nsCommentHint = getCommentHintForPath(
     withTranslationCallExpression,
-    'NAMESPACE',
+    "NAMESPACE",
     commentHints,
   );
   if (nsCommentHint) {
@@ -356,8 +354,7 @@ export default function extractWithTranslationHOC(
     ns = nsCommentHint.value;
   } else {
     // Otherwise, try to get namespace from arguments.
-    const namespaceArgument =
-      withTranslationCallExpression.get('arguments')[0];
+    const namespaceArgument = withTranslationCallExpression.get("arguments")[0];
     ns = getFirstOrNull(evaluateIfConfident(namespaceArgument));
   }
 

@@ -5,7 +5,7 @@
     "useI18nextDefaultValueForDerivedKeys": true
   },
   "expectValues": {
-    "key0": "a default value",
-    "key0_plural": "a default value"
+    "key0_one": "a default value",
+    "key0_other": "a default value"
   }
 }

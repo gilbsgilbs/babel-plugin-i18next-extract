@@ -1,5 +1,5 @@
-import { runChecks } from './runner';
+import { runChecks } from "./runner";
 
-describe('Test extraction works', () => {
+describe("Test extraction works", () => {
   runChecks();
 });

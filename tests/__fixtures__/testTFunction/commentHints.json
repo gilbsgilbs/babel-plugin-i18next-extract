@@ -4,10 +4,10 @@
   "expectValues": [
     [{"keyns0": "", "keyns1": ""}, {"ns": "forcedns"}],
     [{
-      "pluralkey0": "",
-      "pluralkey0_plural": "",
-      "pluralkey1": "",
-      "pluralkey1_plural": "",
+      "pluralkey0_one": "",
+      "pluralkey0_other": "",
+      "pluralkey1_one": "",
+      "pluralkey1_other": "",
       "not-pluralkey": "",
       "default-context0": "",
       "default-context0_male": "",

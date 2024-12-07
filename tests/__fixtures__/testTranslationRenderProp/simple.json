@@ -4,8 +4,8 @@
   "expectValues": {
     "hello": "",
     "hello world": "",
-    "withPlural": "",
-    "withPlural_plural": "",
+    "withPlural_one": "",
+    "withPlural_other": "",
     "from wildcard import": ""
   }
 }

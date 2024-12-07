@@ -1,9 +1,0 @@
-{
-  "description": "test icu plugin throws with JSONv3",
-  "pluginOptions": {
-    "enableExperimentalIcu": true,
-    "compatibilityJSON": "v3"
-  },
-  "expectValues": [],
-  "errorMessageRegexp": "ICU format is only supported with JSONv4\\.$"
-}

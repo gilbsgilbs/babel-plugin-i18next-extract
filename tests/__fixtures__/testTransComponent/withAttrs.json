@@ -7,8 +7,8 @@
   },
   "expectValues": [
     [{
-      "withCount": "",
-      "withCount_plural": "",
+      "withCount_one": "",
+      "withCount_other": "",
       "withContext": "",
       "withContext_male": "",
       "withContext_female": "",

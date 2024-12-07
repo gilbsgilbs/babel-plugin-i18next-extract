@@ -112,7 +112,7 @@ informed that you're working on it.
 - `exporters/`: contains code related to exporting extracted translations to files.
     - `commons.ts`: Types and exceptions definitions for extractors.
     - `index.ts`: Entrypoint for exporters. Calls and uses the proper extractor implementation
-      (only JSONv3 and JSONv4 at the moment).
+      (only JSONv4).
     - `json.ts`: [JSONv4](https://www.i18next.com/misc/json-format#i18next-json-v4) extractor
       implementation.
 - `comments.ts` parses the comment hints.

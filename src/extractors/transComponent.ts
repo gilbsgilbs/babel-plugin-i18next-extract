@@ -1,13 +1,13 @@
-import * as BabelCore from '@babel/core';
-import * as BabelTypes from '@babel/types';
+import * as BabelCore from "@babel/core";
+import * as BabelTypes from "@babel/types";
 
 import {
   COMMENT_HINTS_KEYWORDS,
   getCommentHintForPath,
   CommentHint,
-} from '../comments';
-import { Config } from '../config';
-import { ExtractedKey } from '../keys';
+} from "../comments";
+import { Config } from "../config";
+import { ExtractedKey } from "../keys";
 
 import {
   ExtractionError,
@@ -19,7 +19,7 @@ import {
   referencesImport,
   parseI18NextOptionsFromCommentHints,
   resolveIdentifier,
-} from './commons';
+} from "./commons";
 
 /**
  * Check whether a given JSXElement is a Trans component.
@@ -29,12 +29,8 @@ import {
 function isTransComponent(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
 ): boolean {
-  const openingElement = path.get('openingElement');
-  return referencesImport(
-    openingElement.get('name'),
-    'react-i18next',
-    'Trans',
-  );
+  const openingElement = path.get("openingElement");
+  return referencesImport(openingElement.get("name"), "react-i18next", "Trans");
 }
 
 /**
@@ -46,8 +42,8 @@ function isTransComponent(
 function parseTransComponentOptions(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
   commentHints: CommentHint[],
-): ExtractedKey['parsedOptions'] {
-  const res: ExtractedKey['parsedOptions'] = {
+): ExtractedKey["parsedOptions"] {
+  const res: ExtractedKey["parsedOptions"] = {
     contexts: false,
     hasCount: false,
     keyPrefix: null,
@@ -55,34 +51,34 @@ function parseTransComponentOptions(
     defaultValue: null,
   };
 
-  const countAttr = findJSXAttributeByName(path, 'count');
+  const countAttr = findJSXAttributeByName(path, "count");
   res.hasCount = countAttr !== null;
 
-  const tOptionsAttr = findJSXAttributeByName(path, 'tOptions');
+  const tOptionsAttr = findJSXAttributeByName(path, "tOptions");
   if (tOptionsAttr) {
-    const value = tOptionsAttr.get('value');
+    const value = tOptionsAttr.get("value");
     if (value.isJSXExpressionContainer()) {
-      const expression = value.get('expression');
+      const expression = value.get("expression");
       if (expression.isObjectExpression()) {
         res.contexts =
-          findKeyInObjectExpression(expression, 'context') !== null;
+          findKeyInObjectExpression(expression, "context") !== null;
       }
     }
   }
 
-  const nsAttr = findJSXAttributeByName(path, 'ns');
+  const nsAttr = findJSXAttributeByName(path, "ns");
   if (nsAttr) {
     let value: BabelCore.NodePath<BabelTypes.Node | null | undefined> =
-      nsAttr.get('value');
-    if (value.isJSXExpressionContainer()) value = value.get('expression');
+      nsAttr.get("value");
+    if (value.isJSXExpressionContainer()) value = value.get("expression");
     res.ns = getFirstOrNull(evaluateIfConfident(value));
   }
 
-  const defaultsAttr = findJSXAttributeByName(path, 'defaults');
+  const defaultsAttr = findJSXAttributeByName(path, "defaults");
   if (defaultsAttr) {
     let value: BabelCore.NodePath<BabelTypes.Node | null | undefined> =
-      defaultsAttr.get('value');
-    if (value.isJSXExpressionContainer()) value = value.get('expression');
+      defaultsAttr.get("value");
+    if (value.isJSXExpressionContainer()) value = value.get("expression");
     res.defaultValue = evaluateIfConfident(value);
   }
 
@@ -111,17 +107,17 @@ function parseTransComponentKeyFromAttributes(
     path,
   );
 
-  const keyAttribute = findJSXAttributeByName(path, 'i18nKey');
+  const keyAttribute = findJSXAttributeByName(path, "i18nKey");
   if (!keyAttribute) return null;
 
-  const keyAttributeValue = keyAttribute.get('value');
+  const keyAttributeValue = keyAttribute.get("value");
   const keyEvaluation = evaluateIfConfident(
     keyAttributeValue.isJSXExpressionContainer()
-      ? keyAttributeValue.get('expression')
+      ? keyAttributeValue.get("expression")
       : keyAttributeValue,
   );
 
-  if (typeof keyEvaluation !== 'string') {
+  if (typeof keyEvaluation !== "string") {
     throw error;
   }
 
@@ -137,15 +133,13 @@ function parseTransComponentKeyFromAttributes(
  * @param path node path of the JSX element to check
  * @returns whether the node has nested children
  */
-function hasChildren(
-  path: BabelCore.NodePath<BabelTypes.JSXElement>,
-): boolean {
-  const children = path.get('children').filter((path) => {
+function hasChildren(path: BabelCore.NodePath<BabelTypes.JSXElement>): boolean {
+  const children = path.get("children").filter((path) => {
     // Filter out empty JSX expression containers
     // (they do not count, even if they contain comments)
 
     if (path.isJSXExpressionContainer()) {
-      const expression = path.get('expression');
+      const expression = path.get("expression");
       return !expression.isJSXEmptyExpression();
     }
 
@@ -158,7 +152,7 @@ function hasChildren(
   const child = children[0];
 
   if (child.isJSXExpressionContainer()) {
-    let expression = child.get('expression');
+    let expression = child.get("expression");
 
     if (expression.isIdentifier()) {
       const resolvedExpression = resolveIdentifier(expression);
@@ -176,7 +170,7 @@ function hasChildren(
     // If the expression is a string, we have an interpolation like {"foo"}
     // The only other valid interpolation would be {{myVar}} but apparently,
     // it is considered as a nested child.
-    return typeof evaluateIfConfident(expression) !== 'string';
+    return typeof evaluateIfConfident(expression) !== "string";
   }
 
   return false;
@@ -195,13 +189,13 @@ function formatJSXElementKey(
   index: number,
   config: Config,
 ): string {
-  const openingElement = path.get('openingElement');
-  const closingElement = path.get('closingElement');
+  const openingElement = path.get("openingElement");
+  const closingElement = path.get("closingElement");
   let resultTagName = `${index}`; // Tag name we will use in the exported file
 
-  const tagName = openingElement.get('name');
+  const tagName = openingElement.get("name");
   if (
-    openingElement.get('attributes').length === 0 &&
+    openingElement.get("attributes").length === 0 &&
     tagName.isJSXIdentifier() &&
     config.transKeepBasicHtmlNodesFor.includes(tagName.node.name) &&
     !hasChildren(path)
@@ -242,23 +236,23 @@ function parseTransComponentKeyFromChildren(
     path,
   );
 
-  let children = path.get('children');
-  let result = '';
+  let children = path.get("children");
+  let result = "";
 
   // Filter out JSXText nodes that only consist of whitespaces with one or
   // more linefeeds. Such node do not count for the indices.
   children = children.filter((child) => {
     return !(
       child.isJSXText() &&
-      child.node.value.trim() === '' &&
-      child.node.value.includes('\n')
+      child.node.value.trim() === "" &&
+      child.node.value.includes("\n")
     );
   });
 
   // Filter out empty containers. They do not affect indices.
   children = children.filter((p) => {
     if (!p.isJSXExpressionContainer()) return true;
-    const expr = p.get('expression');
+    const expr = p.get("expression");
     return !expr.isJSXEmptyExpression();
   });
 
@@ -266,10 +260,10 @@ function parseTransComponentKeyFromChildren(
   for (let [i, child] of children.entries()) {
     if (child.isJSXExpressionContainer()) {
       // We have an expression container: {…}
-      const expression = child.get('expression');
+      const expression = child.get("expression");
       const evaluation = evaluateIfConfident(expression);
 
-      if (evaluation !== null && typeof evaluation === 'string') {
+      if (evaluation !== null && typeof evaluation === "string") {
         // We have an evaluable JSX expression like {'hello'}
         result += evaluation.toString();
         continue;
@@ -292,6 +286,7 @@ function parseTransComponentKeyFromChildren(
         // We have an identifier like {myPartialComponent}
         // We try to find the latest declaration and substitute the identifier.
         const declarationExpression = resolveIdentifier(expression);
+
         const evaluation = evaluateIfConfident(declarationExpression);
         if (evaluation !== null) {
           // It could be evaluated, it's probably something like 'hello'
@@ -315,11 +310,11 @@ function parseTransComponentKeyFromChildren(
         // Let's sanitize the value a bit.
         child.node.value
           // Strip line returns at start
-          .replace(/^\s*(\r?\n)+\s*/gm, '')
+          .replace(/^\s*(\r?\n)+\s*/gm, "")
           // Strip line returns at end
-          .replace(/\s*(\r?\n)+\s*$/gm, '')
+          .replace(/\s*(\r?\n)+\s*$/gm, "")
           // Replace other line returns with one space
-          .replace(/\s*(\r?\n)+\s*/gm, ' ');
+          .replace(/\s*(\r?\n)+\s*/gm, " ");
       continue;
     }
 
@@ -349,11 +344,10 @@ export default function extractTransComponent(
   commentHints: CommentHint[] = [],
   skipCheck = false,
 ): ExtractedKey[] {
-  if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
+  if (getCommentHintForPath(path, "DISABLE", commentHints)) return [];
   if (!skipCheck && !isTransComponent(path)) return [];
 
-  const keyEvaluationFromAttribute =
-    parseTransComponentKeyFromAttributes(path);
+  const keyEvaluationFromAttribute = parseTransComponentKeyFromAttributes(path);
   const keyEvaluationFromChildren = parseTransComponentKeyFromChildren(
     path,
     config,

@@ -1,18 +1,18 @@
-import * as nodePath from 'path';
+import * as nodePath from "path";
 
-import * as BabelCore from '@babel/core';
-import * as BabelTypes from '@babel/types';
+import * as BabelCore from "@babel/core";
+import * as BabelTypes from "@babel/types";
 
-import { parseCommentHints, CommentHint } from './comments';
-import { Config, parseConfig } from './config';
-import { PLUGIN_NAME } from './constants';
-import exportTranslationKeys, { createExporterCache } from './exporters';
+import { parseCommentHints, CommentHint } from "./comments";
+import { Config, parseConfig } from "./config";
+import { PLUGIN_NAME } from "./constants";
+import exportTranslationKeys, { createExporterCache } from "./exporters";
 import Extractors, {
   EXTRACTORS_PRIORITIES,
   ExtractionError,
-} from './extractors';
-import extractWithTranslationHOC from './extractors/withTranslationHOC';
-import { computeDerivedKeys, ExtractedKey, TranslationKey } from './keys';
+} from "./extractors";
+import extractWithTranslationHOC from "./extractors/withTranslationHOC";
+import { computeDerivedKeys, ExtractedKey, TranslationKey } from "./keys";
 
 export interface VisitorState extends BabelCore.PluginPass {
   opts: Partial<Config>;
@@ -42,7 +42,7 @@ function handleExtraction<T>(
   state: VisitorState,
   callback: (collect: (keys: ExtractedKey[]) => void) => T,
 ): T | undefined {
-  const filename = (state.file && state.file.opts.filename) || '???';
+  const filename = (state.file && state.file.opts.filename) || "???";
   const extractState = state.I18NextExtract;
 
   const collect = (newKeysCandidates: ExtractedKey[]): void => {
@@ -89,8 +89,8 @@ function handleExtraction<T>(
     }
 
     const lineNumber =
-      (err.nodePath.node.loc && err.nodePath.node.loc.start.line) || '???';
-    // eslint-disable-next-line no-console
+      (err.nodePath.node.loc && err.nodePath.node.loc.start.line) || "???";
+
     console.warn(
       `${PLUGIN_NAME}: Extraction error in ${filename} at line ` +
         `${lineNumber}. ${err.message}`,

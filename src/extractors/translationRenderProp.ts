@@ -1,17 +1,17 @@
-import * as BabelCore from '@babel/core';
-import * as BabelTypes from '@babel/types';
+import * as BabelCore from "@babel/core";
+import * as BabelTypes from "@babel/types";
 
-import { CommentHint, getCommentHintForPath } from '../comments';
-import { Config } from '../config';
-import { ExtractedKey } from '../keys';
+import { CommentHint, getCommentHintForPath } from "../comments";
+import { Config } from "../config";
+import { ExtractedKey } from "../keys";
 
 import {
   getFirstOrNull,
   findJSXAttributeByName,
   evaluateIfConfident,
   referencesImport,
-} from './commons';
-import extractTFunction from './tFunction';
+} from "./commons";
+import extractTFunction from "./tFunction";
 
 /**
  * Check whether a given JSXElement is a Translation render prop.
@@ -21,11 +21,11 @@ import extractTFunction from './tFunction';
 function isTranslationRenderProp(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
 ): boolean {
-  const openingElement = path.get('openingElement');
+  const openingElement = path.get("openingElement");
   return referencesImport(
-    openingElement.get('name'),
-    'react-i18next',
-    'Translation',
+    openingElement.get("name"),
+    "react-i18next",
+    "Translation",
   );
 }
 
@@ -46,41 +46,41 @@ export default function extractTranslationRenderProp(
 
   let ns: string | null;
 
-  const nsCommentHint = getCommentHintForPath(path, 'NAMESPACE', commentHints);
+  const nsCommentHint = getCommentHintForPath(path, "NAMESPACE", commentHints);
   if (nsCommentHint) {
     // We got a comment hint, take its value as namespace.
     ns = nsCommentHint.value;
   } else {
     // Try to parse ns property
-    const nsAttr = findJSXAttributeByName(path, 'ns');
+    const nsAttr = findJSXAttributeByName(path, "ns");
     if (nsAttr) {
       let value: BabelCore.NodePath<BabelTypes.Node | null | undefined> =
-        nsAttr.get('value');
-      if (value.isJSXExpressionContainer()) value = value.get('expression');
+        nsAttr.get("value");
+      if (value.isJSXExpressionContainer()) value = value.get("expression");
       ns = getFirstOrNull(evaluateIfConfident(value));
     }
   }
 
   // We expect at least "<Translation>{(t) => …}</Translation>
   const expressionContainer = path
-    .get('children')
+    .get("children")
     .filter((p) => p.isJSXExpressionContainer())[0];
   if (!expressionContainer || !expressionContainer.isJSXExpressionContainer())
     return [];
-  const expression = expressionContainer.get('expression');
+  const expression = expressionContainer.get("expression");
   if (!expression.isArrowFunctionExpression()) return [];
 
-  const tParam = expression.get('params')[0];
+  const tParam = expression.get("params")[0];
   if (!tParam) return [];
 
-  const tBinding = tParam.scope.bindings['t'];
+  const tBinding = tParam.scope.bindings["t"];
   if (!tBinding) return [];
 
   let keys = Array<ExtractedKey>();
   for (const reference of tBinding.referencePaths) {
     if (
       reference.parentPath?.isCallExpression() &&
-      reference.parentPath.get('callee') === reference
+      reference.parentPath.get("callee") === reference
     ) {
       keys = [
         ...keys,

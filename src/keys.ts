@@ -1,7 +1,8 @@
-import * as BabelTypes from '@babel/types';
-import * as i18next from 'i18next';
+import * as BabelTypes from "@babel/types";
 
-import { Config } from './config';
+import { Config } from "./config";
+
+import * as i18next from "i18next";
 
 interface I18NextParsedOptions {
   // If contexts is an array, it's an explicit list of context.
@@ -53,7 +54,7 @@ function parseExtractedKey(key: ExtractedKey, config: Config): TranslationKey {
   const keyPrefix = key.parsedOptions.keyPrefix;
   if (keyPrefix) {
     // Imitate behavior of i18next and just connect prefix with key before any other action
-    const keySeparator = config.keySeparator || '.';
+    const keySeparator = config.keySeparator || ".";
     cleanKey = `${keyPrefix}${keySeparator}${cleanKey}`;
   }
 
@@ -89,9 +90,9 @@ function parseExtractedKey(key: ExtractedKey, config: Config): TranslationKey {
  *
  * e.g.
  *   ({'foo', {contexts: false, hasCount: true}}, 'en')
- *     => ['foo', 'foo_plural']
+ *     => ['foo_one', 'foo_many']
  *   ({'bar', {contexts: ['male', 'female'], hasCount: true}}, 'en')
- *     => ['foo_male', 'foo_male_plural', 'foo_female', 'foo_female_plural']
+ *     => ['foo_male_one', 'foo_male_many', 'foo_female_one', 'foo_female_many']
  *
  * FIXME: some of the work of this function should be delegated to the exporter.
  * This function should just put derivation metadata (each plural for the current
@@ -122,7 +123,7 @@ export function computeDerivedKeys(
       ? parsedOptions.contexts
       : config.defaultContexts;
     keys = contexts.map((v) => {
-      if (v === '') return translationKey;
+      if (v === "") return translationKey;
       return {
         ...translationKey,
         cleanKey: key + config.contextSeparator + v,
@@ -134,8 +135,7 @@ export function computeDerivedKeys(
   if (parsedOptions.hasCount) {
     const i18n = i18next.createInstance({
       pluralSeparator: config.pluralSeparator,
-      // i18next doesn't allow passing "v4" as it's not "compat" mode.
-      compatibilityJSON: config.compatibilityJSON === 'v3' ? 'v3' : undefined,
+      compatibilityJSON: config.compatibilityJSON || undefined,
     });
     // We need to init the i18n instance to have all the services initialized.
     i18n.init();
@@ -158,9 +158,9 @@ export function computeDerivedKeys(
       // It defaults to cardinal, but this is not correct.
       { ordinal: false },
     );
-    if (pluralRule === undefined) {
+    if (pluralRule === undefined || !(pluralRule instanceof Intl.PluralRules)) {
       throw unknownLocaleError;
-    } else if (pluralRule instanceof Intl.PluralRules) {
+    } else {
       const pluralRulesOptions = pluralRule.resolvedOptions();
       // Node only returns the language part of the BCP 47 tag when resolving
       // plural rules. We still need to check if the locale was properly
@@ -173,61 +173,27 @@ export function computeDerivedKeys(
         throw unknownLocaleError;
       }
       pluralCategories = pluralRulesOptions.pluralCategories;
-    } else {
-      const pluralsCount = pluralRule.numbers.length;
-      if (pluralsCount === 2) {
-        pluralCategories = ['', 'plural'];
-      } else {
-        pluralCategories = Array(pluralsCount)
-          .fill(null)
-          .map((_, idx) => idx.toString());
-      }
     }
 
-    if (config.enableExperimentalIcu) {
-      if (config.compatibilityJSON === 'v3') {
-        throw new Error('ICU format is only supported with JSONv4.');
-      }
-
-      const icuPlurals = pluralCategories
-        .map(
-          (numAsText: string) =>
-            `${numAsText} {${icuPluralValue(
-              extractedKey.parsedOptions.defaultValue,
-            )}}`,
-        )
-        .join(' ');
-
-      extractedKey.parsedOptions.defaultValue = `{count, plural, ${icuPlurals}}`;
-    } else {
-      const pluralSuffixes = pluralCategories.map((cat) =>
-        cat.length === 0 ? '' : config.pluralSeparator + cat,
-      );
-      keys = keys.reduce(
-        (accumulator, k) => [
-          ...accumulator,
-          ...pluralSuffixes.map((suffix) => ({
-            ...k,
-            cleanKey: k.cleanKey + suffix,
-            // Let's not consider singular a derived key. This is useful if one
-            // want to use default values for singular.
-            isDerivedKey:
-              k.isDerivedKey ||
-              !['', `${config.pluralSeparator}_one`].includes(suffix),
-          })),
-        ],
-        Array<TranslationKey>(),
-      );
-    }
+    const pluralSuffixes = pluralCategories.map((cat) =>
+      cat.length === 0 ? "" : config.pluralSeparator + cat,
+    );
+    keys = keys.reduce(
+      (accumulator, k) => [
+        ...accumulator,
+        ...pluralSuffixes.map((suffix) => ({
+          ...k,
+          cleanKey: k.cleanKey + suffix,
+          // Let's not consider singular a derived key. This is useful if one
+          // want to use default values for singular.
+          isDerivedKey:
+            k.isDerivedKey ||
+            !["", config.pluralSeparator + "one"].includes(suffix),
+        })),
+      ],
+      Array<TranslationKey>(),
+    );
   }
 
   return keys;
-}
-
-function icuPluralValue(defaultValue: string | null): string {
-  const oldVal = defaultValue ?? '';
-  const withIcuSingleCurlyBrace = oldVal
-    .replace(/{{/g, '{')
-    .replace(/}}/g, '}');
-  return withIcuSingleCurlyBrace;
 }

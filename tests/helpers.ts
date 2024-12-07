@@ -1,4 +1,4 @@
-import { TranslationKey } from '../src/keys';
+import { TranslationKey } from "../src/keys";
 
 export function createTranslationKey(
   key: string,
@@ -8,7 +8,7 @@ export function createTranslationKey(
     key,
     keyPath,
     sourceNodes: [],
-    extractorName: 'anonymous',
+    extractorName: "anonymous",
     isDerivedKey: false,
     parsedOptions: {
       contexts: false,
@@ -18,6 +18,6 @@ export function createTranslationKey(
       defaultValue: null,
     },
     cleanKey: key,
-    ns: 'translation',
+    ns: "translation",
   };
 }

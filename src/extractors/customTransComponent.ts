@@ -1,12 +1,12 @@
-import * as BabelCore from '@babel/core';
-import * as BabelTypes from '@babel/types';
+import * as BabelCore from "@babel/core";
+import * as BabelTypes from "@babel/types";
 
-import { getCommentHintForPath, CommentHint } from '../comments';
-import { Config } from '../config';
-import { ExtractedKey } from '../keys';
+import { getCommentHintForPath, CommentHint } from "../comments";
+import { Config } from "../config";
+import { ExtractedKey } from "../keys";
 
-import { isCustomImportedNode } from './commons';
-import extractTransComponent from './transComponent';
+import { isCustomImportedNode } from "./commons";
+import extractTransComponent from "./transComponent";
 
 /**
  * Extract custom Trans components.
@@ -20,12 +20,12 @@ export default function extractCustomTransComponent(
   config: Config,
   commentHints: CommentHint[] = [],
 ): ExtractedKey[] {
-  if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
+  if (getCommentHintForPath(path, "DISABLE", commentHints)) return [];
   if (
     !isCustomImportedNode(
       config.cache.absoluteCustomTransComponents,
       path,
-      path.get('openingElement').get('name'),
+      path.get("openingElement").get("name"),
     )
   )
     return [];
