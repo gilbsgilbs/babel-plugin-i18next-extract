@@ -24,3 +24,9 @@ export function MyComponent3() {
   const [t] = useThirdPartyTranslation(foo);
   return <p>{t('key in ns3')}</p>
 }
+
+export function MyComponent4() {
+  const { t: aliasedT } = I18Next.useThirdPartyTranslation('ns4');
+  someFunc(t);
+  return <p>{aliasedT('key in ns4')}</p>
+}

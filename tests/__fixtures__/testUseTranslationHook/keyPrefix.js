@@ -24,3 +24,8 @@ export function MyComponent5() {
   const [t] = useTranslation('ns4', { keyPrefix: 'deep7.deep8' });
   return <p>{t('ns5:key11')}</p>
 }
+
+export function MyComponent6() {
+  const { t: aliasedT } = useTranslation('ns6', { keyPrefix: 'deep1.deep2' });
+  return <p>{aliasedT('key12')}</p>
+}

@@ -23,3 +23,8 @@ export function MyComponent4() {
   someFunc(t);
   return <p>{t('key0')}</p>
 }
+
+export function MyComponent5() {
+  const { t: aliasedT } = useTranslation('ns4');
+  return <p>{aliasedT('key0')}</p>
+}
