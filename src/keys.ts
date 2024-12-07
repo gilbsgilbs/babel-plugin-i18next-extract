@@ -158,7 +158,7 @@ export function computeDerivedKeys(
       // It defaults to cardinal, but this is not correct.
       { ordinal: false },
     );
-    if ((pluralRule === undefined) || !(pluralRule instanceof Intl.PluralRules)) {
+    if (pluralRule === undefined || !(pluralRule instanceof Intl.PluralRules)) {
       throw unknownLocaleError;
     } else {
       const pluralRulesOptions = pluralRule.resolvedOptions();
@@ -196,12 +196,4 @@ export function computeDerivedKeys(
   }
 
   return keys;
-}
-
-function icuPluralValue(defaultValue: string | null): string {
-  const oldVal = defaultValue ?? "";
-  const withIcuSingleCurlyBrace = oldVal
-    .replace(/{{/g, "{")
-    .replace(/}}/g, "}");
-  return withIcuSingleCurlyBrace;
 }

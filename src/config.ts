@@ -85,7 +85,7 @@ export function parseConfig(opts: Partial<Config>): Config {
         ? opts.outputPath
         : coalesce(
             opts.outputPath,
-          "./extractedTranslations/{{locale}}/{{ns}}.json",
+            "./extractedTranslations/{{locale}}/{{ns}}.json",
           ),
     defaultValue: coalesce(opts.defaultValue, ""),
     useI18nextDefaultValue: coalesce(
