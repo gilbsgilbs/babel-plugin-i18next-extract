@@ -298,3 +298,47 @@ export function isCustomImportedNode(
     return referencesImport(name, sourceModule, importName);
   });
 }
+
+/**
+ * Find the aliased t function name (after being destructured).
+ * If the destructure `t` function is not aliased, will return the identifier name as it is.
+ *
+ * For instance, given the following code:
+ *   const { t: tCommon } = useTranslation('common');
+ *   return <p>{tCommon('key1')}<p>
+ *
+ *   // or with pluginOptions.tFunctionNames = ["myT"]
+ *   const { myT: tCommon } = useTranslation('common');
+ *   return <p>{tCommon('key1')}<p>
+ *
+ * getAliasedTBindingName(nodePath) should return 'tCommon' instead of t or myT
+ *
+ * @param nodePath: node path to resolve
+ * @param tFunctionNames: possible names for the (unaliased) t function
+ * @return the resolved t binding name, returning the alias if needed
+ */
+export function getAliasedTBindingName(
+  path: BabelCore.NodePath,
+  tFunctionNames: string[],
+): string | undefined {
+  const properties = path.get('properties');
+  const propertiesArray = Array.isArray(properties)
+    ? properties
+    : [properties];
+
+  for (const property of propertiesArray) {
+    if (property.isObjectProperty()) {
+      const key = property.node.key;
+      const value = property.node.value;
+      if (
+        key.type === 'Identifier' &&
+        value.type === 'Identifier' &&
+        tFunctionNames.includes(key.name)
+      ) {
+        return value.name;
+      }
+    }
+  }
+
+  return tFunctionNames.find((name) => path.scope.bindings[name]);
+}

@@ -12,6 +12,7 @@
     [{ "key0": "", "key1": "" }, { "ns": "ns0" }],
     [{ "key in ns1": "" }, { "ns": "ns1" }],
     [{ "key in ns2": "" }, { "ns": "ns2" }],
-    [{ "key in ns3": "" }, { "ns": "ns3" }]
+    [{ "key in ns3": "" }, { "ns": "ns3" }],
+    [{ "key in ns4": "" }, { "ns": "ns4" }]
   ]
 }
