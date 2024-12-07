@@ -32,3 +32,13 @@ export function MyComponent5() {
   const { t } = ReactI18Next.useTranslation();
   t('from wildcard import');
 }
+
+export function MyComponent6() {
+  const { t: aliasedT } = ReactI18Next.useTranslation();
+  aliasedT('from wildcard import but aliased');
+}
+
+export const MyComponent7 = () => {
+  const { t: aliasedT } = useTranslation();
+  return <p>{aliasedT('key5')}</p>
+}

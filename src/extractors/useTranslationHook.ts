@@ -9,6 +9,7 @@ import {
   getFirstOrNull,
   evaluateIfConfident,
   referencesImport,
+  getAliasedTBindingName,
 } from './commons';
 import extractTFunction from './tFunction';
 
@@ -56,7 +57,10 @@ export default function extractUseTranslationHook(
 
   const id = parentPath.get('id');
 
-  const tBinding = id.scope.bindings['t'];
+  const tBindingName = getAliasedTBindingName(id, config.tFunctionNames);
+  if (!tBindingName) return [];
+
+  const tBinding = id.scope.bindings[tBindingName];
   if (!tBinding) return [];
 
   let keyPrefix: string | null = null;
