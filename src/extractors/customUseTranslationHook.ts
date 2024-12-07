@@ -1,12 +1,12 @@
-import * as BabelCore from '@babel/core';
-import * as BabelTypes from '@babel/types';
+import * as BabelCore from "@babel/core";
+import * as BabelTypes from "@babel/types";
 
-import { getCommentHintForPath, CommentHint } from '../comments';
-import { Config } from '../config';
-import { ExtractedKey } from '../keys';
+import { getCommentHintForPath, CommentHint } from "../comments";
+import { Config } from "../config";
+import { ExtractedKey } from "../keys";
 
-import { isCustomImportedNode } from './commons';
-import extractUseTranslationHook from './useTranslationHook';
+import { isCustomImportedNode } from "./commons";
+import extractUseTranslationHook from "./useTranslationHook";
 
 /**
  * Extract custom useTranslation hooks.
@@ -20,12 +20,12 @@ export default function extractCustomUseTranslationHook(
   config: Config,
   commentHints: CommentHint[] = [],
 ): ExtractedKey[] {
-  if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
+  if (getCommentHintForPath(path, "DISABLE", commentHints)) return [];
   if (
     !isCustomImportedNode(
       config.cache.absoluteCustomHooks,
       path,
-      path.get('callee'),
+      path.get("callee"),
     )
   ) {
     return [];

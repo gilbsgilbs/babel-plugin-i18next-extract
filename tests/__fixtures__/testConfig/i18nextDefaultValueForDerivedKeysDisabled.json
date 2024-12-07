@@ -3,7 +3,7 @@
   "description": "test that i18next default value is not set for derived keys",
   "pluginOptions": {},
   "expectValues": {
-    "key0": "a default value",
-    "key0_plural": ""
+    "key0_one": "a default value",
+    "key0_other": ""
   }
 }

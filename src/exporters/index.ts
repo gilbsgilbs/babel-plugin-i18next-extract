@@ -1,13 +1,13 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
-import deepmerge from 'deepmerge';
+import deepmerge from "deepmerge";
 
-import { Config } from '../config';
-import { TranslationKey } from '../keys';
+import { Config } from "../config";
+import { TranslationKey } from "../keys";
 
-import { ConflictError, Exporter, ExportError } from './commons';
-import jsonExporter from './json';
+import { ConflictError, Exporter, ExportError } from "./commons";
+import jsonExporter from "./json";
 
 export { ConflictError, ExportError };
 
@@ -48,12 +48,12 @@ function loadTranslationFile<F>(
 ): F {
   let content: string;
   try {
-    content = fs.readFileSync(filePath, { encoding: 'utf8' });
+    content = fs.readFileSync(filePath, { encoding: "utf8" });
   } catch (err) {
     if (
       err !== null &&
-      typeof err == 'object' &&
-      (err as NodeJS.ErrnoException).code === 'ENOENT'
+      typeof err == "object" &&
+      (err as NodeJS.ErrnoException).code === "ENOENT"
     )
       return exporter.init({ config });
     throw err;
@@ -124,11 +124,11 @@ export default function exportTranslationKeys(
   for (const key of keys) {
     // Figure out in which path each key should go.
     const filePath =
-      typeof config.outputPath === 'function'
+      typeof config.outputPath === "function"
         ? config.outputPath(locale, key.ns)
         : config.outputPath
-            .replace('{{locale}}', locale)
-            .replace('{{ns}}', key.ns);
+            .replace("{{locale}}", locale)
+            .replace("{{ns}}", key.ns);
 
     keysPerFilepath[filePath] = [...(keysPerFilepath[filePath] || []), key];
   }
@@ -181,7 +181,7 @@ export default function exportTranslationKeys(
         file: translationFile,
       }),
       {
-        encoding: 'utf8',
+        encoding: "utf8",
       },
     );
   }

@@ -1,5 +1,5 @@
-import { Config } from '../config';
-import { TranslationKey } from '../keys';
+import { Config } from "../config";
+import { TranslationKey } from "../keys";
 
 /**
  * Generic class thrown by exporters in case of error.

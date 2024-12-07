@@ -1,1 +1,1 @@
-export const PLUGIN_NAME = 'babel-plugin-i18next-extract';
+export const PLUGIN_NAME = "babel-plugin-i18next-extract";

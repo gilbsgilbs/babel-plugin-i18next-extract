@@ -7,8 +7,8 @@
   },
   "expectValues": [
     [{
-      "plural": "",
-      "plural_plural": "",
+      "plural_one": "",
+      "plural_other": "",
       "not plural": "",
       "no context": "",
       "default context": "",

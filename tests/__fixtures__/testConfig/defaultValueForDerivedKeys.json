@@ -6,7 +6,7 @@
     "keyAsDefaultValueForDerivedKeys": false
   },
   "expectValues": {
-    "key0": "key0",
-    "key0_plural": null
+    "key0_one": "key0_one",
+    "key0_other": null
   }
 }

@@ -1,17 +1,17 @@
-import * as BabelCore from '@babel/core';
-import * as BabelTypes from '@babel/types';
+import * as BabelCore from "@babel/core";
+import * as BabelTypes from "@babel/types";
 
-import { CommentHint, getCommentHintForPath } from '../comments';
-import { Config } from '../config';
-import { ExtractedKey } from '../keys';
+import { CommentHint, getCommentHintForPath } from "../comments";
+import { Config } from "../config";
+import { ExtractedKey } from "../keys";
 
 import {
   getFirstOrNull,
   evaluateIfConfident,
   referencesImport,
   getAliasedTBindingName,
-} from './commons';
-import extractTFunction from './tFunction';
+} from "./commons";
+import extractTFunction from "./tFunction";
 
 /**
  * Check whether a given CallExpression path is a call to `useTranslation` hook.
@@ -22,8 +22,8 @@ import extractTFunction from './tFunction';
 function isUseTranslationHook(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
 ): boolean {
-  const callee = path.get('callee');
-  return referencesImport(callee, 'react-i18next', 'useTranslation');
+  const callee = path.get("callee");
+  return referencesImport(callee, "react-i18next", "useTranslation");
 }
 
 /**
@@ -42,20 +42,20 @@ export default function extractUseTranslationHook(
   if (!skipCheck && !isUseTranslationHook(path)) return [];
 
   let ns: string | null;
-  const nsCommentHint = getCommentHintForPath(path, 'NAMESPACE', commentHints);
+  const nsCommentHint = getCommentHintForPath(path, "NAMESPACE", commentHints);
   if (nsCommentHint) {
     // We got a comment hint, take its value as namespace.
     ns = nsCommentHint.value;
   } else {
     // Otherwise, try to get namespace from arguments.
-    const namespaceArgument = path.get('arguments')[0];
+    const namespaceArgument = path.get("arguments")[0];
     ns = getFirstOrNull(evaluateIfConfident(namespaceArgument));
   }
 
   const parentPath = path.parentPath;
   if (!parentPath.isVariableDeclarator()) return [];
 
-  const id = parentPath.get('id');
+  const id = parentPath.get("id");
 
   const tBindingName = getAliasedTBindingName(id, config.tFunctionNames);
   if (!tBindingName) return [];
@@ -65,7 +65,7 @@ export default function extractUseTranslationHook(
 
   let keyPrefix: string | null = null;
 
-  const optionsArgument = path.get('arguments')[1];
+  const optionsArgument = path.get("arguments")[1];
   const options = getFirstOrNull(evaluateIfConfident(optionsArgument));
 
   if (options) {
@@ -76,7 +76,7 @@ export default function extractUseTranslationHook(
   for (const reference of tBinding.referencePaths) {
     if (
       reference.parentPath?.isCallExpression() &&
-      reference.parentPath.get('callee') === reference
+      reference.parentPath.get("callee") === reference
     ) {
       keys = [
         ...keys,

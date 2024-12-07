@@ -1,10 +1,10 @@
-import { dirname, isAbsolute, relative, sep } from 'path';
+import { dirname, isAbsolute, relative, sep } from "path";
 
-import * as BabelCore from '@babel/core';
-import * as BabelTypes from '@babel/types';
+import * as BabelCore from "@babel/core";
+import * as BabelTypes from "@babel/types";
 
-import { CommentHint, getCommentHintForPath } from '../comments';
-import { ExtractedKey } from '../keys';
+import { CommentHint, getCommentHintForPath } from "../comments";
+import { ExtractedKey } from "../keys";
 
 /**
  * Error thrown in case extraction of a node failed.
@@ -39,40 +39,36 @@ export function getFirstOrNull<T>(val: T | null | T[]): T | null {
 export function parseI18NextOptionsFromCommentHints(
   path: BabelCore.NodePath,
   commentHints: CommentHint[],
-): Partial<ExtractedKey['parsedOptions']> {
-  const nsCommentHint = getCommentHintForPath(path, 'NAMESPACE', commentHints);
+): Partial<ExtractedKey["parsedOptions"]> {
+  const nsCommentHint = getCommentHintForPath(path, "NAMESPACE", commentHints);
   const contextCommentHint = getCommentHintForPath(
     path,
-    'CONTEXT',
+    "CONTEXT",
     commentHints,
   );
-  const pluralCommentHint = getCommentHintForPath(
-    path,
-    'PLURAL',
-    commentHints,
-  );
-  const res: Partial<ExtractedKey['parsedOptions']> = {};
+  const pluralCommentHint = getCommentHintForPath(path, "PLURAL", commentHints);
+  const res: Partial<ExtractedKey["parsedOptions"]> = {};
 
   if (nsCommentHint !== null) {
     res.ns = nsCommentHint.value;
   }
   if (contextCommentHint !== null) {
-    if (['', 'enable'].includes(contextCommentHint.value)) {
+    if (["", "enable"].includes(contextCommentHint.value)) {
       res.contexts = true;
-    } else if (contextCommentHint.value === 'disable') {
+    } else if (contextCommentHint.value === "disable") {
       res.contexts = false;
     } else {
       try {
         const val = JSON.parse(contextCommentHint.value);
         if (Array.isArray(val)) res.contexts = val;
         else res.contexts = [contextCommentHint.value];
-      } catch (err) {
+      } catch {
         res.contexts = [contextCommentHint.value];
       }
     }
   }
   if (pluralCommentHint !== null) {
-    if (pluralCommentHint.value === 'disable') {
+    if (pluralCommentHint.value === "disable") {
       res.hasCount = false;
     } else {
       res.hasCount = true;
@@ -93,8 +89,8 @@ export function referencesImport(
   if (nodePath.referencesImport(moduleSource, importName)) return true;
 
   if (nodePath.isMemberExpression() || nodePath.isJSXMemberExpression()) {
-    const obj = nodePath.get('object');
-    const prop = nodePath.get('property');
+    const obj = nodePath.get("object");
+    const prop = nodePath.get("property");
     if (
       Array.isArray(obj) ||
       Array.isArray(prop) ||
@@ -102,7 +98,7 @@ export function referencesImport(
     )
       return false;
     return (
-      obj.referencesImport(moduleSource, '*') && prop.node.name === importName
+      obj.referencesImport(moduleSource, "*") && prop.node.name === importName
     );
   }
   return false;
@@ -121,10 +117,10 @@ export function referencesChildIdentifier(
 ): boolean {
   if (!nodePath.isMemberExpression()) return false;
 
-  const obj = nodePath.get('object');
+  const obj = nodePath.get("object");
   if (!obj.isIdentifier()) return false;
 
-  const prop = nodePath.get('property');
+  const prop = nodePath.get("property");
   if (Array.isArray(prop) || !prop.isIdentifier()) return false;
 
   return parentNames.includes(obj.node.name) && prop.node.name === childName;
@@ -163,12 +159,12 @@ export function evaluateIfConfident(
 export function* iterateObjectExpression(
   path: BabelCore.NodePath<BabelTypes.ObjectExpression>,
 ): IterableIterator<
-  [string, BabelCore.NodePath<BabelTypes.ObjectExpression['properties'][0]>]
+  [string, BabelCore.NodePath<BabelTypes.ObjectExpression["properties"][0]>]
 > {
-  const properties = path.get('properties');
+  const properties = path.get("properties");
 
   for (const prop of properties) {
-    const keyPath = prop.get('key');
+    const keyPath = prop.get("key");
 
     if (Array.isArray(keyPath)) continue;
 
@@ -194,7 +190,7 @@ export function* iterateObjectExpression(
 export function findKeyInObjectExpression(
   path: BabelCore.NodePath<BabelTypes.ObjectExpression>,
   key: string,
-): BabelCore.NodePath<BabelTypes.ObjectExpression['properties'][0]> | null {
+): BabelCore.NodePath<BabelTypes.ObjectExpression["properties"][0]> | null {
   for (const [keyEvaluation, prop] of iterateObjectExpression(path)) {
     if (keyEvaluation === key) return prop;
   }
@@ -213,13 +209,13 @@ export function findJSXAttributeByName(
   path: BabelCore.NodePath<BabelTypes.JSXElement>,
   name: string,
 ): BabelCore.NodePath<BabelTypes.JSXAttribute> | null {
-  const openingElement = path.get('openingElement');
-  const attributes = openingElement.get('attributes');
+  const openingElement = path.get("openingElement");
+  const attributes = openingElement.get("attributes");
 
   for (const attribute of attributes) {
     if (!attribute.isJSXAttribute()) continue;
 
-    const attributeName = attribute.get('name');
+    const attributeName = attribute.get("name");
     if (!attributeName.isJSXIdentifier()) continue;
 
     if (name === attributeName.node.name) return attribute;
@@ -250,11 +246,11 @@ export function resolveIdentifier(
 
   const declarationExpressions = [
     ...(bindings.path.isVariableDeclarator()
-      ? [bindings.path.get('init')]
+      ? [bindings.path.get("init")]
       : []),
     ...bindings.constantViolations
       .filter((p) => p.isAssignmentExpression())
-      .map((p) => p.get('right')),
+      .map((p) => p.get("right")),
   ];
   if (declarationExpressions.length === 0) return null;
 
@@ -286,8 +282,8 @@ export function isCustomImportedNode(
         dirname(path.state.filename),
         sourceModule,
       );
-      if (!relativeSourceModulePath.startsWith('.')) {
-        relativeSourceModulePath = '.' + sep + relativeSourceModulePath;
+      if (!relativeSourceModulePath.startsWith(".")) {
+        relativeSourceModulePath = "." + sep + relativeSourceModulePath;
       }
 
       // Absolute path to the source module, let's try a relative path first.
@@ -321,18 +317,16 @@ export function getAliasedTBindingName(
   path: BabelCore.NodePath,
   tFunctionNames: string[],
 ): string | undefined {
-  const properties = path.get('properties');
-  const propertiesArray = Array.isArray(properties)
-    ? properties
-    : [properties];
+  const properties = path.get("properties");
+  const propertiesArray = Array.isArray(properties) ? properties : [properties];
 
   for (const property of propertiesArray) {
     if (property.isObjectProperty()) {
       const key = property.node.key;
       const value = property.node.value;
       if (
-        key.type === 'Identifier' &&
-        value.type === 'Identifier' &&
+        key.type === "Identifier" &&
+        value.type === "Identifier" &&
         tFunctionNames.includes(key.name)
       ) {
         return value.name;

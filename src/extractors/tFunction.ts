@@ -1,13 +1,13 @@
-import * as BabelCore from '@babel/core';
-import * as BabelTypes from '@babel/types';
+import * as BabelCore from "@babel/core";
+import * as BabelTypes from "@babel/types";
 
 import {
   COMMENT_HINTS_KEYWORDS,
   getCommentHintForPath,
   CommentHint,
-} from '../comments';
-import { Config } from '../config';
-import { ExtractedKey } from '../keys';
+} from "../comments";
+import { Config } from "../config";
+import { ExtractedKey } from "../keys";
 
 import {
   ExtractionError,
@@ -15,7 +15,7 @@ import {
   evaluateIfConfident,
   findKeyInObjectExpression,
   parseI18NextOptionsFromCommentHints,
-} from './commons';
+} from "./commons";
 
 /**
  * Check whether a given CallExpression path is a global call to the `t`
@@ -29,7 +29,7 @@ function isSimpleTCall(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
   config: Config,
 ): boolean {
-  const callee = path.get('callee');
+  const callee = path.get("callee");
 
   if (!callee.isIdentifier()) return false;
 
@@ -45,8 +45,8 @@ function isSimpleTCall(
  */
 function parseTCallOptions(
   path: BabelCore.NodePath | undefined,
-): ExtractedKey['parsedOptions'] {
-  const res: ExtractedKey['parsedOptions'] = {
+): ExtractedKey["parsedOptions"] {
+  const res: ExtractedKey["parsedOptions"] = {
     contexts: false,
     hasCount: false,
     ns: null,
@@ -58,29 +58,29 @@ function parseTCallOptions(
 
   // Try brutal evaluation of defaultValue first.
   const optsEvaluation = evaluateIfConfident(path);
-  if (typeof optsEvaluation === 'string') {
+  if (typeof optsEvaluation === "string") {
     res.defaultValue = optsEvaluation;
   } else if (path.isObjectExpression()) {
     // It didn't work. Let's try to parse as object expression.
-    res.contexts = findKeyInObjectExpression(path, 'context') !== null;
-    res.hasCount = findKeyInObjectExpression(path, 'count') !== null;
+    res.contexts = findKeyInObjectExpression(path, "context") !== null;
+    res.hasCount = findKeyInObjectExpression(path, "count") !== null;
 
-    const nsNode = findKeyInObjectExpression(path, 'ns');
+    const nsNode = findKeyInObjectExpression(path, "ns");
     if (nsNode !== null && nsNode.isObjectProperty()) {
-      const nsValueNode = nsNode.get('value');
+      const nsValueNode = nsNode.get("value");
       const nsEvaluation = evaluateIfConfident(nsValueNode);
       res.ns = getFirstOrNull(nsEvaluation);
     }
 
-    const defaultValueNode = findKeyInObjectExpression(path, 'defaultValue');
+    const defaultValueNode = findKeyInObjectExpression(path, "defaultValue");
     if (defaultValueNode !== null && defaultValueNode.isObjectProperty()) {
-      const defaultValueNodeValue = defaultValueNode.get('value');
+      const defaultValueNodeValue = defaultValueNode.get("value");
       res.defaultValue = evaluateIfConfident(defaultValueNodeValue);
     }
 
-    const keyPrefixNode = findKeyInObjectExpression(path, 'keyPrefix');
+    const keyPrefixNode = findKeyInObjectExpression(path, "keyPrefix");
     if (keyPrefixNode !== null && keyPrefixNode.isObjectProperty()) {
-      const keyPrefixNodeValue = keyPrefixNode.get('value');
+      const keyPrefixNodeValue = keyPrefixNode.get("value");
       res.keyPrefix = evaluateIfConfident(keyPrefixNodeValue);
     }
   }
@@ -99,10 +99,10 @@ function extractTCall(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
   commentHints: CommentHint[],
 ): ExtractedKey {
-  const args = path.get('arguments');
+  const args = path.get("arguments");
   const keyEvaluation = evaluateIfConfident(args[0]);
 
-  if (typeof keyEvaluation !== 'string') {
+  if (typeof keyEvaluation !== "string") {
     throw new ExtractionError(
       `Couldn't evaluate i18next key. You should either make the key ` +
         `evaluable or skip the line using a skip comment (/* ` +
@@ -139,7 +139,7 @@ export default function extractTFunction(
   commentHints: CommentHint[] = [],
   skipCheck = false,
 ): ExtractedKey[] {
-  if (getCommentHintForPath(path, 'DISABLE', commentHints)) return [];
+  if (getCommentHintForPath(path, "DISABLE", commentHints)) return [];
   if (!skipCheck && !isSimpleTCall(path, config)) return [];
   return [extractTCall(path, commentHints)];
 }

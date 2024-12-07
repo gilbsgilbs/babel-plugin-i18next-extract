@@ -1,6 +1,6 @@
-import stringify from 'json-stable-stringify';
+import stringify from "json-stable-stringify";
 
-import { Exporter, ConflictError } from './commons';
+import { Exporter, ConflictError } from "./commons";
 
 /**
  * JSONv* values can be any valid value for JSON file.
@@ -29,7 +29,7 @@ interface JsonVxFile {
 function jsonVxValueIsObject(
   val: JsonVxValue,
 ): val is { [k: string]: JsonVxValue } {
-  return typeof val === 'object' && val !== null && !Array.isArray(val);
+  return typeof val === "object" && val !== null && !Array.isArray(val);
 }
 
 /**
@@ -41,11 +41,11 @@ function jsonVxValueIsObject(
  * @param value Value to set for the key.
  */
 function recursiveAddKey(
-  fileContent: JsonVxFile['content'],
+  fileContent: JsonVxFile["content"],
   keyPath: string[],
   cleanKey: string,
   value: JsonVxValue,
-): JsonVxFile['content'] {
+): JsonVxFile["content"] {
   if (keyPath.length === 0) {
     return {
       ...fileContent,
@@ -75,8 +75,8 @@ function recursiveAddKey(
 const exporter: Exporter<JsonVxFile, JsonVxValue> = {
   init: () => {
     return {
-      whitespacesBefore: '',
-      whitespacesAfter: '\n',
+      whitespacesBefore: "",
+      whitespacesAfter: "\n",
       content: {},
     };
   },
@@ -85,9 +85,9 @@ const exporter: Exporter<JsonVxFile, JsonVxValue> = {
     const whitespacesAfterMatch = content.match(/(\s*)$/);
     return {
       whitespacesBefore:
-        whitespacesBeforeMatch === null ? '' : whitespacesBeforeMatch[0],
+        whitespacesBeforeMatch === null ? "" : whitespacesBeforeMatch[0],
       whitespacesAfter:
-        whitespacesAfterMatch === null ? '' : whitespacesAfterMatch[0],
+        whitespacesAfterMatch === null ? "" : whitespacesAfterMatch[0],
       content: JSON.parse(content),
     };
   },
