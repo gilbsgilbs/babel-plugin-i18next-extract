@@ -43,12 +43,10 @@ configOptions:
       https://react.i18next.com/latest/trans-component#additional-options-on-i-18-next-init).
     defaultValue: "['br', 'strong', 'i', 'p']"
   - name: compatibilityJSON
-    type: '"v3" | "v4"'
+    type: '"v4"|null'
     description: |
-      Compatibility mode of the output JSON file. This option only changes the way plurals are exported.
-
-      See [JSONv* format documentation](https://www.i18next.com/misc/json-format#i18next-json-v4) and [why this option exists](https://www.i18next.com/misc/migration-guide#json-format-v4-pluralization).
-    defaultValue: '"v3"'
+      Compatibility mode of the output JSON file. As i18next has dropped support for JSONv3, this option is a no-op in practice.
+    defaultValue: 'null'
   - name: i18nextInstanceNames
     type: "string[]"
     description: |
@@ -333,15 +331,6 @@ configOptions:
     type: "number"
     description: Number of indentation space to use in extracted JSON files.
     defaultValue: "2"
-  - name: enableExperimentalIcu
-    type: "boolean"
-    description: |
-      Enable experimental support for [ICU message syntax](
-      http://userguide.icu-project.org/formatparse/messages). Only plurals and JSONv4 are supported for now.
-
-      ☠️  *This feature is incomplete and might change or move into an third-party module in the
-      future. Stay tuned.* ☠️
-    defaultValue: "false"
   - name: excludes
     type: "string[]"
     description: |
