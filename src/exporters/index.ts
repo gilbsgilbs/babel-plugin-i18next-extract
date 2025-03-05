@@ -83,7 +83,7 @@ function getDefaultValue(
     keyAsDefaultValueEnabled &&
     (keyAsDefaultValueForDerivedKeys || !key.isDerivedKey)
   ) {
-    defaultValue = key.cleanKey;
+    defaultValue = key.key;
   }
 
   const useI18nextDefaultValueEnabled =
@@ -98,6 +98,22 @@ function getDefaultValue(
     (useI18nextDefaultValueForDerivedKeys || !key.isDerivedKey)
   ) {
     defaultValue = key.parsedOptions.defaultValue;
+  }
+
+  // Use defaultValue_somekey
+  if (
+    key.parsedOptions?.defaultValues?.length > 0 &&
+    useI18nextDefaultValueForDerivedKeys &&
+    key.isDerivedKey
+  ) {
+    const foundValue = key.parsedOptions.defaultValues.find(
+      ([defaultValueKey]) =>
+        defaultValueKey === key.cleanKey.replace(key.key, ""),
+    );
+
+    if (foundValue != null) {
+      defaultValue = foundValue[1];
+    }
   }
 
   return defaultValue;

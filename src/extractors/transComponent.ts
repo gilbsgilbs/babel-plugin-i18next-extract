@@ -46,9 +46,11 @@ function parseTransComponentOptions(
   const res: ExtractedKey["parsedOptions"] = {
     contexts: false,
     hasCount: false,
+    ordinal: false,
     keyPrefix: null,
     ns: null,
     defaultValue: null,
+    defaultValues: [], // unused in trans component
   };
 
   const countAttr = findJSXAttributeByName(path, "count");
