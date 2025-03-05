@@ -15,6 +15,7 @@ import {
   evaluateIfConfident,
   findKeyInObjectExpression,
   parseI18NextOptionsFromCommentHints,
+  iterateObjectExpression,
 } from "./commons";
 
 /**
@@ -49,9 +50,11 @@ function parseTCallOptions(
   const res: ExtractedKey["parsedOptions"] = {
     contexts: false,
     hasCount: false,
+    ordinal: false,
     ns: null,
     keyPrefix: null,
     defaultValue: null,
+    defaultValues: [],
   };
 
   if (!path) return res;
@@ -83,6 +86,28 @@ function parseTCallOptions(
       const keyPrefixNodeValue = keyPrefixNode.get("value");
       res.keyPrefix = evaluateIfConfident(keyPrefixNodeValue);
     }
+
+    const ordinalNode = findKeyInObjectExpression(path, "ordinal");
+    if (ordinalNode != null && ordinalNode.isObjectProperty()) {
+      res.ordinal = evaluateIfConfident(ordinalNode.get("value"));
+    }
+
+    // Support defaultValue_someKey
+    res.defaultValues = Array.from(iterateObjectExpression(path)).reduce(
+      (accumulator, [key, node]) => {
+        if (!key.startsWith("defaultValue_") || !node.isObjectProperty()) {
+          return accumulator;
+        }
+        return [
+          ...accumulator,
+          [
+            key.replace("defaultValue", ""),
+            evaluateIfConfident(node.get("value")),
+          ],
+        ];
+      },
+      [] as [string, string][],
+    );
   }
 
   return res;

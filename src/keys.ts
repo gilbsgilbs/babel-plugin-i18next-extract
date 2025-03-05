@@ -10,9 +10,11 @@ interface I18NextParsedOptions {
   // If contexts is false, context are disable.
   contexts: string[] | boolean;
   hasCount: boolean;
+  ordinal: boolean;
   ns: string | null;
   keyPrefix: string | null;
   defaultValue: string | null;
+  defaultValues: [string, string][];
 }
 
 /**
@@ -156,8 +158,9 @@ export function computeDerivedKeys(
       locale,
       // TODO: a comment hint should allow to override cardinality/ordinality.
       // It defaults to cardinal, but this is not correct.
-      { ordinal: false },
+      { ordinal: extractedKey.parsedOptions.ordinal },
     );
+
     if (pluralRule === undefined || !(pluralRule instanceof Intl.PluralRules)) {
       throw unknownLocaleError;
     } else {
@@ -175,8 +178,11 @@ export function computeDerivedKeys(
       pluralCategories = pluralRulesOptions.pluralCategories;
     }
 
+    const pluralSeparator = extractedKey.parsedOptions.ordinal
+      ? config.pluralSeparator + "ordinal" + config.pluralSeparator
+      : config.pluralSeparator;
     const pluralSuffixes = pluralCategories.map((cat) =>
-      cat.length === 0 ? "" : config.pluralSeparator + cat,
+      cat.length === 0 ? "" : pluralSeparator + cat,
     );
     keys = keys.reduce(
       (accumulator, k) => [
@@ -184,11 +190,7 @@ export function computeDerivedKeys(
         ...pluralSuffixes.map((suffix) => ({
           ...k,
           cleanKey: k.cleanKey + suffix,
-          // Let's not consider singular a derived key. This is useful if one
-          // want to use default values for singular.
-          isDerivedKey:
-            k.isDerivedKey ||
-            !["", config.pluralSeparator + "one"].includes(suffix),
+          isDerivedKey: true,
         })),
       ],
       Array<TranslationKey>(),
