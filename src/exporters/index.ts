@@ -111,7 +111,7 @@ function getDefaultValue(
         defaultValueKey === key.cleanKey.replace(key.key, ""),
     );
 
-    if (key.parsedOptions.defaultValues.length && foundValue != null) {
+    if (foundValue != null) {
       defaultValue = foundValue[1];
     }
   }
