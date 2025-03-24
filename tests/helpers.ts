@@ -16,6 +16,8 @@ export function createTranslationKey(
       keyPrefix: null,
       ns: null,
       defaultValue: null,
+      ordinal: false,
+      defaultValues: [],
     },
     cleanKey: key,
     ns: "translation",

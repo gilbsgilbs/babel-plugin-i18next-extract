@@ -106,9 +106,9 @@ function getDefaultValue(
     useI18nextDefaultValueForDerivedKeys &&
     key.isDerivedKey
   ) {
+    const derivedIdentifier = `${config.pluralSeparator}${key.cleanKey.split(config.pluralSeparator).pop()}`;
     const foundValue = key.parsedOptions.defaultValues.find(
-      ([defaultValueKey]) =>
-        defaultValueKey === key.cleanKey.replace(key.key, ""),
+      ([defaultValueKey]) => defaultValueKey === derivedIdentifier,
     );
 
     if (foundValue != null) {

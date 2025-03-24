@@ -13,6 +13,10 @@
         "ordinalValues_ordinal_one": "",
         "ordinalValues_ordinal_other": "",
         "ordinalValues_ordinal_two": "",
+        "pluralDefaultValues": {
+          "subkey_one": "",
+          "subkey_other": ""
+        },
         "pluralDefaultValues_one": "",
         "pluralDefaultValues_other": ""
       },

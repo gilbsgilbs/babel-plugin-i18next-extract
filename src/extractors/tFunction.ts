@@ -101,7 +101,7 @@ function parseTCallOptions(
         return [
           ...accumulator,
           [
-            key.replace("defaultValue", ""),
+            key.replace("defaultValue", "").replace("_ordinal", ""),
             evaluateIfConfident(node.get("value")),
           ],
         ];
@@ -137,10 +137,20 @@ function extractTCall(
     );
   }
 
+  const tSecondParamValue = evaluateIfConfident(args[1]);
+
+  let parsedTCallOptions;
+  if (typeof tSecondParamValue === "string") {
+    parsedTCallOptions = parseTCallOptions(args[2]);
+    parsedTCallOptions.defaultValue = tSecondParamValue;
+  } else {
+    parsedTCallOptions = parseTCallOptions(args[1]);
+  }
+
   return {
     key: keyEvaluation,
     parsedOptions: {
-      ...parseTCallOptions(args[1]),
+      ...parsedTCallOptions,
       ...parseI18NextOptionsFromCommentHints(path, commentHints),
     },
     sourceNodes: [path.node],

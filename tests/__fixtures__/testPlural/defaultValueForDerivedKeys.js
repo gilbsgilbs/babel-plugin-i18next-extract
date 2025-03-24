@@ -5,6 +5,11 @@ i18next.t("pluralDefaultValues", {
   defaultValue_one: "custom key one",
   defaultValue_other: "custom key other",
 });
+i18next.t("pluralDefaultValues.subkey", "custom key one", {
+  count: 22,
+  defaultValue_one: "custom key one",
+  defaultValue_other: "custom key other",
+});
 
 i18next.t("ordinalValues", {
   count: 22,
@@ -13,4 +18,8 @@ i18next.t("ordinalValues", {
   defaultValue_ordinal_one: "custom key one",
   defaultValue_ordinal_other: "custom key other",
   defaultValue_ordinal_two: "custom key two",
+});
+i18next.t("ordinalValues without Defaults", {
+  count: 22,
+  ordinal: true,
 });
