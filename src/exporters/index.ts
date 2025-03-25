@@ -178,7 +178,7 @@ export default function exportTranslationKeys(
         file: translationFile,
         key: k,
         value:
-          previousValue === undefined
+          config.ignoreExistingValues || previousValue === undefined
             ? getDefaultValue(k, locale, config)
             : previousValue,
       });
