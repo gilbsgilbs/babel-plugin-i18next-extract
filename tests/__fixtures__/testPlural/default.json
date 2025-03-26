@@ -1,0 +1,28 @@
+{
+  "description": "plural tests in different languages",
+  "comment": "ms has 1 plural, en has 2 plurals, ar has 6 plurals",
+  "pluginOptions": {
+    "locales": ["en"]
+  },
+  "expectValues": [
+    [
+      {
+        "myKey_one": "",
+        "myKey_other": "",
+        "ordinalValues_ordinal_few": "",
+        "ordinalValues_ordinal_one": "",
+        "ordinalValues_ordinal_other": "",
+        "ordinalValues_ordinal_two": "",
+        "pluralDefaultValues": {
+          "subkey_one": "",
+          "subkey_other": ""
+        },
+        "pluralDefaultValues_one": "",
+        "pluralDefaultValues_other": ""
+      },
+      {
+        "locale": "en"
+      }
+    ]
+  ]
+}

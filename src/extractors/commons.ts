@@ -336,3 +336,157 @@ export function getAliasedTBindingName(
 
   return tFunctionNames.find((name) => path.scope.bindings[name]);
 }
+
+/**
+ * Try to find "t" in an object spread. Useful when looking for the "t" key
+ * in a spread object. e.g. const {t} = props;
+ *
+ * @param path object pattern
+ * @returns t identifier or null of it was not found in the object pattern.
+ */
+function findTFunctionIdentifierInObjectPattern(
+  path: BabelCore.NodePath<BabelTypes.ObjectPattern>,
+): BabelCore.NodePath<BabelTypes.Identifier> | null {
+  const props = path.get("properties");
+
+  for (const prop of props) {
+    if (prop.isObjectProperty()) {
+      const key = prop.get("key");
+      if (!Array.isArray(key) && key.isIdentifier() && key.node.name === "t") {
+        return key;
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Check whether a node path is the callee of a call expression.
+ *
+ * @param path the node to check.
+ * @returns true if the path is the callee of a call expression.
+ */
+function isCallee(path: BabelCore.NodePath): path is BabelCore.NodePath & {
+  parentPath: BabelCore.NodePath<BabelTypes.CallExpression>;
+} {
+  return !!(
+    path.parentPath?.isCallExpression() &&
+    path === path.parentPath.get("callee")
+  );
+}
+
+/**
+ * Find T function calls from a props assignment. Prop assignment can occur
+ * in function parameters (i.e. "function Component(props)" or
+ * "function Component({t})") or in a variable declarator (i.e.
+ * "const props = …" or "const {t} = props").
+ *
+ * @param propsId identifier for the prop assignment. e.g. "props" or "{t}"
+ * @returns Call expressions to t function.
+ */
+export function findTFunctionCallsFromPropsAssignment(
+  propsId: BabelCore.NodePath,
+): BabelCore.NodePath<BabelTypes.CallExpression>[] {
+  const tReferences = Array<BabelCore.NodePath>();
+
+  const body = propsId.parentPath?.get("body");
+  if (body === undefined || Array.isArray(body)) return [];
+  const scope = body.scope;
+
+  if (propsId.isObjectPattern()) {
+    // got "function MyComponent({t, other, props})"
+    // or "const {t, other, props} = this.props"
+    // we want to find references to "t"
+    const tFunctionIdentifier = findTFunctionIdentifierInObjectPattern(propsId);
+    if (tFunctionIdentifier === null) return [];
+    const tBinding = scope.bindings[tFunctionIdentifier.node.name];
+    tReferences.push(...tBinding.referencePaths);
+  } else if (propsId.isIdentifier()) {
+    // got "function MyComponent(props)"
+    // or "const props = this.props"
+    // we want to find references to props.t
+    const references = scope.bindings[propsId.node.name].referencePaths;
+    for (const reference of references) {
+      if (reference.parentPath?.isMemberExpression()) {
+        const prop = reference.parentPath.get("property");
+        if (
+          !Array.isArray(prop) &&
+          prop.isIdentifier() &&
+          prop.node.name === "t"
+        ) {
+          tReferences.push(reference.parentPath);
+        }
+      }
+    }
+  }
+
+  // We have candidates. Let's see if t references are actual calls to the t
+  // function
+  const tCalls = Array<BabelCore.NodePath<BabelTypes.CallExpression>>();
+  for (const tCall of tReferences) {
+    if (isCallee(tCall)) {
+      tCalls.push(tCall.parentPath);
+    }
+  }
+
+  return tCalls;
+}
+
+/**
+ * Find all t function calls in a class component.
+ * @param path node path to the class component.
+ */
+export function findTFunctionCallsInClassComponent(
+  path: BabelCore.NodePath<BabelTypes.ClassDeclaration>,
+  propertyName: string,
+): BabelCore.NodePath<BabelTypes.CallExpression>[] {
+  const result = Array<BabelCore.NodePath<BabelTypes.CallExpression>>();
+
+  const thisVisitor: BabelCore.Visitor = {
+    ThisExpression(path) {
+      if (!path.parentPath.isMemberExpression()) return;
+
+      const propProperty = path.parentPath.get("property");
+      if (Array.isArray(propProperty) || !propProperty.isIdentifier()) return;
+      if (propProperty.node.name !== propertyName) return;
+
+      // Ok, this is interesting, we have something with "this.props"
+
+      if (path.parentPath.parentPath.isMemberExpression()) {
+        // We have something in the form "this.props.xxxx".
+
+        const tIdentifier = path.parentPath.parentPath.get("property");
+        if (Array.isArray(tIdentifier) || !tIdentifier.isIdentifier()) return;
+        if (tIdentifier.node.name !== "t") return;
+
+        // We have something in the form "this.props.t". Let's see if it's an
+        // actual function call or an assignment.
+        const tExpression = path.parentPath.parentPath;
+        if (isCallee(tExpression)) {
+          // Simple case. Direct call to "this.props.t()"
+          result.push(tExpression.parentPath);
+        } else if (tExpression.parentPath.isVariableDeclarator()) {
+          // Hard case. const t = this.props.t;
+          // Let's loop through all references to t.
+          const id = tExpression.parentPath.get("id");
+          if (!id.isIdentifier()) return;
+          for (const reference of id.scope.bindings[id.node.name]
+            .referencePaths) {
+            if (isCallee(reference)) {
+              result.push(reference.parentPath);
+            }
+          }
+        }
+      } else if (path.parentPath.parentPath.isVariableDeclarator()) {
+        // We have something in the form "const props = this.props"
+        // Or "const {t} = this.props"
+        const id = path.parentPath.parentPath.get("id");
+        result.push(...findTFunctionCallsFromPropsAssignment(id));
+      }
+    },
+  };
+  path.traverse(thisVisitor);
+
+  return result;
+}

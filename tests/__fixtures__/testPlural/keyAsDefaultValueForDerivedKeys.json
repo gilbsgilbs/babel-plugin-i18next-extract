@@ -1,0 +1,26 @@
+{
+  "description": "plural tests for derived keys",
+  "comment": "if default values have been defined, use them. otherwise fall back to using the key as the default value",
+  "pluginOptions": {
+    "locales": ["en"],
+    "keyAsDefaultValue": true,
+    "keyAsDefaultValueForDerivedKeys": true
+  },
+  "expectValues": [
+    [
+      {
+        "myKey_one": "myKey",
+        "myKey_other": "myKey",
+        "ordinalValues_ordinal_few": "ordinalValues",
+        "ordinalValues_ordinal_one": "ordinalValues",
+        "ordinalValues_ordinal_other": "ordinalValues",
+        "ordinalValues_ordinal_two": "ordinalValues",
+        "pluralDefaultValues_one": "pluralDefaultValues",
+        "pluralDefaultValues_other": "pluralDefaultValues"
+      },
+      {
+        "locale": "en"
+      }
+    ]
+  ]
+}

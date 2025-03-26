@@ -1,0 +1,9 @@
+{
+  "description": "test simple extractions of getClassMember with namespace set",
+  "pluginOptions": {},
+  "expectValues": [
+    [{ "key": "some value" }, { "ns": "secret-ns" }],
+    [{ "key": "some value" }, { "ns": "secret-ns-2" }],
+    [{ "key": "some value" }, { "ns": "secret-ns-3" }]
+  ]
+}

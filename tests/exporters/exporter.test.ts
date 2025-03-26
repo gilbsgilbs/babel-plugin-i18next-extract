@@ -88,6 +88,40 @@ describe("Test exporter works", () => {
     });
   });
 
+  it("does not discard old values across runs when useI18nextDefaultValue is false", () => {
+    const outputPath = path.join(outputDir, "discard_old_keys.json");
+    fs.writeJSONSync(outputPath, { key: "foo" });
+
+    const config = parseConfig({
+      outputPath,
+      ignoreExistingValues: false,
+    });
+    const key0 = createTranslationKey("key");
+    key0.parsedOptions.defaultValue = "bar";
+    const cache = createExporterCache();
+    exportTranslationKeys([key0], "en", config, cache);
+    expect(fs.readJSONSync(outputPath)).toEqual({
+      key: "foo",
+    });
+  });
+
+  it("can discard old values across runs", () => {
+    const outputPath = path.join(outputDir, "discard_old_keys.json");
+    fs.writeJSONSync(outputPath, { key: "foo" });
+
+    const config = parseConfig({
+      outputPath,
+      ignoreExistingValues: true,
+    });
+    const key0 = createTranslationKey("key");
+    key0.parsedOptions.defaultValue = "bar";
+    const cache = createExporterCache();
+    exportTranslationKeys([key0], "en", config, cache);
+    expect(fs.readJSONSync(outputPath)).toEqual({
+      key: "bar",
+    });
+  });
+
   it("reload translation file and merge with actual cache", () => {
     const outputPath = path.join(outputDir, "if_locale_file_changes.json");
     fs.writeJSONSync(outputPath, { presentAtInit: "foo" });

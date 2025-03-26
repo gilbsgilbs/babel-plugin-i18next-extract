@@ -22,6 +22,7 @@ export interface Config {
   keyAsDefaultValue: boolean | string[];
   keyAsDefaultValueForDerivedKeys: boolean;
   discardOldKeys: boolean;
+  ignoreExistingValues: boolean;
   jsonSpace: string | number;
   customTransComponents: readonly [string, string][];
   customUseTranslationHooks: readonly [string, string][];
@@ -102,6 +103,7 @@ export function parseConfig(opts: Partial<Config>): Config {
       true,
     ),
     discardOldKeys: coalesce(opts.discardOldKeys, false),
+    ignoreExistingValues: coalesce(opts.ignoreExistingValues, false),
     jsonSpace: coalesce(opts.jsonSpace, 2),
     customTransComponents,
     customUseTranslationHooks,
