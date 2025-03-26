@@ -1,6 +1,7 @@
 import { ExtractionError } from "./commons";
 import extractCustomTransComponent from "./customTransComponent";
 import extractCustomUseTranslationHook from "./customUseTranslationHook";
+import extractGetClassMember from "./getClassMember";
 import extractGetFixedTFunction from "./getFixedTFunction";
 import extractI18nextInstance from "./i18nextInstance";
 import extractTFunction from "./tFunction";
@@ -22,6 +23,7 @@ export const EXTRACTORS_PRIORITIES = [
   extractGetFixedTFunction.name,
   extractTranslationRenderProp.name,
   extractWithTranslationHOC.name,
+  extractGetClassMember.name,
   extractI18nextInstance.name,
   extractTFunction.name,
 ];
@@ -34,6 +36,7 @@ export default {
   extractGetFixedTFunction,
   extractTranslationRenderProp,
   extractWithTranslationHOC,
+  extractGetClassMember,
   extractI18nextInstance,
   extractTFunction,
 };

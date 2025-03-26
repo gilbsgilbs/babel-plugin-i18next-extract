@@ -11,6 +11,7 @@ import Extractors, {
   EXTRACTORS_PRIORITIES,
   ExtractionError,
 } from "./extractors";
+import extractGetClassMember from "./extractors/getClassMember";
 import extractWithTranslationHOC from "./extractors/withTranslationHOC";
 import { computeDerivedKeys, ExtractedKey, TranslationKey } from "./keys";
 
@@ -175,6 +176,13 @@ const Visitor: BabelCore.Visitor<VisitorState> = {
     handleExtraction(path, state, (collect) => {
       collect(
         extractWithTranslationHOC(
+          path,
+          extractState.config,
+          extractState.commentHints,
+        ),
+      );
+      collect(
+        extractGetClassMember(
           path,
           extractState.config,
           extractState.commentHints,
