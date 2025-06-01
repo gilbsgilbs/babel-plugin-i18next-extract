@@ -21,6 +21,7 @@ traverse your Javascript/Typescript code in order to find i18next translation ke
 
 - ✅ Keys extraction in [JSONv4 format](https://www.i18next.com/misc/json-format).
 - ✅ Detection of `i18next.t()` function calls.
+- ✅ Extraction of fallback keys when `t()` is called with an array of keys.
 - ✅ Full [react-i18next](https://react.i18next.com/) support.
 - ✅ Plurals support.
 - ✅ Contexts support.
