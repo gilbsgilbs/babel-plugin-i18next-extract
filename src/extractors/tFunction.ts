@@ -98,29 +98,39 @@ function parseTCallOptions(
 function extractTCall(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
   commentHints: CommentHint[],
-): ExtractedKey {
+): ExtractedKey[] {
   const args = path.get("arguments");
   const keyEvaluation = evaluateIfConfident(args[0]);
 
-  if (typeof keyEvaluation !== "string") {
-    throw new ExtractionError(
-      `Couldn't evaluate i18next key. You should either make the key ` +
-        `evaluable or skip the line using a skip comment (/* ` +
-        `${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
-        `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
-      path,
-    );
-  }
+  const error = new ExtractionError(
+    `Couldn't evaluate i18next key. You should either make the key ` +
+      `evaluable or skip the line using a skip comment (/* ` +
+      `${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
+      `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
+    path,
+  );
 
-  return {
-    key: keyEvaluation,
-    parsedOptions: {
-      ...parseTCallOptions(args[1]),
-      ...parseI18NextOptionsFromCommentHints(path, commentHints),
-    },
+  const options = {
+    ...parseTCallOptions(args[1]),
+    ...parseI18NextOptionsFromCommentHints(path, commentHints),
+  };
+
+  const buildKey = (k: string): ExtractedKey => ({
+    key: k,
+    parsedOptions: options,
     sourceNodes: [path.node],
     extractorName: extractTFunction.name,
-  };
+  });
+
+  if (typeof keyEvaluation === "string") {
+    return [buildKey(keyEvaluation)];
+  }
+
+  if (Array.isArray(keyEvaluation) && keyEvaluation.every((v) => typeof v === "string")) {
+    return keyEvaluation.map((k) => buildKey(k));
+  }
+
+  throw error;
 }
 
 /**
@@ -141,5 +151,5 @@ export default function extractTFunction(
 ): ExtractedKey[] {
   if (getCommentHintForPath(path, "DISABLE", commentHints)) return [];
   if (!skipCheck && !isSimpleTCall(path, config)) return [];
-  return [extractTCall(path, commentHints)];
+  return extractTCall(path, commentHints);
 }
