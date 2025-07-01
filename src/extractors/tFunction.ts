@@ -102,35 +102,33 @@ function extractTCall(
   const args = path.get("arguments");
   const keyEvaluation = evaluateIfConfident(args[0]);
 
-  const error = new ExtractionError(
-    `Couldn't evaluate i18next key. You should either make the key ` +
-      `evaluable or skip the line using a skip comment (/* ` +
-      `${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
-      `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
-    path,
-  );
-
   const options = {
     ...parseTCallOptions(args[1]),
     ...parseI18NextOptionsFromCommentHints(path, commentHints),
   };
 
-  const buildKey = (k: string): ExtractedKey => ({
-    key: k,
-    parsedOptions: options,
-    sourceNodes: [path.node],
-    extractorName: extractTFunction.name,
-  });
+  const result: ExtractedKey[] = [];
+  const keys = Array.isArray(keyEvaluation) ? keyEvaluation : [keyEvaluation];
 
-  if (typeof keyEvaluation === "string") {
-    return [buildKey(keyEvaluation)];
+  for (const key of keys) {
+    if (typeof key !== "string") {
+      throw new ExtractionError(
+        `Couldn't evaluate i18next key. You should either make the key ` +
+        `evaluable or skip the line using a skip comment (/* ` +
+        `${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
+        `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
+        path,
+      );
+    }
+    result.push({
+      key,
+      parsedOptions: options,
+      sourceNodes: [path.node],
+      extractorName: extractTFunction.name,
+    });
   }
 
-  if (Array.isArray(keyEvaluation) && keyEvaluation.every((v) => typeof v === "string")) {
-    return keyEvaluation.map((k) => buildKey(k));
-  }
-
-  throw error;
+  return result;
 }
 
 /**
