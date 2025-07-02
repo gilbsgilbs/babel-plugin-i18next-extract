@@ -98,29 +98,37 @@ function parseTCallOptions(
 function extractTCall(
   path: BabelCore.NodePath<BabelTypes.CallExpression>,
   commentHints: CommentHint[],
-): ExtractedKey {
+): ExtractedKey[] {
   const args = path.get("arguments");
   const keyEvaluation = evaluateIfConfident(args[0]);
 
-  if (typeof keyEvaluation !== "string") {
-    throw new ExtractionError(
-      `Couldn't evaluate i18next key. You should either make the key ` +
-        `evaluable or skip the line using a skip comment (/* ` +
-        `${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
-        `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
-      path,
-    );
+  const options = {
+    ...parseTCallOptions(args[1]),
+    ...parseI18NextOptionsFromCommentHints(path, commentHints),
+  };
+
+  const result: ExtractedKey[] = [];
+  const keys = Array.isArray(keyEvaluation) ? keyEvaluation : [keyEvaluation];
+
+  for (const key of keys) {
+    if (typeof key !== "string") {
+      throw new ExtractionError(
+        `Couldn't evaluate i18next key. You should either make the key ` +
+          `evaluable or skip the line using a skip comment (/* ` +
+          `${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
+          `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
+        path,
+      );
+    }
+    result.push({
+      key,
+      parsedOptions: options,
+      sourceNodes: [path.node],
+      extractorName: extractTFunction.name,
+    });
   }
 
-  return {
-    key: keyEvaluation,
-    parsedOptions: {
-      ...parseTCallOptions(args[1]),
-      ...parseI18NextOptionsFromCommentHints(path, commentHints),
-    },
-    sourceNodes: [path.node],
-    extractorName: extractTFunction.name,
-  };
+  return result;
 }
 
 /**
@@ -141,5 +149,5 @@ export default function extractTFunction(
 ): ExtractedKey[] {
   if (getCommentHintForPath(path, "DISABLE", commentHints)) return [];
   if (!skipCheck && !isSimpleTCall(path, config)) return [];
-  return [extractTCall(path, commentHints)];
+  return extractTCall(path, commentHints);
 }

@@ -1,0 +1,9 @@
+{
+  "description": "extract keys from array of fallbacks",
+  "pluginOptions": {},
+  "expectValues": {
+    "primary": "",
+    "secondary": ""
+  }
+}
+
