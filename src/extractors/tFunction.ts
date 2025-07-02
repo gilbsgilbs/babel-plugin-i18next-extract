@@ -114,9 +114,9 @@ function extractTCall(
     if (typeof key !== "string") {
       throw new ExtractionError(
         `Couldn't evaluate i18next key. You should either make the key ` +
-        `evaluable or skip the line using a skip comment (/* ` +
-        `${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
-        `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
+          `evaluable or skip the line using a skip comment (/* ` +
+          `${COMMENT_HINTS_KEYWORDS.DISABLE.LINE} */ or /* ` +
+          `${COMMENT_HINTS_KEYWORDS.DISABLE.NEXT_LINE} */).`,
         path,
       );
     }
