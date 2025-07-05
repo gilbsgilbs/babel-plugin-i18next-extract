@@ -113,20 +113,24 @@ function findWithTranslationHOCCallExpressionInCompose(
 function findWithTranslationHOCCallExpression(
   path: BabelCore.NodePath<BabelTypes.Function | BabelTypes.ClassDeclaration>,
 ): BabelCore.NodePath<BabelTypes.CallExpression> | null {
-  let functionIdentifier = path.get("id");
+  let functionIdentifier: BabelCore.NodePath<BabelTypes.Identifier> | null =
+    null;
 
-  if (
-    !Array.isArray(functionIdentifier) &&
-    !functionIdentifier.isIdentifier() &&
-    path.parentPath.isVariableDeclarator()
-  ) {
-    // It doesn't look like "function MyComponent(…)"
-    // but could be "const MyComponent = (…) => …" or "const MyComponent = function(…) { … }"
-    functionIdentifier = path.parentPath.get("id");
+  const ownId = path.get("id");
+  if (!Array.isArray(ownId) && ownId.isIdentifier()) {
+    // Normal function declaration, like: "function MyComponent(…)"
+    functionIdentifier = ownId;
+  } else if (path.parentPath.isVariableDeclarator()) {
+    // Maybe a variable declaration, like:
+    //   const MyComponent = (…) => …
+    //   or const MyComponent = function(…) …
+    const parentId = path.parentPath.get("id");
+    if (!Array.isArray(parentId) && parentId.isIdentifier()) {
+      functionIdentifier = parentId;
+    }
   }
 
-  if (Array.isArray(functionIdentifier) || !functionIdentifier.isIdentifier())
-    return null;
+  if (!functionIdentifier) return null;
 
   const bindings = path.parentPath.scope.bindings[functionIdentifier.node.name];
 
