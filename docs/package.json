@@ -6,7 +6,7 @@
   "devDependencies": {
     "fs-extra": "^11.3.0",
     "http-server": "^14.1.1",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "nodemon": "^3.1.10",
     "nunjucks": "^3.2.4"
   },
