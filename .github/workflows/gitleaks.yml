@@ -1,0 +1,11 @@
+name: Gitleaks
+
+on: [pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gitleaks:
+    uses: audioeye/github-actions/.github/workflows/gitleaks.yml@main
